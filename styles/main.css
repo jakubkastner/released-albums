@@ -5,7 +5,7 @@
     color: white;
 }
 
-body {    
+body {
     background-color: rgb(36, 36, 36);
 }
 
@@ -21,6 +21,7 @@ p {
 .album, .years a:hover, .months, .selected-month, .selected-year {
     background-color: rgb(26, 26, 26);
 }
+
 main, .months a:hover, .current-month, .current-year {
     background-color: rgb(18, 18, 18);
 }
@@ -29,7 +30,7 @@ main, .months a:hover, .current-month, .current-year {
     display: flex;
 }
 
-.in-header h1 {    
+.in-header h1 {
     cursor: context-menu;
 }
 
@@ -45,7 +46,7 @@ main, .months a:hover, .current-month, .current-year {
     color: #1ab26b;
 }
 
-.in-header a:hover, .album-actions > div:hover {
+.in-header a:hover, .album-actions>div:hover {
     background-color: rgb(46, 46, 46);
     transition: 0.5s;
 }
@@ -64,6 +65,7 @@ nav ul {
     padding: 0;
     display: flex;
 }
+
 nav li {
     display: inline-block;
 }
@@ -74,16 +76,18 @@ nav a {
     padding: 0.5vw 1vw;
     display: block;
 }
-nav .years {    
+
+nav .years {
     overflow: auto;
 }
+
 nav .months {
     display: none;
 }
+
 nav .selected-month {
     display: inline-block;
 }
-
 
 .in-main {
     padding: 2.4vw;
@@ -94,6 +98,7 @@ nav .selected-month {
     margin-bottom: calc(5px + 1vw);
     text-transform: uppercase;
 }
+
 .title {
     letter-spacing: 3px;
 }
@@ -105,9 +110,11 @@ nav .selected-month {
     cursor: pointer;
     font-size: calc(12px + 0.5vw);
 }
+
 .login-button i {
     margin-right: calc(3px + 0.3vw);
 }
+
 .login-button:hover, .login-button:hover i {
     color: #1ab26b;
     background-color: rgb(8, 8, 8);
@@ -119,16 +126,20 @@ nav .selected-month {
     margin-top: calc(5px + 1vw);
     cursor: pointer;
 }
+
 .album:hover {
     background-color: rgb(56, 56, 56);
 }
+
 .album-flex {
     display: flex;
 }
+
 .album-info * {
     margin-bottom: 1vw;
     text-align: left;
 }
+
 .album-info *:last-child {
     margin-bottom: 0;
 }
@@ -145,6 +156,7 @@ nav .selected-month {
     height: calc(70px + 3.5vw);
     width: calc(70px + 3.5vw);
 }
+
 .album-info {
     display: inline;
 }
@@ -152,9 +164,11 @@ nav .selected-month {
 .album h2 {
     font-size: calc(13px + 0.8vw);
 }
+
 .album h3 {
     font-size: calc(12px + 0.7vw);
 }
+
 .album-info p {
     font-size: calc(11px + 0.6vw);
 }
@@ -180,11 +194,13 @@ nav .selected-month {
     display: none;
     padding: 0;
 }
+
 .top:hover {
     background-color: rgb(86, 86, 86);
 }
+
 .top i {
-    font-size: calc(15px + 0.5vw);    
+    font-size: calc(15px + 0.5vw);
 }
 
 footer p {
@@ -192,8 +208,28 @@ footer p {
     padding: calc(10px + 1vw) 0;
 }
 
-@media screen and (max-width: 1000px)
-{    
+.loader {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, #1ab26b, #1ab26b);
+    margin: auto;
+    border-radius: 4px;
+    background-size: 20%;
+    background-repeat: repeat-y;
+    background-position: -25% 0;
+    animation: loader 3s ease-in-out infinite;
+}
+
+@keyframes loader {
+    50% {
+        background-size: 80%;
+    }
+    100% {
+        background-position: 125% 0;
+    }
+}
+
+@media screen and (max-width: 1000px) {
     main {
         min-height: 150px;
     }
@@ -204,10 +240,11 @@ footer p {
         padding: 10px 15px;
     }
 }
+
 @media print {
     * {
-      background: white !important;
-      color: black !important;
+        background: white !important;
+        color: black !important;
     }
     header, footer {
         display: none;

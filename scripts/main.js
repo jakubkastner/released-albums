@@ -1,7 +1,9 @@
 var API_ID = 'd1c9a91ea65443af90946fde02fdda64';
 var API_SECRET = '26bbf4fad9384fd4bb3543649ade8b05';
-var REDIRECT_URI = 'https://fcp.vse.cz/4IZ268/2018-2019-ZS/www/kasj08/semestralka2/'
+var REDIRECT_URI = 'http://192.168.1.25:5500';
+//var REDIRECT_URI = 'http://localhost:5500';
 var STATE_KEY = 'spotify_auth_state';
+var USER_ACCESS = 'spotify_user_access';
 var API_URL = 'https://api.spotify.com/v1';
 
 var userAccess = null;
@@ -15,12 +17,16 @@ var lastAlbumsCurrent = 0;
 var options = {};
 var elementError = $('.error');
 var elementMessage = $('.message');
+var elementLoader = $('.loader');
 var elementTitle = $('.title');
 var elementMenuYears = $('.years');
 var elementMenuYear; // = $('.year');
 var elementMenuMonth; //= $('.month');
 var elementTop = $('#top');
 var elementBody = $('body, html');
+
+var viewAll = false;
+var lastYear = 0;
 
 function getHashParams() {
     var hashParams = {};
@@ -34,82 +40,55 @@ function getHashParams() {
 
 /* došlo k přihlášení uživatele */
 $(document).ready(function () {
-    var currentUrl = window.location.href;
-    if (currentUrl.includes('access_denied')) {
-        // nesouhlasil s podmínkami
-        elementError.text('Failed to login, you must accept the premissions.');
+    userAccessStorage = localStorage.getItem(USER_ACCESS);
+    if (userAccessStorage)
+    {
+        userAccess = userAccessStorage;
+        getUser(userAccessStorage);
+        // odstranit click to login
     }
-    else if (currentUrl.includes('?error')) {
-        // nastala chyba
-        elementError.text('Failed to login, please try it again.');
-    }
-    else if (currentUrl.includes('#access_token=') && currentUrl.includes('&token_type=') && currentUrl.includes('&expires_in=') && currentUrl.includes('&state=')) {
-        // úspěšné přihlášení
-
-        // rozdělí získanou adresu a získá z ní parametry
-        var params = getHashParams();
-        userAccess = params.access_token;
-
-        // získá hodnotu navrácenou ze spotify
-        var state = params.state;
-        // získá hodnotu úloženou v úložišti
-        var storedState = localStorage.getItem(STATE_KEY);
-
-        if (userAccess) {
-            // existuje user access
-            if (state === null || state !== storedState) {
-                // a nezískal jsem hodnotu ze spotify loginu nebo se neshoduje s uloženou v místním úložišti = chyba
-                elementError.text('Failed to login, please try it again.');
-            }
-            else {
-                options = {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + userAccess
-                    }
-                }
-                // získám informace o uživateli
-                $.ajax({
-                    url: API_URL + '/me',
-                    headers: {
-                        'Authorization': 'Bearer ' + userAccess
-                    },
-                    success: function (response) {
-                        userID = response.id;
-                        if (userID) {
-                            // úspěšně získané informace o uživateli
-                            $('#login-button').remove();
-                            elementError.text('');
-
-                            var elementLogin = $('#login');
-                            elementLogin.html('Logged in as "' + response.display_name + '" | Click to logout');
-                            elementLogin.attr('title', 'Click to logout');
-                            elementLogin.attr('href', '');
-                            elementMessage.text('User @' + response.display_name + ' has been successfully logged in.');
-
-                            userCountry = response.country;
-                            // získám umělce, které uživatel sleduje
-                            elementMessage.text('Please wait: Getting list of your followed artists...');
-                            getUserArtists(API_URL + '/me/following?type=artist&limit=50');
-                        }
-                        else {
-                            // nezískal jsem user id
-                            elementError.text('Failed to login, please try it again.');
-                        }
-                    },
-                    error: function () {
-                        elementError.text('Failed to login, please try it again.');
-                    }
-                });
-            }
+    else
+    {
+        var currentUrl = window.location.href;
+        if (currentUrl.includes('access_denied')) {
+            // nesouhlasil s podmínkami
+            elementError.text('Failed to login, you must accept the premissions.');
         }
-        else {
-            // nezískal jsem user access
+        else if (currentUrl.includes('?error')) {
+            // nastala chyba
             elementError.text('Failed to login, please try it again.');
         }
-        // odstraním z úložiště
-        localStorage.removeItem(STATE_KEY);
-    }
+        else if (currentUrl.includes('#access_token=') && currentUrl.includes('&token_type=') && currentUrl.includes('&expires_in=') && currentUrl.includes('&state=')) {
+            // úspěšné přihlášení
+            // rozdělí získanou adresu a získá z ní parametry
+            var params = getHashParams();
+            userAccess = params.access_token;
+            window.location = REDIRECT_URI;
+            localStorage.setItem(USER_ACCESS, userAccess);
+    
+            // získá hodnotu navrácenou ze spotify
+            var state = params.state;
+            // získá hodnotu úloženou v úložišti
+            var storedState = localStorage.getItem(STATE_KEY);
+    
+            if (userAccess) {
+                // existuje user access
+                if (state === null || state !== storedState) {
+                    // a nezískal jsem hodnotu ze spotify loginu nebo se neshoduje s uloženou v místním úložišti = chyba
+                    elementError.text('Failed to login, please try it again.');
+                }
+                else {
+                    getUser(userAccess);
+                }
+            }
+            else {
+                // nezískal jsem user access
+                elementError.text('Failed to login, please try it again.');
+            }
+            // odstraním z úložiště
+            localStorage.removeItem(STATE_KEY);
+        }
+    }    
 });
 
 /* kliknutí na tlačítko přihlášení */
@@ -144,6 +123,52 @@ $('.login').click(function () {
         return text;
     };
 });
+
+function getUser(userAccessFunction)
+{
+    options = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + userAccessFunction
+        }
+    }
+    // získám informace o uživateli
+    $.ajax({
+        url: API_URL + '/me',
+        headers: {
+            'Authorization': 'Bearer ' + userAccessFunction
+        },
+        success: function (response) {
+            userID = response.id;
+            if (userID) {
+                // úspěšně získané informace o uživateli
+                $('#login-button').remove();
+                elementError.text('');
+
+                var elementLogin = $('#login');
+                elementLogin.html('Logged in as "' + response.display_name + " | Click to logout");
+                elementLogin.attr('title', 'Click to logout');
+                elementLogin.attr('href', '');
+                elementLogin.attr('id', 'logout');
+                elementMessage.text('User @' + response.display_name + ' has been successfully logged in.');
+                userCountry = response.country;
+                // získám umělce, které uživatel sleduje
+                elementLoader.show();
+                elementMessage.text('Please wait: Getting list of your followed artists...');
+                getUserArtists(API_URL + '/me/following?type=artist&limit=50');
+            }
+            else {
+                // nezískal jsem user id
+                localStorage.removeItem(USER_ACCESS);    
+                elementError.text('Failed to login, please try it again.');
+            }
+        },
+        error: function () {
+            localStorage.removeItem(USER_ACCESS);    
+            elementError.text('Failed to login, please try it again.');
+        }
+    });
+}
 
 /* získá z api json se seznamem umělců, které uživatel sleduje */
 function getUserArtists(fetchUrl) {
@@ -223,8 +248,13 @@ function showAlbums() {
     $('#m' + year).addClass('selected-month');
     $('#' + date[0] + '-' + date[1]).addClass('current-month');
     // zobrazení albumů
-    viewAlbums(year, month);
+    //viewAlbums(year, month);
+    // dodělat -> nefunguje správně
+    
+    viewAlbums(year, 0);
+    viewAll = true;
     elementMessage.remove();
+    elementLoader.hide();
 }
 
 /* získá z api json seznam alb jednotlivých umělců */
@@ -234,7 +264,9 @@ function getArtistAlbums(artist, lastCheck) {
         return;
     }
 
-    elementMessage.text('Please wait: Getting albums from artist ' + artist.name + '...');
+    //elementMessage.text('Please wait: Getting albums from artist ' + artist.name + '...');    
+    elementLoader.show();
+    elementMessage.text('Please wait: Getting albums from artists...');
     var fetchUrl = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=album&market=' + userCountry;
 
     fetch(fetchUrl, options)
@@ -339,11 +371,22 @@ $(document).on('click', '.year', function (e) {
 
     $('.months').removeClass('selected-month');
     $('#m' + year).addClass('selected-month');
+    viewAll = false;
     if (year == 0) {
         elementMenuYear.removeClass('current-year');
         elementMenuMonth.removeClass('selected-month current-month');
         elementMenuYearID.addClass('current-year');
-        viewAlbums(0, 0);
+        lastYear = 0;
+        var allYears = $(".year");
+        allYears.each(checkYear => {
+            if (allYears[checkYear].id > lastYear)
+            {
+                lastYear = allYears[checkYear].id;
+            }
+        });
+        viewAll = true;
+        $('.albums').empty();
+        viewAlbums(lastYear, 0);
     }
 });
 
@@ -390,9 +433,9 @@ $(document).on('click', '.album', function (e) {
 /* menu - přidání roků */
 function addMenuYears() {
     var years = [];
-    if (userAlbums.length < 60) {
+    //if (userAlbums.length < 60) {
         years.push('all');
-    }
+    //}
     userAlbums.forEach(album => {
         // projde získané alba a získá z nich rok
         var date = album.release.split('-');
@@ -462,10 +505,13 @@ function addMenuMonths(yearToAdd) {
 
 /* zobrazení albumů z vybraného měsíce a roku */
 function viewAlbums(year, month) {
-    // odstraním alba z jiného roku nebo měsíce
     var elementAlbums = $('.albums');
-    elementAlbums.empty();
-    if (year < 1) {
+    if (!viewAll)
+    {
+        // odstraním alba z jiného roku nebo měsíce
+        elementAlbums.empty();
+    }
+    if (viewAll) {
         // zobrazuji všechny alba
         elementTitle.text('All albums releases');
     }
@@ -487,7 +533,7 @@ function viewAlbums(year, month) {
         var realese = album.release.split('-');
         var albumYear = realese[0];
         var albumMonth = realese[1];
-        if ((year < 1) || (year === albumYear)) {
+        if (year == albumYear) {
             // zobrazuji všechna alba nebo se jedná o vybraný rok
             if ((month === 0) || (month === albumMonth) || (month < 0 && !albumMonth)) {
                 // zobrazuji alba ve vybraném roce nebo se jedná o správný měsíc
@@ -506,11 +552,30 @@ function viewAlbums(year, month) {
             }
         }
     });
+    lastYear = year;
     elementAlbums.append(albumsDiv);
 }
 
+$(document).on('click', '#logout', function (e) {
+    localStorage.removeItem(USER_ACCESS);    
+});
+
 /* posunutí stránky dolů */
 window.onscroll = function () {
+    // načtení dalšího obsahu
+    if (viewAll) {
+        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+            if (lastYear > 1000)
+            {
+                var params = parsedUrl.param();
+                params["page"] = $(this).val();
+                var newUrl = "?" + $.param(params);
+                window.location.href = newUrl;
+                viewAlbums(lastYear-1, 0);
+            }
+        }
+    }
+    // posuvník nahoru
     if (elementBody.scrollTop() > 20) {
         // poloha je níže než 20px, zobrazím posunovník nahoru
         elementTop.show();
@@ -532,4 +597,5 @@ function showError(title, error) {
     }
     elementError.html(error);
     elementMessage.remove();
+    elementLoader.hide();
 }
