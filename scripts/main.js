@@ -1,3 +1,30 @@
+/**
+ * TODO
+ * 
+ * přidávání albumů do knihovny
+ * - funguje
+ * - akorát se přidají navíc všechny skladby albumu do knihovny, což nechci
+ * 
+ * kontrola při načítání albumů, zdali už nejsou v knihovně
+ * - podle toho zobrazit ikonku
+ * 
+ * odstraňování albumů z knihovny
+ * - není hotovo
+ * 
+ * 
+ * zobrazení všech albumů ze všech roků
+ * - nekonečné scrollování
+ * - ale načítat pouze část albumů postupně
+ * -> není hotovo
+ * 
+ * 
+ * nějaké lepší tlačítko na odhlašování
+ * - nice 2 have
+ * 
+ * další tlačítka albumů ?
+ * - nice 2 have
+ */
+
 var API_ID = 'd1c9a91ea65443af90946fde02fdda64';
 var API_SECRET = '26bbf4fad9384fd4bb3543649ade8b05';
 var REDIRECT_URI = 'http://192.168.1.25:5500';
@@ -44,7 +71,7 @@ $(document).ready(function () {
     if (userAccessStorage)
     {
         userAccess = userAccessStorage;
-        getUser(userAccessStorage);
+        getUser();
         // odstranit click to login
     }
     else
@@ -104,7 +131,7 @@ $('.login').click(function () {
     localStorage.setItem(STATE_KEY, stateValue);
 
     // otevře přihlašovací okno do spotify a získá access token
-    var scope = 'user-follow-read user-read-private';
+    var scope = 'user-follow-read user-read-private user-library-modify';
     var url = 'https://accounts.spotify.com/authorize';
     url += '?response_type=token';
     url += '&client_id=' + encodeURIComponent(API_ID);
@@ -124,19 +151,19 @@ $('.login').click(function () {
     };
 });
 
-function getUser(userAccessFunction)
+function getUser()
 {
     options = {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer ' + userAccessFunction
+            'Authorization': 'Bearer ' + userAccess
         }
     }
     // získám informace o uživateli
     $.ajax({
         url: API_URL + '/me',
         headers: {
-            'Authorization': 'Bearer ' + userAccessFunction
+            'Authorization': 'Bearer ' + userAccess
         },
         success: function (response) {
             userID = response.id;
@@ -338,7 +365,8 @@ function getArtistAlbums(artist, lastCheck) {
                         name: newAlbum.name,
                         artists: artistsString,
                         release: newAlbum.release_date,
-                        cover: coverUrl
+                        cover: coverUrl,
+                        url: newAlbum.external_urls.spotify
                     };
 
                     // uloží ho do seznamu všech alb
@@ -415,19 +443,67 @@ $(document).on('click', '.month', function (e) {
     viewAlbums(year, month);
 });
 
-/* kliknutí na album - zobrazení přehrávače alba */
-$(document).on('click', '.album', function (e) {
-    var albumDiv = '#' + e.currentTarget.id;
+/* kliknutí na zobrazení seznamu skladeb albumu - zobrazení přehrávače alba */
+$(document).on('click', '.album-tracklist', function (e) {
+    var albumTracklist = e.currentTarget.id;
+    var albumId = albumTracklist.replace("_t", "");
+    var albumDiv = '#' + albumId;
+    var albumTracklistIcon = $('#' + albumTracklist); 
 
     if ($(albumDiv).find('.album-player').length > 0) {
         // již je zobrazený přehrávač = odstraním ho
         $(albumDiv).children('.album-player').remove();
+        e.currentTarget.title = "View tracklist";
+        albumTracklistIcon.removeClass("album-tracklist-visible");
     }
     else {
         // zobrazím přehrávač alba
-        var player = '<iframe class="album-player" src="https://open.spotify.com/embed/album/' + e.currentTarget.id + '" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>';
+        var player = '<iframe class="album-player" src="https://open.spotify.com/embed/album/' + albumId + '" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>';
         $(albumDiv).append(player);
+        e.currentTarget.title = "Close tracklist";
+        albumTracklistIcon.addClass("album-tracklist-visible");
     }
+});
+
+$(document).on('click', '.album', function (e) {
+    var albumId = e.currentTarget.id;
+    var albumDiv = '#' + albumId;
+    var albumTracklistIcon = $('#' + albumId + "_t"); 
+
+    if ($(albumDiv).find('.album-player').length > 0) {
+        // již je zobrazený přehrávač = odstraním ho
+        $(albumDiv).children('.album-player').remove();
+        //e.currentTarget.title = "View tracklist";
+        albumTracklistIcon.removeClass("album-tracklist-visible");
+    }
+    else {
+        // zobrazím přehrávač alba
+        var player = '<iframe class="album-player" src="https://open.spotify.com/embed/album/' + albumId + '" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>';
+        $(albumDiv).append(player);
+        //e.currentTarget.title = "Close tracklist";
+        albumTracklistIcon.addClass("album-tracklist-visible");
+    }
+});
+
+/* kliknutí na přidání albumu do knihovny - přidá album do knihovny na spotify */
+$(document).on('click', '.album-like', function (e) {
+    var albumLike = e.currentTarget.id;
+    var albumId = albumLike.replace("_l", "");
+    $.ajax({
+        url: API_URL + '/me/albums?ids=' + albumId,
+        type: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + userAccess
+        },
+        success: function() {
+            var albumLikeIcon = $('#' + albumLike);
+            albumLikeIcon.removeClass("far");
+            albumLikeIcon.addClass("fas");
+        },
+        error: function (result) {
+            console.log(result.message);
+        }
+    });
 });
 
 /* menu - přidání roků */
@@ -538,7 +614,8 @@ function viewAlbums(year, month) {
             if ((month === 0) || (month === albumMonth) || (month < 0 && !albumMonth)) {
                 // zobrazuji alba ve vybraném roce nebo se jedná o správný měsíc
                 // získám div a zobrazím ho
-                albumsDiv += `<div class="album" id="` + album.id + `" title="View tracklist">
+                var inLibrary = getLibraryAlbum(API_URL + '/me/albums/contains?ids=' + album.id);
+                albumsDiv += `<div class="album" id="` + album.id + `">
                                 <div class="album-flex">
                                     <div class="album-img">
                                         <img src="` + album.cover + `"></img>
@@ -546,6 +623,9 @@ function viewAlbums(year, month) {
                                     <div class="album-info">
                                         <h2>` + album.name + `</h2><h3>` + album.artists + `</h3>
                                         <p>` + album.release + `</p>
+                                        <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + album.id + `_t"></i>
+                                        <i class="far fa-heart album-like" title="Add album to library" id="` + album.id + `_l"></i>
+                                        <a href="` + album.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>
                                     </div>
                                 </div>
                             </div>`;
@@ -554,6 +634,29 @@ function viewAlbums(year, month) {
     });
     lastYear = year;
     elementAlbums.append(albumsDiv);
+}
+
+/* získá z api json se seznamem umělců, které uživatel sleduje */
+/* NEFUNGUJE !!!!!!!!!!!!!!!!!!!!! */
+function getLibraryAlbum(fetchUrl) {
+    fetch(fetchUrl, options)
+        .then(response => response.json())
+        .then(json => {
+            // možné chyby
+            if (json.error) {
+                if (json.error.status === 429) {
+                    // api - moc dotazů
+                    setTimeout(function () { getLibraryAlbum(fetchUrl); }, 100);
+                }
+                else {
+                    return false;
+                }
+            }
+            else
+            {
+                console.log(json);
+                return true;}
+        });
 }
 
 $(document).on('click', '#logout', function (e) {
