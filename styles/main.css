@@ -139,7 +139,12 @@ nav .selected-month {
     text-align: left;
 }
 .album-info i:hover, .album-like.fas, .album-tracklist-visible {
-    color: #1ab26b;;
+    color: #1ab26b;
+    transition: 0.3s;
+}
+.album-like.fas:hover {
+    font-weight: 400;
+    transition: 0.4s;
 }
 
 .album-info i {
@@ -241,9 +246,9 @@ footer p {
 }
 
 @media screen and (max-width: 1000px) {
-    main {
+    /*main {
         min-height: 150px;
-    }
+    }*/
     .in-body {
         width: 100%;
     }
