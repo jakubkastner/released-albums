@@ -36,9 +36,11 @@ var USER_ACCESS = 'spotify_user_access';
 var API_URL = 'https://api.spotify.com/v1';
 
 var userAccess = null;
-var userID = null;
 var userCountry = null;
-var userAlbums = [];
+var userAlbums = null;
+var userTracks = null;
+
+var libraryArtists = null;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
@@ -49,14 +51,18 @@ var elementMessage = $('.message');
 var elementLoader = $('.loader');
 var elementTitle = $('.title');
 var elementMenuYears = $('.years');
+var elementAlbums = $('.albums');
 var elementMenuYear; // = $('.year');
 var elementMenuMonth; //= $('.month');
 var elementTop = $('#top');
 var elementBody = $('body, html');
+var elementAlbumsButton = $('.albums-button');
+var elementTracksButton = $('.tracks-button');
 
 var viewAll = false;
 var lastYear = 0;
 
+/* získá parametry z url */
 function getHashParams() {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -67,67 +73,35 @@ function getHashParams() {
     return hashParams;
 }
 
-/* došlo k přihlášení uživatele */
+/* načtení stránky */
 $(document).ready(function () {
-    userAccessStorage = localStorage.getItem(USER_ACCESS);
-    if (userAccessStorage)
-    {
-        userAccess = userAccessStorage;
+    // -> přihlášení uživatele
+
+    // získám z úložiště prohlížeče userAccess
+    userAccess = localStorage.getItem(USER_ACCESS);
+    if (userAccess) {
+        // pokud existuje
+        // -> uživatel přihlášen (získám o něm informace)
         getUser();
-        // odstranit click to login
     }
-    else
-    {
-        var currentUrl = window.location.href;
-        if (currentUrl.includes('access_denied')) {
-            // nesouhlasil s podmínkami
-            elementError.text('Failed to login, you must accept the premissions.');
-        }
-        else if (currentUrl.includes('?error')) {
-            // nastala chyba
-            elementError.text('Failed to login, please try it again.');
-        }
-        else if (currentUrl.includes('#access_token=') && currentUrl.includes('&token_type=') && currentUrl.includes('&expires_in=') && currentUrl.includes('&state=')) {
-            // úspěšné přihlášení
-            // rozdělí získanou adresu a získá z ní parametry
-            var params = getHashParams();
-            userAccess = params.access_token;
-            window.location = REDIRECT_URI;
-            localStorage.setItem(USER_ACCESS, userAccess);
-    
-            // získá hodnotu navrácenou ze spotify
-            var state = params.state;
-            // získá hodnotu úloženou v úložišti
-            var storedState = localStorage.getItem(STATE_KEY);
-    
-            if (userAccess) {
-                // existuje user access
-                if (state === null || state !== storedState) {
-                    // a nezískal jsem hodnotu ze spotify loginu nebo se neshoduje s uloženou v místním úložišti = chyba
-                    elementError.text('Failed to login, please try it again.');
-                }
-                else {
-                    getUser(userAccess);
-                }
-            }
-            else {
-                // nezískal jsem user access
-                elementError.text('Failed to login, please try it again.');
-            }
-            // odstraním z úložiště
-            localStorage.removeItem(STATE_KEY);
-        }
-    }    
+    else {
+        // pokud neexistuje
+        // -> otevřu přihlašovací stránku spotify
+        loginUser();
+    }
 });
 
 /* kliknutí na tlačítko přihlášení */
 $('.login').click(function () {
-    if (userAccess && userID) {
+    // -> získá stránku pro přihlášení do spotify
+
+    // kontrola přihlášení
+    if (userAccess) {
         // uživatel je přihlášen
         return;
     }
-    userID = null;
     userAccess = null;
+
     // zapíše do lokálního úložiště náhodnou hodnotu
     var stateValue = generateRandomString(16);
     localStorage.setItem(STATE_KEY, stateValue);
@@ -142,6 +116,7 @@ $('.login').click(function () {
     url += '&state=' + encodeURIComponent(stateValue);
     window.location = url;
 
+    /* vygenerování náhodného stringu */
     function generateRandomString(length) {
         var text = '';
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -153,24 +128,71 @@ $('.login').click(function () {
     };
 });
 
-function getUser()
-{
+/* zachytí odpověď po otevření přihlašovací stránky spotify */
+function loginUser() {
+    // -> zobrazí příslušné informace po přihlášení
+
+    var currentUrl = window.location.href;
+    if (currentUrl.includes('access_denied')) {
+        // nesouhlas s podmínkami
+        elementError.text('Failed to login, you must accept the premissions.');
+    }
+    else if (currentUrl.includes('?error')) {
+        // nastala chyba
+        elementError.text('Failed to login, please try it again.');
+    }
+    else if (currentUrl.includes('#access_token=') && currentUrl.includes('&token_type=') && currentUrl.includes('&expires_in=') && currentUrl.includes('&state=')) {
+        // úspěšné přihlášení
+        // -> získá userAccess
+        // rozdělí získanou adresu a získá z ní parametry
+        var params = getHashParams();
+        userAccess = params.access_token;
+        window.location = REDIRECT_URI;
+
+        // získá hodnotu navrácenou ze spotify
+        var state = params.state;
+
+        // získá hodnotu úloženou v úložišti
+        var storedState = localStorage.getItem(STATE_KEY);
+        // odstraním z úložiště
+        localStorage.removeItem(STATE_KEY);
+
+        if (userAccess) {
+            localStorage.setItem(USER_ACCESS, userAccess);
+            // existuje user access
+            if (state === null || state !== storedState) {
+                // a nezískal jsem hodnotu ze spotify loginu nebo se neshoduje s uloženou v místním úložišti = chyba
+                elementError.text('Failed to login, please try it again.');
+            }
+        }
+        else {
+            // nezískal jsem user access
+            elementError.text('Failed to login, please try it again.');
+        }
+    }
+}
+
+/* získá informace o přihlášeném uživateli (z userAccess) */
+function getUser() {
+    // uloží hlavičku pro další dotazy api
     options = {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + userAccess
         }
-    }
-    // získám informace o uživateli
-    $.ajax({
-        url: API_URL + '/me',
-        headers: {
-            'Authorization': 'Bearer ' + userAccess
-        },
-        success: function (response) {
-            userID = response.id;
-            if (userID) {
+    };
+    $.ajax(
+        API_URL + '/me',
+        {
+            // nastaví parametry dotazu
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + userAccess
+            },
+            success: function (response) {
                 // úspěšně získané informace o uživateli
+
+                // zobrazí informace o uživateli a skryje/zobrazí prvky
                 $('#login-button').remove();
                 elementError.text('');
 
@@ -181,26 +203,108 @@ function getUser()
                 elementLogin.attr('id', 'logout');
                 elementMessage.text('User @' + response.display_name + ' has been successfully logged in.');
                 userCountry = response.country;
-                // získám umělce, které uživatel sleduje
-                elementLoader.show();
-                elementMessage.text('Please wait: Getting list of your followed artists...');
-                getUserArtists(API_URL + '/me/following?type=artist&limit=50');
+
+                // získá interprety z knihovny uživatele
+                getLibraryArtists();
+            },
+            error: function (error) {
+                if (error.status == 429) {
+                    // api limit překročen
+                    getUser();
+                }
+                else {
+                    localStorage.removeItem(USER_ACCESS);
+                    userAccess = null;
+                    elementError.text('Failed to login, please try it again.');
+                }
+            }
+        }
+    );
+}
+
+
+elementAlbumsButton.click(function () {
+    if (userAlbums) {
+        showAlbums();
+    }
+    else {
+        // získám umělce, které uživatel sleduje
+        getLibraryAlbums();
+        /*elementLoader.show();
+        elementMessage.text('Please wait: Getting list of your followed artists...');
+        userAlbums = [];
+        getLibraryAlbums();*/
+    }
+});
+
+elementTracksButton.click(function () {
+    elementMenuYears.hide();
+    elementAlbums.hide();
+});
+
+
+/* získá z api json se seznamem umělců, které uživatel sleduje */
+function getLibraryArtists(fetchUrl = API_URL + '/me/following?type=artist&limit=50') {
+    showLoading('Please wait: Getting list of your followed artists...');
+    fetch(fetchUrl, options)
+        .then(response => response.json())
+        .then(json => {
+            // možné chyby
+            if (json.error) {
+                if (json.error.status === 429) {
+                    // api - moc dotazů
+                    setTimeout(function () { getLibraryArtists(fetchUrl); }, 3000);
+                }
+                else {
+                    elementError.html(elementError.text() + '<br>Failed to get list of your followed artists: ' + json.error.message + '.');
+                }
+                return;
+            }
+
+            var artists = json.artists.items;
+            artists.forEach(artist => {
+                artist.fetchUrl = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=album&market=' + userCountry;
+            });
+            if (!libraryArtists) {
+                libraryArtists = [];
+            }
+            libraryArtists = libraryArtists.concat(artists);
+
+            if (!artists) {
+                showError('No artists', 'Cannot get any album or track, because you are not following any artist.');
+                return;
+            }
+            if (artists.length < 1) {
+                showError('No artists', 'Cannot get any album or track, because you are not following any artist.');
+                return;
+            }
+
+            if (json.artists.next) {
+                // pokud existuje další stránka seznamu umělců, získám další seznam
+                getLibraryArtists(json.artists.next);
             }
             else {
-                // nezískal jsem user id
-                localStorage.removeItem(USER_ACCESS);    
-                elementError.text('Failed to login, please try it again.');
+                // neexistuje další stránka umělců
+                elementAlbumsButton.show();
+                elementTracksButton.show();
+                hideLoading('Select which releases want to display.');
             }
-        },
-        error: function () {
-            localStorage.removeItem(USER_ACCESS);    
-            elementError.text('Failed to login, please try it again.');
-        }
-    });
+        });
+}
+
+/* zobrazí načítání */
+function showLoading(message) {
+    elementLoader.show();
+    elementMessage.text(message);
+}
+/* skryje načítání */
+function hideLoading(message) {
+    elementLoader.hide();
+    elementMessage.text(message);
 }
 
 /* získá z api json se seznamem umělců, které uživatel sleduje */
-function getUserArtists(fetchUrl) {
+function getUserArtistsOld(fetchUrl) {
     fetch(fetchUrl, options)
         .then(response => response.json())
         .then(json => {
@@ -215,7 +319,11 @@ function getUserArtists(fetchUrl) {
                 }
                 return;
             }
+
             var artists = json.artists.items;
+            libraryArtists = libraryArtists.concat(artists);
+            console.log(libraryArtists);
+
             if (!artists) {
                 showError('No albums', 'Cannot get any album, because you are not following any artist.');
                 return;
@@ -248,11 +356,11 @@ function showAlbums() {
     // jedná se o poslední stránku umělců
 
     // přičtu aktuální počet úspěšně získaných posledních albumů
-    lastAlbumsCurrent++;
+    /*lastAlbumsCurrent++;
     if (lastAlbumsCount != lastAlbumsCurrent) {
         // ještě jsem neprošel všechny interprety
         return;
-    }
+    }*/
 
     // úspěšně jsem získal ze spotify interprety z poslední stránky
     // zobrazím alba
@@ -279,23 +387,170 @@ function showAlbums() {
     // zobrazení albumů
     //viewAlbums(year, month);
     // dodělat -> nefunguje správně
-    
+
     viewAlbums(year, 0);
     //viewAll = true;
     elementMessage.remove();
     elementLoader.hide();
 }
 
+async function getArtistAlbums2(artist) 
+{
+  console.log("fetchuju " + artist.name);
+  let response = await fetch(artist.fetchUrl, options);
+  //console.log("mezifetch " + artist.name);
+  let data = await response.json();
+  console.log("odfetchovano " + artist.name);
+  return data;
+}
+
 /* získá z api json seznam alb jednotlivých umělců */
-function getArtistAlbums(artist, lastCheck) {
+function getArtistAlbum(artist) {
+        fetch(artist.fetchUrl, options)
+        .then(response => response.json())
+        .then(json => {
+            // možné chyby
+            if (json.error) {
+                if (json.error.status === 429) {
+                    // api - moc dotazů
+                    setTimeout(function () { getArtistAlbum(artist); }, 3000);
+                }
+                else {
+                    elementError.html(elementError.text() + '<br>Failed to get albums from artist ' + artist.name + ': ' + json.error.message);
+                }
+                return;
+            }
+            var albums = json.items;
+            if (!albums) {
+                /*if (lastCheck) {
+                    // jedná se o poslední stránku umělců
+                    showAlbums();
+                }*/
+                return;
+            }
+            if (albums.length < 1) {
+                /*if (lastCheck) {
+                    // jedná se o poslední stránku umělců
+                    showAlbums();
+                }*/
+                return;
+            }
+
+            for (let index = 0; index < albums.length; index++) {
+                // projde nově získané alba
+                const newAlbum = albums[index];
+                var added = false;
+
+                if (!artist.albums) {
+                    artist.albums = [];
+                }
+
+                for (let index2 = 0; index2 < artist.albums.length; index2++) {
+                    // projde již získaná alba
+                    if (newAlbum.id === artist.albums[index2].id) {
+                        // nové album již bylo přidáno do seznamu dříve
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    // pokud nebylo přidáno již dříve
+
+                    // získá všechny umělce alba a zapíše je do stringu s oddělovači
+                    var albumArtists = newAlbum.artists;
+                    var albumArtistsString = albumArtists[0].name;
+                    for (let index = 1; index < albumArtists.length - 1; index++) {
+                        albumArtistsString += ', ' + albumArtists[index].name;
+                    }
+                    if (albumArtists.length > 1) {
+                        albumArtistsString += ' & ' + albumArtists[albumArtists.length - 1].name;
+                    }
+                    // získá cover
+                    var coverUrl = '';
+                    if (newAlbum.images.length > 0) {
+                        coverUrl = newAlbum.images[1].url;
+                    }
+                    else {
+                        coverUrl = 'images/no-cover.png';
+                    }
+
+                    // vytvoří objekt nového alba
+                    var newAlbumObject = {
+                        id: newAlbum.id,
+                        name: newAlbum.name,
+                        artists: albumArtistsString,
+                        release: newAlbum.release_date,
+                        cover: coverUrl,
+                        url: newAlbum.external_urls.spotify
+                    };
+                    
+                    //getAlbumInfo(artist, newAlbumObject);
+
+                    /**/
+                    artist.albums.push(newAlbumObject);
+                    if (!userAlbums) {
+                        userAlbums = [];
+                    }
+                    userAlbums.push(newAlbumObject);
+                    //console.log(artist)
+                    // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
+                    userAlbums.sort(function (a, b) {
+                        var keyA = new Date(a.release);
+                        var keyB = new Date(b.release);
+                        if (keyA < keyB) return 1;
+                        if (keyA > keyB) return -1;
+                        return 0;
+                    });
+                }
+            }
+            /*if (lastCheck) {
+                // jedná se o poslední stránku umělců
+                showAlbums();
+            }*/
+        })
+}
+
+async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
+/* projde seznam umělců a získá z api jejich alba */
+async function getLibraryAlbums() {
+    showLoading('Please wait: Getting albums from artists...');
+    asyncForEach(libraryArtists, async artist => {
+        //getArtistAlbum(artist);
+        
+        console.log("start " + artist.name);
+    
+        await getArtistAlbums2(artist)
+        .then(data => console.log("finished " + artist.name)); 
+    });
+
+
+    /*console.log("aa");
+    await getArtistAlbums2(libraryArtists[0]);*/
+    /*libraryArtists.forEach(async artist => {
+        //getArtistAlbum(artist);
+        
+        console.log("start " + artist.name);
+    
+        await getArtistAlbums2(artist)
+        .then(data => console.log("finished " + artist.name)); 
+    });*/
+    console.log("bla");
+}
+
+/* získá z api json seznam alb jednotlivých umělců */
+function getArtistAlbumsOld(artist, lastCheck) {
     if (!artist) {
         elementError.html(elementError.text() + '<br>Failed to get artist albums.');
         return;
     }
 
-    //elementMessage.text('Please wait: Getting albums from artist ' + artist.name + '...');    
-    elementLoader.show();
-    elementMessage.text('Please wait: Getting albums from artists...');
+    //elementMessage.text('Please wait: Getting albums from artist ' + artist.name + '...');
+    showLoading('Please wait: Getting albums from artists...');
     var fetchUrl = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=album&market=' + userCountry;
 
     fetch(fetchUrl, options)
@@ -359,8 +614,8 @@ function getArtistAlbums(artist, lastCheck) {
                     }
                     else {
                         coverUrl = 'images/no-cover.png';
-                    } 
-                    
+                    }
+
                     // vytvoří objekt nového alba
                     var newAlbumObject = {
                         id: newAlbum.id,
@@ -370,18 +625,10 @@ function getArtistAlbums(artist, lastCheck) {
                         cover: coverUrl,
                         url: newAlbum.external_urls.spotify
                     };
-                    getLibraryAlbum(newAlbumObject);
+                    getAlbumInfo(newAlbumObject);
                 }
             }
             if (lastCheck) {
-                // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
-                userAlbums.sort(function (a, b) {
-                    var keyA = new Date(a.release);
-                    var keyB = new Date(b.release);
-                    if (keyA < keyB) return 1;
-                    if (keyA > keyB) return -1;
-                    return 0;
-                });
                 // jedná se o poslední stránku umělců
                 showAlbums();
             }
@@ -407,8 +654,7 @@ $(document).on('click', '.year', function (e) {
         lastYear = 0;
         var allYears = $(".year");
         allYears.each(checkYear => {
-            if (allYears[checkYear].id > lastYear)
-            {
+            if (allYears[checkYear].id > lastYear) {
                 lastYear = allYears[checkYear].id;
             }
         });
@@ -457,8 +703,7 @@ $(document).on('click', '.album-tracklist', function (e) {
     viewTracklist(albumId, albumTracklistIcon);
 });*/
 
-function viewTracklist(albumId, albumTracklistIcon)
-{
+function viewTracklist(albumId, albumTracklistIcon) {
     var albumDiv = '#' + albumId;
     if ($(albumDiv).find('.album-player').length > 0) {
         // již je zobrazený přehrávač = odstraním ho
@@ -473,7 +718,7 @@ function viewTracklist(albumId, albumTracklistIcon)
         //e.currentTarget.title = "Close tracklist";
         albumTracklistIcon.addClass("album-tracklist-visible");
     }
-    
+
 }
 
 /* kliknutí na přidání albumu do knihovny - přidá album do knihovny na spotify */
@@ -482,8 +727,7 @@ $(document).on('click', '.album-like', function (e) {
     var albumLike = e.currentTarget.id;
     var albumLikeIcon = $('#' + albumLike);
     var albumId = albumLike.replace("_l", "");
-    if (albumLikeIcon.hasClass("far"))
-    {
+    if (albumLikeIcon.hasClass("far")) {
         // album nebylo při přidávání v knihovně
         $.ajax({
             url: API_URL + '/me/albums?ids=' + albumId,
@@ -491,7 +735,7 @@ $(document).on('click', '.album-like', function (e) {
             headers: {
                 'Authorization': 'Bearer ' + userAccess
             },
-            success: function() {
+            success: function () {
                 albumLikeIcon.removeClass("far");
                 albumLikeIcon.addClass("fas");
                 albumLikeIcon.title = "Remove album from library";
@@ -501,8 +745,7 @@ $(document).on('click', '.album-like', function (e) {
             }
         });
     }
-    else
-    {
+    else {
         // album je v knihovně
         $.ajax({
             url: API_URL + '/me/albums?ids=' + albumId,
@@ -510,7 +753,7 @@ $(document).on('click', '.album-like', function (e) {
             headers: {
                 'Authorization': 'Bearer ' + userAccess
             },
-            success: function() {
+            success: function () {
                 albumLikeIcon.removeClass("fas");
                 albumLikeIcon.addClass("far");
                 albumLikeIcon.title = "Add album to library";
@@ -519,7 +762,7 @@ $(document).on('click', '.album-like', function (e) {
                 console.log(result.message);
             }
         });
-    }    
+    }
 });
 
 /* menu - přidání roků */
@@ -598,16 +841,13 @@ function addMenuMonths(yearToAdd) {
 /* zobrazení albumů z vybraného měsíce a roku */
 function viewAlbums(year, month) {
     var elementAlbums = $('.albums');
-    if (year == 0 && month == 0)
-    {
+    if (year == 0 && month == 0) {
         viewAll = true;
     }
-    else
-    {
+    else {
         viewAll = false;
     }
-    if (!viewAll)
-    {
+    if (!viewAll) {
         // odstraním alba z jiného roku nebo měsíce
         elementAlbums.empty();
     }
@@ -639,15 +879,13 @@ function viewAlbums(year, month) {
                 // zobrazuji alba ve vybraném roce nebo se jedná o správný měsíc
                 // získám div a zobrazím ho
                 var albumLibrary = '';
-                if (album.library === true)
-                {
-                    albumLibrary =  `<i class="fas fa-heart album-like" title="Remove album from library" id="` + album.id + `_l"></i>`;
+                if (album.library === true) {
+                    albumLibrary = `<i class="fas fa-heart album-like" title="Remove album from library" id="` + album.id + `_l"></i>`;
                 }
-                else
-                {                    
-                    albumLibrary =  `<i class="far fa-heart album-like" title="Add album to library" id="` + album.id + `_l"></i>`;
+                else {
+                    albumLibrary = `<i class="far fa-heart album-like" title="Add album to library" id="` + album.id + `_l"></i>`;
                 }
-                
+
                 albumsDiv += `<div class="album" id="` + album.id + `">
                                 <div class="album-flex">
                                     <div class="album-img">
@@ -657,8 +895,8 @@ function viewAlbums(year, month) {
                                         <h2>` + album.name + `</h2><h3>` + album.artists + `</h3>
                                         <p>` + album.release + `</p>
                                         <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + album.id + `_t"></i>`;
-                albumsDiv +=            albumLibrary;
-            albumsDiv +=                `<a href="` + album.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>
+                albumsDiv += albumLibrary;
+                albumsDiv += `<a href="` + album.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>
                                     </div>
                                 </div>
                               </div>`;
@@ -669,8 +907,8 @@ function viewAlbums(year, month) {
     elementAlbums.append(albumsDiv);
 }
 
-/* získá z api json se seznamem umělců, které uživatel sleduje */
-function getLibraryAlbum(album) {
+/* získá info o albumu (máli ho uživatel v knihovně atd.) */
+function getAlbumInfo(artist, album) {
     fetchUrl = API_URL + '/me/albums/contains?ids=' + album.id;
     fetch(fetchUrl, options)
         .then(response => response.json())
@@ -680,35 +918,52 @@ function getLibraryAlbum(album) {
             if (json.error) {
                 if (json.error.status === 429) {
                     // api - moc dotazů
-                    setTimeout(function () { getLibraryAlbum(album); }, 100);
+                    setTimeout(function () { getAlbumInfo(artist, album); }, 3000);
                 }
             }
             else {
-                if (json[0] == true)
-                {
+                if (json[0] == true) {
                     inLibrary = true;
                 }
             }
             album.library = inLibrary;
 
+            if (!artist.albums) {
+                artist.albums = [];
+            }
+
             // uloží ho do seznamu všech alb
             var added = false;
-            for (let index = 0; index < userAlbums.length; index++) {
+            for (let index = 0; index < artist.albums.length; index++) {
                 // projde již získaná alba
-                if (album.id === userAlbums[index].id) {
+                if (album.id === artist.albums[index].id) {
                     // nové album již bylo přidáno do seznamu dřive
                     added = true;
                     break;
                 }
             }
             if (!added) {
+                //userAlbums.push(album);
+                artist.albums.push(album);
+                if (!userAlbums) {
+                    userAlbums = [];
+                }
                 userAlbums.push(album);
+                //console.log(artist)
+                // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
+                userAlbums.sort(function (a, b) {
+                    var keyA = new Date(a.release);
+                    var keyB = new Date(b.release);
+                    if (keyA < keyB) return 1;
+                    if (keyA > keyB) return -1;
+                    return 0;
+                });
             }
         });
 }
 
 $(document).on('click', '#logout', function (e) {
-    localStorage.removeItem(USER_ACCESS);    
+    localStorage.removeItem(USER_ACCESS);
 });
 
 /* posunutí stránky dolů */
@@ -716,13 +971,12 @@ window.onscroll = function () {
     // načtení dalšího obsahu
     if (viewAll) {
         if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-            if (lastYear > 1000)
-            {
+            if (lastYear > 1000) {
                 var params = parsedUrl.param();
                 params["page"] = $(this).val();
                 var newUrl = "?" + $.param(params);
                 window.location.href = newUrl;
-                viewAlbums(lastYear-1, 0);
+                viewAlbums(lastYear - 1, 0);
             }
         }
     }

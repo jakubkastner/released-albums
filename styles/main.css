@@ -103,7 +103,7 @@ nav .selected-month {
     letter-spacing: 3px;
 }
 
-.login-button {
+.button {
     display: inline-block;
     margin-top: calc(5px + 1vw);
     padding: calc(2px + 0.5vw);
@@ -111,11 +111,11 @@ nav .selected-month {
     font-size: calc(12px + 0.5vw);
 }
 
-.login-button i {
+.button i {
     margin-right: calc(3px + 0.3vw);
 }
 
-.login-button:hover, .login-button:hover i {
+.button:hover, .button:hover i {
     color: #1ab26b;
     background-color: rgb(8, 8, 8);
     transition: 0.4s;
@@ -234,6 +234,10 @@ footer p {
     background-repeat: repeat-y;
     background-position: -25% 0;
     animation: loader 3s ease-in-out infinite;
+}
+
+.albums-button, .tracks-button {
+    display: none;
 }
 
 @keyframes loader {
