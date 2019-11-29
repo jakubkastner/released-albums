@@ -87,7 +87,7 @@ elementAlbumsButton.click(function () {
 function showAlbumsMain() {
     // TODO: dodělat
     window.location.replace("#show=albums");
-    if (userAlbums) {
+    if (libraryAlbums) {
         if (elementAlbums.is(':hidden')) {
             // dodělat
             showAlbums();
@@ -121,7 +121,7 @@ async function libraryGetAlbums() {
     });
 
     // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
-    userAlbums.sort(function (a, b) {
+    libraryAlbums.sort(function (a, b) {
         var keyA = new Date(a.release);
         var keyB = new Date(b.release);
         if (keyA < keyB) return 1;
@@ -222,10 +222,10 @@ function libraryAddAlbum(artist, albums) {
 
             /**/
             artist.albums.push(newAlbumObject);
-            if (!userAlbums) {
-                userAlbums = [];
+            if (!libraryAlbums) {
+                libraryAlbums = [];
             }
-            userAlbums.push(newAlbumObject);
+            libraryAlbums.push(newAlbumObject);
         }
     }
 }
@@ -273,13 +273,13 @@ function getAlbumInfo(artist, album) {
             if (!added) {
                 //userAlbums.push(album);
                 artist.albums.push(album);
-                if (!userAlbums) {
-                    userAlbums = [];
+                if (!libraryAlbums) {
+                    libraryAlbums = [];
                 }
-                userAlbums.push(album);
+                libraryAlbums.push(album);
 
                 // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
-                userAlbums.sort(function (a, b) {
+                libraryAlbums.sort(function (a, b) {
                     var keyA = new Date(a.release);
                     var keyB = new Date(b.release);
                     if (keyA < keyB) return 1;

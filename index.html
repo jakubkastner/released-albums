@@ -24,24 +24,26 @@
                 <a class="login" id="login" title="Click to login">Login via Spotify</a>
             </div>
             <nav>
-                <ul class="years">
-                </ul>
+                <a class="button albums-button">Albums</a>
+                <a class="button tracks-button">Tracks</a>
             </nav>
         </div>
     </header>
     <main>
+        <div class="nav-date">
+            <ul class="years">
+            </ul>
+        </div>
         <div class="in-body">
             <div class="in-main">
                 <h2 class="title"></h2>
                 <h2 class="message">View all albums by years and months of your followed artists on Spotify</h2>
                 <p class="error">To see all albums releases, you must login with your Spotify account.</p>
                 <a class="button login login-button" id="login-button"><i class="fab fa-spotify"></i>Login via Spotify</a>
-                <a class="button albums-button" id="login-button">Albums</a>
-                <a class="button tracks-button" id="login-button">Tracks</a>
                 <div class="albums"></div>
             </div>
+            <div class="loader"></div>
         </div>
-        <div class="loader"></div>
 
         <button class="top" id="top" title="Top"><i class="fas fa-angle-double-up"></i></button>
     </main>

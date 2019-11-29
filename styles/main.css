@@ -5,8 +5,12 @@
     color: white;
 }
 
-body {
+body, .years li {
     background-color: rgb(36, 36, 36);
+}
+
+main {
+    display: flex;
 }
 
 p {
@@ -14,11 +18,14 @@ p {
 }
 
 .in-body {
-    width: 64vw;
-    margin: 0 auto;
+    display: block;
+    width: 100%;
+}
+main .in-body {    
+    margin: calc(10px + 0.3vw) calc(20px + 1vw);
 }
 
-.album, .years a:hover, .months, .selected-month, .selected-year {
+.album, .years a:hover, .months li, .selected-month, .selected-year {
     background-color: rgb(26, 26, 26);
 }
 
@@ -56,37 +63,39 @@ main, .months a:hover, .current-month, .current-year {
     cursor: pointer;
 }
 
-nav {
+.nav-date {
+    display: contents;
+    overflow: auto;
+    height: 100%;
+}
+
+.nav-date ul {
+    list-style: none;
+    padding: 0;
     display: block;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
+.nav-date li {
+    display: block;
 }
 
-nav li {
-    display: inline-block;
-}
-
-nav a {
+.nav-date a {
     font-size: calc(12px + 0.5vw);
     cursor: pointer;
     padding: 0.5vw 1vw;
     display: block;
 }
 
-nav .years {
+.nav-date .years {
     overflow: auto;
 }
 
-nav .months {
+.nav-date .months {
     display: none;
 }
 
-nav .selected-month {
-    display: inline-block;
+.nav-date .selected-month {
+    display: block;
 }
 
 .in-main {
@@ -138,7 +147,7 @@ nav .selected-month {
     margin-bottom: 0.3vw;
     text-align: left;
 }
-.album-info i:hover, .album-like.fas, .album-tracklist-visible {
+.album-info i:hover, .album-like.fas, .album-tracklist-visible, .current-year, .current-month {
     color: #1ab26b;
     transition: 0.3s;
 }
@@ -166,8 +175,8 @@ nav .selected-month {
     min-height: 85px;
     min-width: 85px;
     height: calc(70px + 3.5vw);
-    width: calc(70px + 3.5vw);
-    width: 13%;
+    /*width: calc(70px + 3.5vw);*/
+    width: 9%;
 }
 
 
@@ -256,7 +265,7 @@ footer p {
     .in-body {
         width: 100%;
     }
-    nav a {
+    .nav-date a {
         padding: 10px 15px;
     }
 }

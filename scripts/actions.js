@@ -67,6 +67,7 @@ $(document).on('click', '.album-like', function (e) {
             }
         });
     }
+    $('.nav-date').scrollIntoView();
 });
 
 /*$(document).on('click', '.album', function (e) {
@@ -80,17 +81,31 @@ $(document).on('click', '.album-like', function (e) {
 
 /* menu - kliknutí na rok */
 $(document).on('click', '.year', function (e) {
+    var clickedYear = e.currentTarget.id;
+    elementMenuYear.removeClass('selected-year current-year');
+    $('#' + clickedYear).addClass('current-year');
+
+    // odstraní třídy vybraného a aktuálního měsíce
+    elementMenuMonth.removeClass('selected-month current-month');
+    $('#' + clickedYear + '-all').addClass('current-month');
+    viewAlbums(clickedYear, 0);
+});
+
+$(document).on('mouseover', '.nav-year', function (e) {
     // odstraní třídy vybraného roku a skrytí jeho měsíce
     // přidá třídy vybraného roku a zobrazení jeho měsíců
-    var year = e.currentTarget.id;
-    var elementMenuYearID = $('#' + year);
+
+    var hoveredYear = e.currentTarget.id;
+    hoveredYear = hoveredYear.replace('y', '');
+
+    var elementMenuYearID = $('#' + hoveredYear);
     elementMenuYear.removeClass('selected-year');
     elementMenuYearID.addClass('selected-year');
 
     $('.months').removeClass('selected-month');
-    $('#m' + year).addClass('selected-month');
-    viewAll = false;
-    if (year == 0) {
+    $('#m' + hoveredYear).addClass('selected-month');
+
+    /*if (hoveredYear == 0) {
         elementMenuYear.removeClass('current-year');
         elementMenuMonth.removeClass('selected-month current-month');
         elementMenuYearID.addClass('current-year');
@@ -101,10 +116,24 @@ $(document).on('click', '.year', function (e) {
                 lastYear = allYears[checkYear].id;
             }
         });
-        viewAll = true;
+
         $('.albums').empty();
         viewAlbums(lastYear, 0);
     }
+    //elementBody.scrollTop(100);*/
+});
+$(document).on('mouseout', '.nav-year', function (e) {
+    var selectedYear = e.currentTarget.id;
+    selectedYear = selectedYear.replace('y', '');
+    var currentYear = $('.current-year').attr('id');
+    console.log(selectedYear);
+    console.log(currentYear);
+    if (currentYear == selectedYear) {
+        return;
+    }
+    $('#' + selectedYear).removeClass('selected-year');
+    $('#m' + selectedYear).removeClass('selected-month');
+    $('#m' + currentYear).addClass('selected-month');
 });
 
 /* menu - kliknutí na měsíc */

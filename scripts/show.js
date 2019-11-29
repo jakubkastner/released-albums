@@ -1,22 +1,12 @@
 // ALBUMY //
 
+// zobrazí alba
 function showAlbums() {
-    // jedná se o poslední stránku umělců
-
-    // přičtu aktuální počet úspěšně získaných posledních albumů
-    /*lastAlbumsCurrent++;
-    if (lastAlbumsCount != lastAlbumsCurrent) {
-        // ještě jsem neprošel všechny interprety
-        return;
-    }*/
-
-    // úspěšně jsem získal ze spotify interprety z poslední stránky
-    // zobrazím alba
-    if (!userAlbums) {
+    if (!libraryAlbums) {
         showError('No albums', 'Cannot get any album, because you are following only artists without albums.');
         return;
     }
-    if (userAlbums.length < 1) {
+    if (libraryAlbums.length < 1) {
         showError('No albums', 'Cannot get any album, because you are following only artists without albums.');
         return;
     }
@@ -25,13 +15,13 @@ function showAlbums() {
     elementTitle.text('All released albums');
     addMenuYears();
     // získám rok a měsíc nejnovějšího alba
-    var date = userAlbums[0].release.split('-');
+    var date = libraryAlbums[0].release.split('-');
     var year = date[0];
     var month = date[1];
     // zobrazení v menu
     $('#' + year).addClass('current-year');
     $('#m' + year).addClass('selected-month');
-    $('#' + date[0] + '-' + date[1]).addClass('current-month');
+    $('#' + year + '-all').addClass('current-month');
     // zobrazení albumů
     //viewAlbums(year, month);
     // dodělat -> nefunguje správně
@@ -45,6 +35,7 @@ function showAlbums() {
 
 /* zobrazení albumů z vybraného měsíce a roku */
 function viewAlbums(year, month) {
+    // TODO : sem přidat vybírání prvků v menu (nebo spíš do vlastní funkce)
     var elementAlbums = $('.albums');
     if (year == 0 && month == 0) {
         viewAll = true;
@@ -73,7 +64,7 @@ function viewAlbums(year, month) {
         elementTitle.text('Released albums in ' + year + '-' + month);
     }
     var albumsDiv = '';
-    userAlbums.forEach(album => {
+    libraryAlbums.forEach(album => {
         // projdu získaná alba a získám měsíc a rok
         var realese = album.release.split('-');
         var albumYear = realese[0];
@@ -115,16 +106,24 @@ function viewAlbums(year, month) {
 /* menu - přidání roků */
 async function addMenuYears() {
     var years = [];
-    if (userAlbums.length < 60) {
-        years.push('all');
-    }
-    userAlbums.forEach(album => {
+    years.push('all');
+    libraryArtists.forEach(artist => {
         // projde získané alba a získá z nich rok
-        var date = album.release.split('-');
-        var year = date[0];
-        if (!years.includes(year)) {
-            years.push(year);
+        if (artist.albums) {
+            artist.albums.forEach(album => {
+                var date = album.release.split('-');
+                var year = date[0];
+                if (!years.includes(year)) {
+                    years.push(year);
+                }
+            });
         }
+    });
+    // seřadí roky
+    years.sort(function (a, b) {
+        if (a < b) return 1;
+        if (a > b) return -1;
+        return 0;
     });
     years.forEach(year => {
         // pro každý získaný rok, získám měsíce
@@ -137,13 +136,20 @@ async function addMenuYears() {
 /* menu - přidání měsíců */
 function addMenuMonths(yearToAdd) {
     if (yearToAdd === 'all') {
-        elementMenuYears.append('<li><a class="year" id="' + 0 + '">' + 'all' + '</a></li>');
+        yearToAdd = 0;
+    }
+
+    var elementYear = $('<div id="y' + yearToAdd + '" class="nav-year"></div>');
+    elementMenuYears.append(elementYear);
+
+    if (yearToAdd === 0) {
+        elementYear.append('<li><a class="year" id="' + yearToAdd + '">' + 'all' + '</a></li>');
         return;
     }
     var months = [];
     var undefinedMonth = false; // měsíc není ve spotify vyplněn
     months.push('all');
-    userAlbums.forEach(album => {
+    libraryAlbums.forEach(album => {
         // projde získané alba a získá z nich rok a měsíc
         var date = album.release.split('-');
         var year = date[0];
@@ -166,9 +172,9 @@ function addMenuMonths(yearToAdd) {
         months.push('undefined');
     }
     // přidá rok do menu
-    elementMenuYears.append('<li><a class="year" id="' + yearToAdd + '" title="Click to view months in ' + yearToAdd + '">' + yearToAdd + '</a></li>');
+    elementYear.append('<li><a class="year" id="' + yearToAdd + '" title="Click to view months in ' + yearToAdd + '">' + yearToAdd + '</a></li>');
     // přidá měsíce vybraného roku do menu
-    $('nav').append('<ul class="months" id="m' + yearToAdd + '"></ul>');
+    elementYear.append('<div class="months" id="m' + yearToAdd + '"></div>');
     var yearDiv = $('#m' + yearToAdd);
     var monthDivs = '';
     months.forEach(month => {

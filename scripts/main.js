@@ -37,7 +37,7 @@ var API_URL = 'https://api.spotify.com/v1';
 
 var userAccess = null;
 var userCountry = null;
-var userAlbums = null;
+var libraryAlbums = null;
 var userTracks = null;
 
 var libraryArtists = null;
@@ -112,7 +112,7 @@ async function fetchJson(url, errorText) {
         }
         else {
             // jiná chyba
-            elementError.html(elementError.text() + '<br>' + errorText + json.error.message);
+            hideLoading(elementError.text() + '<br>' + errorText + json.error.message);
         }
         return null;
     }
