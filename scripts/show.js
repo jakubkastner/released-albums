@@ -69,9 +69,9 @@ function viewAlbums(year, month) {
         var realese = album.release.split('-');
         var albumYear = realese[0];
         var albumMonth = realese[1];
-        if (year == albumYear) {
+        if (year == albumYear || viewAll) {
             // zobrazuji všechna alba nebo se jedná o vybraný rok
-            if ((month === 0) || (month === albumMonth) || (month < 0 && !albumMonth)) {
+            if ((month === 0) || (month === albumMonth) || (month < 0 && !albumMonth) || viewAll) {
                 // zobrazuji alba ve vybraném roce nebo se jedná o správný měsíc
                 // získám div a zobrazím ho
                 var albumLibrary = '';

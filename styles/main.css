@@ -247,6 +247,7 @@ footer p {
 
 .albums-button, .tracks-button {
     display: none;
+    /*display: inline-block;*/
 }
 
 @keyframes loader {
