@@ -87,10 +87,12 @@ elementAlbumsButton.click(function () {
 function showAlbumsMain() {
     // TODO: dodělat
     window.location.replace("#show=albums");
+    console.log(libraryAlbums);
     if (libraryAlbums) {
         if (elementAlbums.is(':hidden')) {
             // dodělat
-            showAlbums();
+            //show(libraryAlbums, 'albums');
+            //showAlbums();
         }
     }
     else {
@@ -101,6 +103,10 @@ function showAlbumsMain() {
         userAlbums = [];
         getLibraryAlbums();*/
     }
+    elementAlbums.show();
+    elementTracks.hide();
+    $('.nav-tracks').hide();
+    $('.nav-albums').show();
 }
 
 /**
@@ -130,7 +136,8 @@ async function libraryGetAlbums() {
     });
 
     // zobrazí albumy
-    showAlbums();
+    //showAlbums();
+    show(libraryAlbums, 'albums');
 }
 
 /**
@@ -149,6 +156,12 @@ async function libraryGetAlbumsApi(artist, index, libraryArtistsLength) {
     if (json != null) {
         // přidá album do seznamu
         libraryAddAlbum(artist, json.items);
+
+        if (json.next)
+        {
+            // TODO : pokud je next -> nepřidá se = chyba opravit !!
+            console.log(json.next);
+        }
     }
 }
 
@@ -297,9 +310,23 @@ function getAlbumInfo(artist, album) {
 elementTracksButton.click(function () {
     // TODO : dodělat přepínání
     window.location.replace("#show=tracks");
-    libraryArtistGetTracks();
-    elementMenuYears.hide();
+    console.log(libraryTracks);
+    if (!libraryTracks)
+    {
+        libraryArtistGetTracks();
+    }
+    else
+    {
+        if (elementTracks.is(':hidden')) {
+            // dodělat
+            //show(libraryTracks, 'tarcks');
+            //showAlbums();
+        }
+    }
     elementAlbums.hide();
+    elementTracks.show();
+    $('.nav-albums').hide();
+    $('.nav-tracks').show();
 });
 
 // TODO !!!
@@ -312,15 +339,15 @@ async function libraryArtistGetTracks() {
         await libraryArtistGetTracksApi(artist, ++index, libraryArtistsLength);
     });
     // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
-    /*userAlbums.sort(function (a, b) {
+    libraryTracks.sort(function (a, b) {
         var keyA = new Date(a.release);
         var keyB = new Date(b.release);
         if (keyA < keyB) return 1;
         if (keyA > keyB) return -1;
         return 0;
-    });*/
+    });
     // zobrazí albumy
-    //showAlbums();
+    show(libraryTracks, 'tracks');
 }
 
 // TODO !!!
@@ -338,7 +365,40 @@ async function libraryArtistGetTracksApi(artist, index, libraryArtistsLength) {
     if (tracks.length < 1) {
         return;
     }
-    console.log(tracks);
-    hideLoading('Finished.');
+    if (!libraryTracks) {
+        libraryTracks = [];
+    }
+    tracks.forEach(track => {
+        var trackArtists = track.artists;
+        var trackArtistsString = trackArtists[0].name;
+        for (let index = 1; index < trackArtists.length - 1; index++) {
+            trackArtistsString += ', ' + trackArtists[index].name;
+        }
+        if (trackArtists.length > 1) {
+            trackArtistsString += ' & ' + trackArtists[trackArtists.length - 1].name;
+        }
+        // získá cover
+        var coverUrl = '';
+        if (track.images.length > 0) {
+            coverUrl = track.images[1].url;
+        }
+        else {
+            coverUrl = 'images/no-cover.png';
+        }
+        var newTrackObject = {
+            id: track.id,
+            name: track.name,
+            artists: trackArtistsString,
+            release: track.release_date,
+            cover: coverUrl,
+            url: track.external_urls.spotify
+        };
+        libraryTracks.push(newTrackObject);
+    });
+    if (json.next)
+    {
+        console.log(json.next);
+        // TODO : pokud je next -> nepřidá se = chyba opravit !!            
+    }
 }
 

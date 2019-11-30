@@ -41,6 +41,7 @@ var libraryAlbums = null;
 var userTracks = null;
 
 var libraryArtists = null;
+var libraryTracks = null;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
@@ -52,6 +53,7 @@ var elementLoader = $('.loader');
 var elementTitle = $('.title');
 var elementMenuYears = $('.years');
 var elementAlbums = $('.albums');
+var elementTracks = $('.tracks');
 var elementMenuYear; // = $('.year');
 var elementMenuMonth; //= $('.month');
 var elementTop = $('#top');
@@ -169,7 +171,7 @@ window.onscroll = function () {
 
     // TODO : dodělat načítání dalšího obsahu (nekonečný seznam)
 
-    if (viewAll) {
+    /*if (viewAll) {
         // nefunkční
         if ($(window).scrollTop() == $(document).height() - $(window).height()) {
             if (lastYear > 1000) {
@@ -180,7 +182,7 @@ window.onscroll = function () {
                 viewAlbums(lastYear - 1, 0);
             }
         }
-    }
+    }*/
 
     // posuvník
     if (elementBody.scrollTop() > 20) {

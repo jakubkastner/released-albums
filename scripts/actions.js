@@ -88,7 +88,16 @@ $(document).on('click', '.year', function (e) {
     // odstraní třídy vybraného a aktuálního měsíce
     elementMenuMonth.removeClass('selected-month current-month');
     $('#' + clickedYear + '-all').addClass('current-month');
-    viewAlbums(clickedYear, 0);
+
+    var params = getHashParams();
+    var show = 'albums';
+    var list = libraryAlbums;
+    if (params.show == 'tracks')
+    {
+        show = 'tracks';
+        list = libraryTracks;
+    }
+    viewAlbums(clickedYear, 0, list, show);
 });
 
 $(document).on('mouseover', '.nav-year', function (e) {
@@ -126,8 +135,8 @@ $(document).on('mouseout', '.nav-year', function (e) {
     var selectedYear = e.currentTarget.id;
     selectedYear = selectedYear.replace('y', '');
     var currentYear = $('.current-year').attr('id');
-    console.log(selectedYear);
-    console.log(currentYear);
+    //console.log(selectedYear);
+    //console.log(currentYear);
     if (currentYear == selectedYear) {
         return;
     }
@@ -158,5 +167,15 @@ $(document).on('click', '.month', function (e) {
     $('#' + id).addClass('current-month');
 
     // zobrazí alba vybraného měsíce
-    viewAlbums(year, month);
+
+    var params = getHashParams();
+    var show = 'albums';
+    var list = libraryAlbums;
+    if (params.show == 'tracks')
+    {
+        show = 'tracks';
+        list = libraryTracks;
+    }
+    viewAlbums(year, month, list, show);
+    //viewAlbums(year, month);
 });

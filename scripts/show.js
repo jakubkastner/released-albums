@@ -1,6 +1,39 @@
 // ALBUMY //
 
+function show(list, text) {
+    if (!list) {
+        showError('No ' + text, 'Cannot get any album, because you are following only artists without albums.');
+        return;
+    }
+    if (list.length < 1) {
+        showError('No ' + text, 'Cannot get any album, because you are following only artists without albums.');
+        return;
+    }
+
+    // zobrazím roky vydaných alb umělců v menu
+    elementTitle.text('All released ' + text);
+    addMenuYears(list, text);
+    // získám rok a měsíc nejnovějšího alba
+    var date = list[0].release.split('-');
+    var year = date[0];
+    var month = date[1];
+    // zobrazení v menu
+    $('#' + year).addClass('current-year');
+    $('#m' + year).addClass('selected-month');
+    $('#' + year + '-all').addClass('current-month');
+    // zobrazení albumů
+    //viewAlbums(year, month);
+    // dodělat -> nefunguje správně
+
+    viewAlbums(year, 0, list, text);
+    //viewAll = true;
+    elementMessage.remove();
+    elementLoader.hide();
+
+}
+
 // zobrazí alba
+// nevyuživáno
 function showAlbums() {
     if (!libraryAlbums) {
         showError('No albums', 'Cannot get any album, because you are following only artists without albums.');
@@ -34,9 +67,9 @@ function showAlbums() {
 
 
 /* zobrazení albumů z vybraného měsíce a roku */
-function viewAlbums(year, month) {
+function viewAlbums(year, month, list, text) {
     // TODO : sem přidat vybírání prvků v menu (nebo spíš do vlastní funkce)
-    var elementAlbums = $('.albums');
+    var elementAlbums = $('.' + text);
     if (year == 0 && month == 0) {
         viewAll = true;
     }
@@ -49,22 +82,22 @@ function viewAlbums(year, month) {
     }
     if (viewAll) {
         // zobrazuji všechny alba
-        elementTitle.text('All albums releases');
+        elementTitle.text('All ' + text + ' releases');
     }
     else if (month === 0) {
         // zobrazuji alba ve vybraném roce
-        elementTitle.text('Released albums in ' + year);
+        elementTitle.text('Released ' + text + ' in ' + year);
     }
     else if (month < 0) {
         // zobrazuji alba ve vybraném měsíci, který není ve spotify vyplněn
-        elementTitle.text('Released albums in ' + year + ' with undefined month');
+        elementTitle.text('Released ' + text + ' in ' + year + ' with undefined month');
     }
     else {
         // zobrazuji alba ve vybraném měsíci
-        elementTitle.text('Released albums in ' + year + '-' + month);
+        elementTitle.text('Released ' + text + ' in ' + year + '-' + month);
     }
     var albumsDiv = '';
-    libraryAlbums.forEach(album => {
+    list.forEach(album => {
         // projdu získaná alba a získám měsíc a rok
         var realese = album.release.split('-');
         var albumYear = realese[0];
@@ -104,19 +137,15 @@ function viewAlbums(year, month) {
 }
 
 /* menu - přidání roků */
-async function addMenuYears() {
+async function addMenuYears(list, text) {
     var years = [];
     years.push('all');
-    libraryArtists.forEach(artist => {
+    list.forEach(album => {
         // projde získané alba a získá z nich rok
-        if (artist.albums) {
-            artist.albums.forEach(album => {
-                var date = album.release.split('-');
-                var year = date[0];
-                if (!years.includes(year)) {
-                    years.push(year);
-                }
-            });
+        var date = album.release.split('-');
+        var year = date[0];
+        if (!years.includes(year)) {
+            years.push(year);
         }
     });
     // seřadí roky
@@ -127,20 +156,22 @@ async function addMenuYears() {
     });
     years.forEach(year => {
         // pro každý získaný rok, získám měsíce
-        addMenuMonths(year);
+        addMenuMonths(year, text);
         elementMenuYear = $('.year');
         elementMenuMonth = $('.month');
     });
 }
 
 /* menu - přidání měsíců */
-function addMenuMonths(yearToAdd) {
+function addMenuMonths(yearToAdd, text) {
     if (yearToAdd === 'all') {
         yearToAdd = 0;
     }
+    var elementMenu = $('<div class="nav-' + text + '"></div>');
+    elementMenuYears.append(elementMenu);
 
     var elementYear = $('<div id="y' + yearToAdd + '" class="nav-year"></div>');
-    elementMenuYears.append(elementYear);
+    elementMenu.append(elementYear);
 
     if (yearToAdd === 0) {
         elementYear.append('<li><a class="year" id="' + yearToAdd + '">' + 'all' + '</a></li>');
