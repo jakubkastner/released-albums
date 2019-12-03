@@ -5,7 +5,7 @@
     color: white;
 }
 
-body, .years li {
+body, .year {
     background-color: rgb(36, 36, 36);
 }
 
@@ -26,11 +26,11 @@ main .in-body {
     width: calc(100% - 50px - 2vw);
 }
 
-.album, .years a:hover, .months li, .selected-month, .selected-year {
+.album, .year:hover, .months li, .selected-month, .selected-year {
     background-color: rgb(26, 26, 26);
 }
 
-main, .months a:hover, .current-month, .current-year {
+main, .month:hover, .current-month, .current-year {
     background-color: rgb(18, 18, 18);
 }
 
@@ -122,6 +122,13 @@ main, .months a:hover, .current-month, .current-year {
     padding: calc(2px + 0.5vw);
     cursor: pointer;
     font-size: calc(12px + 0.5vw);
+}
+
+header .in-main {
+    padding: 0 0 0 calc(50px + 4vw) ;
+}
+header .in-main .button {
+    margin-top: 0;
 }
 
 .button i {
@@ -250,11 +257,8 @@ footer p {
 }
 
 .albums-button, .tracks-button {
-    display: none;
-    /*display: inline-block;*/
+    display: inline-block;
 }
-
-
 
 .month {
     display: none;

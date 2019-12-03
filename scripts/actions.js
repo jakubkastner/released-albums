@@ -81,88 +81,25 @@ $(document).on('click', '.album-like', function (e) {
 
 /* menu - kliknutí na rok */
 $(document).on('click', '.year', function (e) {
-    /*var clickedYear = e.currentTarget.id;
-    elementMenuYear.removeClass('selected-year current-year');
-    $('#' + clickedYear).addClass('current-year');
-
-    var elementMenuYearID = $('#' + clickedYear);
-    elementMenuYear.removeClass('selected-year');
-    elementMenuYearID.addClass('selected-year');
-
-    $('.months').removeClass('selected-month');
-    $('#m' + clickedYear).addClass('selected-month');
-
-    // odstraní třídy vybraného a aktuálního měsíce
-    elementMenuMonth.removeClass('selected-month current-month');
-    $('#' + clickedYear + '-all').addClass('current-month');
-
-    var params = getHashParams();
-    var show = 'albums';
-    var list = libraryAlbums;
-    if (params.show == 'tracks')
-    {
-        show = 'tracks';
-        list = libraryTracks;
-    }
-    viewAlbums_old(clickedYear, 0, list, show);*/
     var id = e.currentTarget.id;
     var idSplit = id.split('-');
     var year = idSplit[1];
-    
+
     var params = getHashParams();
-    var show = 'a';
-    var list = libraryAlbums;
-    if (params.show == 't')
-    {
+    var show;
+    var list;
+    if (params.show == 'albums') {
+        show = 'a';
+        list = libraryAlbums;
+    }
+    else if (params.show == 'tracks') {
         show = 't';
         list = libraryTracks;
     }
-    viewReleases(year, 0, list, show);
-});
-
-/*$(document).on('mouseover', '.nav-year', function (e) {
-    // odstraní třídy vybraného roku a skrytí jeho měsíce
-    // přidá třídy vybraného roku a zobrazení jeho měsíců
-
-    var hoveredYear = e.currentTarget.id;
-    hoveredYear = hoveredYear.replace('y', '');
-
-    var elementMenuYearID = $('#' + hoveredYear);
-    elementMenuYear.removeClass('selected-year');
-    elementMenuYearID.addClass('selected-year');
-
-    $('.months').removeClass('selected-month');
-    $('#m' + hoveredYear).addClass('selected-month');
-
-    /*if (hoveredYear == 0) {
-        elementMenuYear.removeClass('current-year');
-        elementMenuMonth.removeClass('selected-month current-month');
-        elementMenuYearID.addClass('current-year');
-        lastYear = 0;
-        var allYears = $(".year");
-        allYears.each(checkYear => {
-            if (allYears[checkYear].id > lastYear) {
-                lastYear = allYears[checkYear].id;
-            }
-        });
-
-        $('.albums').empty();
-        viewAlbums(lastYear, 0);
-    }
-    //elementBody.scrollTop(100);*/
-/*});
-$(document).on('mouseout', '.nav-year', function (e) {
-    var selectedYear = e.currentTarget.id;
-    selectedYear = selectedYear.replace('y', '');
-    var currentYear = $('.current-year').attr('id');
-    //console.log(selectedYear);
-    //console.log(currentYear);
-    if (currentYear == selectedYear) {
+    else {
         return;
     }
-    $('#' + selectedYear).removeClass('selected-year');
-    $('#m' + selectedYear).removeClass('selected-month');
-    $('#m' + currentYear).addClass('selected-month');
+    viewReleases(year, 0, list, show);
 });
 
 /* menu - kliknutí na měsíc */
@@ -172,32 +109,20 @@ $(document).on('click', '.month', function (e) {
     var idSplit = id.split('-');
     var year = idSplit[1];
     var month = idSplit[2];
-    
-    /*if (month === 'all') {
-        month = 0;
-    }
-    else*//* if (month === 'undefined') {
-        month = -1;
-    }
-    // odstraní třídy vybraného a aktuálního roku
-    elementMenuYear.removeClass('selected-year current-year');
-    $('#' + year).addClass('current-year');
-
-    // odstraní třídy vybraného a aktuálního měsíce
-    elementMenuMonth.removeClass('selected-month current-month');
-    $('#' + id).addClass('current-month');
-*/
     // zobrazí alba vybraného měsíce
-
     var params = getHashParams();
-    var show = 'a';
-    var list = libraryAlbums;
-    if (params.show == 't')
-    {
+    var show;
+    var list;
+    if (params.show == 'albums') {
+        show = 'a';
+        list = libraryAlbums;
+    }
+    else if (params.show == 'tracks') {
         show = 't';
         list = libraryTracks;
     }
-    //viewAlbums_old(year, month, list, show);
+    else {
+        return;
+    }
     viewReleases(year, month, list, show);
-    //viewAlbums(year, month);
 });

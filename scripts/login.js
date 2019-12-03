@@ -147,7 +147,7 @@ async function loginGetUserInfo() {
     elementError.text('');
 
     var elementLogin = $('#login');
-    elementLogin.html('Logged in as "' + json.display_name + " | Click to logout");
+    elementLogin.html('Logged in as "' + json.display_name + '" | Click to logout');
     elementLogin.attr('title', 'Click to logout');
     elementLogin.attr('href', '');
     elementLogin.attr('id', 'logout');

@@ -61,6 +61,8 @@ var elementTracks = $('.tracks');
 var elementTop = $('#top');
 var elementBody = $('body, html');
 
+var elementNav= $('nav');
+
 var elementAlbumsButton = $('.albums-button');
 var elementTracksButton = $('.tracks-button');
 
@@ -138,6 +140,7 @@ async function fetchJson(url, errorText) {
  */
 function showLoading(message) {
     elementLoader.show();
+    elementMessage.show();
     elementMessage.text('Please wait: ' + message + '...');
 }
 
@@ -228,6 +231,10 @@ $(document).ready(async function () {
         if (params.show == 'albums') {
             // zobrazím albumy
             showAlbums();
+        }
+        if (params.show == 'tracks') {
+            // zobrazím albumy
+            showTracks();
         }
     }
     else {
