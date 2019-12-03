@@ -93,6 +93,7 @@ elementAlbumsButton.click(function () {
  * Zobrazení albumů
  */
 async function showAlbums() {
+    elementNav.hide();
     elementTitle.hide();
     elementTracks.hide();
     $('.nav-t').hide();
@@ -124,7 +125,7 @@ async function showAlbums() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('0', '0', libraryAlbums, 'a');
+        await viewReleases('2019', '0', libraryAlbums, 'a');
         elementMessage.hide();
     }
     // TODO : přesunout zobrazování jinam
@@ -133,6 +134,7 @@ async function showAlbums() {
 
     elementAlbums.show();
     $('.nav-a').show();
+    elementNav.show();
 }
 
 /**
@@ -336,22 +338,6 @@ function getAlbumInfo(artist, album) {
 // TODO !!!
 elementTracksButton.click(function () {
     showTracks();
-    // TODO : dodělat přepínání
-    /*window.location.replace("#show=tracks");
-    console.log(libraryTracks);
-    if (!libraryTracks) {
-        libraryGetTracks();
-    }
-    else {
-        if (elementTracks.is(':hidden')) {
-            // dodělat
-            //show(libraryTracks, 'tarcks');
-        }
-    }
-    elementAlbums.hide();
-    elementTracks.show();
-    $('.nav-albums').hide();
-    $('.nav-tracks').show();*/
 });
 
 // TODO !!!
@@ -486,6 +472,7 @@ async function libraryAddTrack(artist, tracks) {
  * Zobrazení tracků
  */
 async function showTracks() {
+    elementNav.hide();
     elementTitle.hide();
     elementAlbums.hide();
     $('.nav-a').hide();
@@ -517,7 +504,7 @@ async function showTracks() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('0', '0', libraryTracks, 't');
+        await viewReleases('2019', '0', libraryTracks, 't');
         elementMessage.hide();
     }
     // TODO : přesunout zobrazování jinam
@@ -526,4 +513,5 @@ async function showTracks() {
 
     elementTracks.show();
     $('.nav-t').show();
+    elementNav.show();
 }
