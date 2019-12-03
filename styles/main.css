@@ -75,11 +75,15 @@ main, .months a:hover, .current-month, .current-year {
     display: block;
 }
 
+.year {
+    display: block;
+}
+
 .nav-date a {
     font-size: calc(12px + 0.5vw);
     cursor: pointer;
     padding: 0.5vw 1vw;
-    display: block;
+    /*display: block;*/
     width: calc(50px + 2vw);
 }
 .year {
@@ -248,6 +252,12 @@ footer p {
 .albums-button, .tracks-button {
     display: none;
     /*display: inline-block;*/
+}
+
+
+
+.month {
+    display: none;
 }
 
 @keyframes loader {

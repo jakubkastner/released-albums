@@ -81,7 +81,7 @@ $(document).on('click', '.album-like', function (e) {
 
 /* menu - kliknutí na rok */
 $(document).on('click', '.year', function (e) {
-    var clickedYear = e.currentTarget.id;
+    /*var clickedYear = e.currentTarget.id;
     elementMenuYear.removeClass('selected-year current-year');
     $('#' + clickedYear).addClass('current-year');
 
@@ -104,7 +104,20 @@ $(document).on('click', '.year', function (e) {
         show = 'tracks';
         list = libraryTracks;
     }
-    viewAlbums(clickedYear, 0, list, show);
+    viewAlbums_old(clickedYear, 0, list, show);*/
+    var id = e.currentTarget.id;
+    var idSplit = id.split('-');
+    var year = idSplit[1];
+    
+    var params = getHashParams();
+    var show = 'a';
+    var list = libraryAlbums;
+    if (params.show == 't')
+    {
+        show = 't';
+        list = libraryTracks;
+    }
+    viewReleases(year, 0, list, show);
 });
 
 /*$(document).on('mouseover', '.nav-year', function (e) {
@@ -157,12 +170,13 @@ $(document).on('click', '.month', function (e) {
     // získám rok a měsíc z id
     var id = e.currentTarget.id;
     var idSplit = id.split('-');
-    var year = idSplit[0];
-    var month = idSplit[1];
+    var year = idSplit[1];
+    var month = idSplit[2];
+    
     /*if (month === 'all') {
         month = 0;
     }
-    else*/ if (month === 'undefined') {
+    else*//* if (month === 'undefined') {
         month = -1;
     }
     // odstraní třídy vybraného a aktuálního roku
@@ -172,17 +186,18 @@ $(document).on('click', '.month', function (e) {
     // odstraní třídy vybraného a aktuálního měsíce
     elementMenuMonth.removeClass('selected-month current-month');
     $('#' + id).addClass('current-month');
-
+*/
     // zobrazí alba vybraného měsíce
 
     var params = getHashParams();
-    var show = 'albums';
+    var show = 'a';
     var list = libraryAlbums;
-    if (params.show == 'tracks')
+    if (params.show == 't')
     {
-        show = 'tracks';
+        show = 't';
         list = libraryTracks;
     }
-    viewAlbums(year, month, list, show);
+    //viewAlbums_old(year, month, list, show);
+    viewReleases(year, month, list, show);
     //viewAlbums(year, month);
 });

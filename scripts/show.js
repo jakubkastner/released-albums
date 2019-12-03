@@ -1,20 +1,11 @@
 // ALBUMY //
 
-/** 
- * Přidá seznam albumů
- * @param {*} year rok k zobrazení (0 = vše)
- * @param {*} month měsíc k zobrazení (0 = vše)
- */
-function addAlbumsToPage(year, month) {
-
-}
-
 /**
  * 
  * @param {*} realeseList 
  * @param {*} releaseType a = albums / t = tracks
  */
-async function addMenuYears(releaseList, releaseType) {    
+async function addMenuYears(releaseList, releaseType) {
     var years = [];
     years.push(0);
 
@@ -60,23 +51,23 @@ async function addMenuMonths(year, releaseList, releaseType) {
     // měsíce
     var months = [];
     var undefinedMonth = false; // měsíc není ve spotify vyplněn
-    
+
     // projde získané releasy (album, songy, ...)
     await asyncForEach(releaseList, async release => {
         // získá z nich měsíc
         var date = release.release_date.split('-');
-        var year = date[0];
-        if (year === year) {
+        var releaseYear = date[0];
+        if (year === releaseYear) {
             // rok se shoduje
             // -> získám měsíc
-            var month = date[1];
-            if (!months.includes(month)) {
+            var releaseMonth = date[1];
+            if (!months.includes(releaseMonth)) {
                 // měsíc nebyl ještě přidán
-                if (!month) {
+                if (!releaseMonth) {
                     undefinedMonth = true;
                 }
                 else {
-                    months.push(month);
+                    months.push(releaseMonth);
                 }
             }
         }
@@ -84,23 +75,123 @@ async function addMenuMonths(year, releaseList, releaseType) {
     });
     if (undefinedMonth) {
         // měsíc není ve spotify vyplněn
-        months.push(0);
+        months.push(100);
     }
+
+    // seřadí měsíce
+    months.sort(function (a, b) {
+        if (a < b) return 1;
+        if (a > b) return -1;
+        return 0;
+    });
 
     // přidá měsíce vybraného roku do menu    
     var elementMenuMonths = '';
     await asyncForEach(months, async month => {
-        elementMenuMonths += `<li><a class="month ` + releaseType + `-` + year  + `" id="` + releaseType + `-` + year + `-` + month + `" title="Click to view `;
-        if (month === 0) {
-            elementMenuMonths += `released albums in ` + year + ` with undefined month">`;
+        elementMenuMonths += `<li><a class="month ` + releaseType + `-` + year + `" id="` + releaseType + `-` + year + `-` + month + `" title="Click to view `;
+        if (month === 100) {
+            elementMenuMonths += `released albums in ` + year + ` with undefined month">undefined`;
         }
         else {
-            elementMenuMonths += `released albums in ` + year + `-` + month + `">`;
+            elementMenuMonths += `released albums in ` + year + `-` + month + `">` + month;
         }
-        elementMenuMonths += month + `</a></li>`;
+        elementMenuMonths += `</a></li>`;
     });
     elementMenuYear.append(elementMenuMonths);
 }
+
+/* zobrazení albumů z vybraného měsíce a roku */
+
+/**
+ * releaseType= albums / tracks
+ */
+async function viewReleases(year, month, releaseList, releaseType) {
+    if (releaseType == 'a') {
+        releaseTypeText = 'albums';
+    }
+    else if (releaseType == 'a') {
+        releaseTypeText = 'tracks';
+    }
+
+    // element ze seznamem
+    var elementReleases = $('.' + releaseTypeText);
+    elementReleases.empty();
+
+    // zobrazení nadpisu
+    if (year == 0 && month == 0) {
+        // zobrazuji všechny alba
+        elementTitle.text('All ' + releaseTypeText + ' releases');
+    }
+    else if (month == 0) {
+        // zobrazuji alba ve vybraném roce
+        elementTitle.text('Released ' + releaseTypeText + ' in ' + year);
+    }
+    else if (month == 100) {
+        // zobrazuji alba ve vybraném měsíci, který není ve spotify vyplněn
+        elementTitle.text('Released ' + releaseTypeText + ' in ' + year + ' with undefined month');
+    }
+    else {
+        // zobrazuji alba ve vybraném měsíci
+        elementTitle.text('Released ' + releaseTypeText + ' in ' + year + '-' + month);
+    }
+
+    var elementReleaseDiv = '';
+    await asyncForEach(releaseList, async release => {
+        var date = release.release_date.split('-');
+        var releaseYear = date[0];
+        var releaseMonth = date[1];
+        if (year == releaseYear || year == 0) {
+            // zobrazuji všechna alba nebo se jedná o vybraný rok
+            if ((month == 0) || (month == releaseMonth) || (month == 100 && !releaseMonth)) {
+                // zobrazuji alba ve vybraném roce nebo se jedná o správný měsíc
+                // získám div a zobrazím ho
+                var releaseLibrary = '';
+                if (release.library === true) {
+                    releaseLibrary = `<i class="fas fa-heart album-like" title="Remove album from library" id="` + release.id + `_l"></i>`;
+                }
+                else {
+                    releaseLibrary = `<i class="far fa-heart album-like" title="Add album to library" id="` + release.id + `_l"></i>`;
+                }
+
+                elementReleaseDiv += `<div class="album" id="` + release.id + `">
+                            <div class="album-flex">
+                                <div class="album-img">
+                                    <img src="` + release.cover + `"></img>
+                                </div>
+                                <div class="album-info">
+                                    <h2>` + release.name + `</h2><h3>` + release.artistsString + `</h3>
+                                    <p>` + release.release_date + `</p>
+                                    <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"></i>`;
+                elementReleaseDiv += releaseLibrary;
+                elementReleaseDiv += `<a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>
+                                </div>
+                            </div>
+                          </div>`;
+            }
+        }
+    });
+    $('.' + releaseTypeText).append(elementReleaseDiv);
+    await selectInMenu(year, month, releaseType);
+}
+
+/* vybere rok a datum v menu */
+// releaseType (a = album / t = track)
+async function selectInMenu(year, month, releaseType) {
+    // odstraní třídy vybraného a aktuálního roku
+    $('.year').removeClass('selected-year current-year');
+    $('#' + releaseType + '-' + year).addClass('current-year');
+
+    // odstraní třídy vybraného a aktuálního měsíce
+    $('.month').removeClass('selected-month current-month');
+    $('#' + releaseType + '-' + year + '-' + month).addClass('current-month');
+    $('.' + releaseType + '-' + year).addClass('selected-month');
+
+}
+
+
+
+
+
 
 
 
@@ -130,7 +221,7 @@ function showRelease_Old(list, text) {
     //viewAlbums(year, month);
     // dodělat -> nefunguje správně
 
-    viewAlbums(year, 0, list, text);
+    viewAlbums_old(year, 0, list, text);
     //viewAll = true;
     elementMessage.remove();
     elementLoader.hide();
@@ -164,7 +255,7 @@ function showAlbums_Old() {
     //viewAlbums(year, month);
     // dodělat -> nefunguje správně
 
-    viewAlbums(year, 0);
+    viewAlbums_old(year, 0);
     //viewAll = true;
     elementMessage.remove();
     elementLoader.hide();
@@ -172,7 +263,7 @@ function showAlbums_Old() {
 
 
 /* zobrazení albumů z vybraného měsíce a roku */
-function viewAlbums(year, month, list, text) {
+function viewAlbums_old(year, month, list, text) {
     // TODO : sem přidat vybírání prvků v menu (nebo spíš do vlastní funkce)
     var elementAlbums = $('.' + text);
     if (year == 0 && month == 0) {
@@ -308,7 +399,7 @@ function addMenuMonths_old(yearToAdd, text) {
     });
     if (undefinedMonth) {
         // měsíc není ve spotify vyplněn
-        months.push('undefined');
+        months.push(100);
     }
     // přidá rok do menu
     elementYear.append('<li><a class="year" id="' + yearToAdd + '" title="Click to view months in ' + yearToAdd + '">' + yearToAdd + '</a></li>');
@@ -317,10 +408,7 @@ function addMenuMonths_old(yearToAdd, text) {
     var yearDiv = $('#m' + yearToAdd);
     var monthDivs = '';
     months.forEach(month => {
-        if (month === 'all') {
-            monthDivs += `<li><a class="month" id="` + yearToAdd + `-` + month + `" title="Click to view all released albums in ` + yearToAdd + `">` + month + `</a></li>`;
-        }
-        else if (month === 'undefined') {
+        if (month === 100) {
             monthDivs += `<li><a class="month" id="` + yearToAdd + `-` + month + `" title="Click to view released albums in ` + yearToAdd + ` with undefined month">` + month + `</a></li>`;
         }
         else {

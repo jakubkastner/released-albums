@@ -93,11 +93,11 @@ elementAlbumsButton.click(function () {
 /**
  * Zobrazení albumů
  */
-function showAlbums() {
+async function showAlbums() {
     if (!libraryAlbums) {
         // albumy dosud nebyly načteny
         // -> získá albumy a zobrazí je
-        libraryGetAlbums();
+        await libraryGetAlbums();
     }
     else if (libraryAlbums.length < 1) {
         // albumy byly načteny, ale žádné se nenašly
@@ -122,7 +122,8 @@ function showAlbums() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        viewAlbums(0, 0, libraryAlbums, 'albums');
+        //viewAlbums_old(0, 0, libraryAlbums, 'albums');
+        await viewReleases('0', '0', libraryAlbums, 'a');
         elementMessage.hide();
     }
     // TODO : přesunout zobrazování jinam
@@ -173,16 +174,16 @@ async function libraryGetAlbums() {
         return 0;
     });
 
-    await
+    
 
         // zobrazí/skryje příslušné prvky a zobrazí zprávu
         hideLoading('Select which year of albums releases you want to display.');
 
     // přidá do menu roky a měsíce albumů
-    addMenuYears(libraryAlbums, 'a');
+    await addMenuYears(libraryAlbums, 'a');
 
     // zobrazí albumy
-    showAlbums();
+    await showAlbums();
 }
 
 /**
