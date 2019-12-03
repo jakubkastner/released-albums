@@ -12,8 +12,7 @@
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
     <link rel="icon" type="image/ico" href="images/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Pontano+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 </head>
 
 <body>
@@ -30,18 +29,15 @@
         </div>
     </header>
     <main>
-        <div class="nav-date">
-            <ul class="years">
-            </ul>
-        </div>
+        <div class="nav-date"></div>
         <div class="in-body">
             <div class="in-main">
                 <h2 class="title"></h2>
                 <h2 class="message">View all albums by years and months of your followed artists on Spotify</h2>
                 <p class="error">To see all albums releases, you must login with your Spotify account.</p>
                 <a class="button login login-button" id="login-button"><i class="fab fa-spotify"></i>Login via Spotify</a>
-                <div class="albums"></div>
-                <div class="tracks"></div>
+                <div class="albums" style="display: none;"></div>
+                <div class="tracks" style="display: none;"></div>
             </div>
             <div class="loader"></div>
         </div>

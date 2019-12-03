@@ -1,6 +1,110 @@
 // ALBUMY //
 
-function show(list, text) {
+/** 
+ * Přidá seznam albumů
+ * @param {*} year rok k zobrazení (0 = vše)
+ * @param {*} month měsíc k zobrazení (0 = vše)
+ */
+function addAlbumsToPage(year, month) {
+
+}
+
+/**
+ * 
+ * @param {*} realeseList 
+ * @param {*} releaseType a = albums / t = tracks
+ */
+async function addMenuYears(releaseList, releaseType) {    
+    var years = [];
+    years.push(0);
+
+    // projde získané releasy (album, songy, ...)
+    await asyncForEach(releaseList, async release => {
+        // získá z releasů roky
+        var date = release.release_date.split('-');
+        var year = date[0];
+        if (!years.includes(year)) {
+            years.push(year);
+        }
+    });
+
+    // seřadí roky
+    years.sort(function (a, b) {
+        if (a < b) return 1;
+        if (a > b) return -1;
+        return 0;
+    });
+
+    // projde všechny roky
+    await asyncForEach(years, async year => {
+        // pro každý rok získá měsíce
+        await addMenuMonths(year, releaseList, releaseType);
+        /*elementMenuYear = $('.year');
+        elementMenuMonth = $('.month');*/
+    });
+}
+
+/* menu - přidání měsíců */
+async function addMenuMonths(year, releaseList, releaseType) {
+    // přidá rok do menu (ostatní)
+    var elementMenuYear = $('<ul class="nav-' + releaseType + '" id="' + releaseType + '-y-' + year + '"></ul>');
+    elementMenuDate.append(elementMenuYear);
+
+    // přidá rok (all) do menu
+    if (year === 0) {
+        elementMenuYear.append('<li><a class="year" id="' + releaseType + '-' + year + '" title="Click to view all releases">all</a></li>');
+        return;
+    }
+    elementMenuYear.append('<li><a class="year" id="' + releaseType + '-' + year + '" title="Click to view months in ' + year + '">' + year + '</a></li>');
+
+    // měsíce
+    var months = [];
+    var undefinedMonth = false; // měsíc není ve spotify vyplněn
+    
+    // projde získané releasy (album, songy, ...)
+    await asyncForEach(releaseList, async release => {
+        // získá z nich měsíc
+        var date = release.release_date.split('-');
+        var year = date[0];
+        if (year === year) {
+            // rok se shoduje
+            // -> získám měsíc
+            var month = date[1];
+            if (!months.includes(month)) {
+                // měsíc nebyl ještě přidán
+                if (!month) {
+                    undefinedMonth = true;
+                }
+                else {
+                    months.push(month);
+                }
+            }
+        }
+
+    });
+    if (undefinedMonth) {
+        // měsíc není ve spotify vyplněn
+        months.push(0);
+    }
+
+    // přidá měsíce vybraného roku do menu    
+    var elementMenuMonths = '';
+    await asyncForEach(months, async month => {
+        elementMenuMonths += `<li><a class="month ` + releaseType + `-` + year  + `" id="` + releaseType + `-` + year + `-` + month + `" title="Click to view `;
+        if (month === 0) {
+            elementMenuMonths += `released albums in ` + year + ` with undefined month">`;
+        }
+        else {
+            elementMenuMonths += `released albums in ` + year + `-` + month + `">`;
+        }
+        elementMenuMonths += month + `</a></li>`;
+    });
+    elementMenuYear.append(elementMenuMonths);
+}
+
+
+
+function showRelease_Old(list, text) {
     if (!list) {
         showError('No ' + text, 'Cannot get any album, because you are following only artists without albums.');
         return;
@@ -12,9 +116,10 @@ function show(list, text) {
 
     // zobrazím roky vydaných alb umělců v menu
     elementTitle.text('All released ' + text);
-    addMenuYears(list, text);
+    addMenuYears_old(list, text);
     // získám rok a měsíc nejnovějšího alba
-    var date = list[0].release.split('-');
+    //var date = list[0].release.split('-');
+    var date = list[0].release_date.split('-');
     var year = date[0];
     var month = date[1];
     // zobrazení v menu
@@ -34,7 +139,7 @@ function show(list, text) {
 
 // zobrazí alba
 // nevyuživáno
-function showAlbums() {
+function showAlbums_Old() {
     if (!libraryAlbums) {
         showError('No albums', 'Cannot get any album, because you are following only artists without albums.');
         return;
@@ -46,7 +151,7 @@ function showAlbums() {
 
     // zobrazím roky vydaných alb umělců v menu
     elementTitle.text('All released albums');
-    addMenuYears();
+    addMenuYears_old();
     // získám rok a měsíc nejnovějšího alba
     var date = libraryAlbums[0].release.split('-');
     var year = date[0];
@@ -76,10 +181,10 @@ function viewAlbums(year, month, list, text) {
     else {
         viewAll = false;
     }
-    if (!viewAll) {
-        // odstraním alba z jiného roku nebo měsíce
-        elementAlbums.empty();
-    }
+    //if (!viewAll) {
+    // odstraním alba z jiného roku nebo měsíce
+    elementAlbums.empty();
+    //}
     if (viewAll) {
         // zobrazuji všechny alba
         elementTitle.text('All ' + text + ' releases');
@@ -99,7 +204,8 @@ function viewAlbums(year, month, list, text) {
     var albumsDiv = '';
     list.forEach(album => {
         // projdu získaná alba a získám měsíc a rok
-        var realese = album.release.split('-');
+        //var realese = album.release.split('-');
+        var realese = album.release_date.split('-');
         var albumYear = realese[0];
         var albumMonth = realese[1];
         if (year == albumYear || viewAll) {
@@ -137,12 +243,13 @@ function viewAlbums(year, month, list, text) {
 }
 
 /* menu - přidání roků */
-async function addMenuYears(list, text) {
+async function addMenuYears_old(list, text) {
     var years = [];
     years.push('all');
     list.forEach(album => {
         // projde získané alba a získá z nich rok
-        var date = album.release.split('-');
+        //var date = album.release.split('-');
+        var date = album.release_date.split('-');
         var year = date[0];
         if (!years.includes(year)) {
             years.push(year);
@@ -156,14 +263,14 @@ async function addMenuYears(list, text) {
     });
     years.forEach(year => {
         // pro každý získaný rok, získám měsíce
-        addMenuMonths(year, text);
+        addMenuMonths_old(year, text);
         elementMenuYear = $('.year');
         elementMenuMonth = $('.month');
     });
 }
 
 /* menu - přidání měsíců */
-function addMenuMonths(yearToAdd, text) {
+function addMenuMonths_old(yearToAdd, text) {
     if (yearToAdd === 'all') {
         yearToAdd = 0;
     }
@@ -182,7 +289,8 @@ function addMenuMonths(yearToAdd, text) {
     //months.push('all');
     libraryAlbums.forEach(album => {
         // projde získané alba a získá z nich rok a měsíc
-        var date = album.release.split('-');
+        //var date = album.release.split('-');
+        var date = album.release_date.split('-');
         var year = date[0];
         if (year === yearToAdd) {
             // rok se shoduje

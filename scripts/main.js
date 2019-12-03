@@ -47,17 +47,20 @@ var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
 
 var options = {};
+
 var elementError = $('.error');
 var elementMessage = $('.message');
 var elementLoader = $('.loader');
 var elementTitle = $('.title');
-var elementMenuYears = $('.years');
+
+var elementMenuDate = $('.nav-date');
+
 var elementAlbums = $('.albums');
 var elementTracks = $('.tracks');
-var elementMenuYear; // = $('.year');
-var elementMenuMonth; //= $('.month');
+
 var elementTop = $('#top');
 var elementBody = $('body, html');
+
 var elementAlbumsButton = $('.albums-button');
 var elementTracksButton = $('.tracks-button');
 
@@ -92,7 +95,7 @@ async function asyncForEach(array, callback) {
 }
 
 /**
- * Fetchne JSON pomocí Spotify api.
+ * Načte JSON pomocí Spotify api.
  * @param {*} url url dotazu api
  * @param {*} errorText text, pokud se nezdaří získání json
  * @returns
@@ -106,16 +109,24 @@ async function fetchJson(url, errorText) {
     // získaný json
     let json = await response.json();
 
+    if (!json)
+    {
+        // nepodařilo se získat json
+        hideLoading(elementError.text() + '\n' + errorText + '\nCan not get JSON from Spotify API');
+        console.log('fetch error - from url: ' + url);
+        return null;
+    }
+
     if (json.error) {
         // chyba získávání dat
         if (json.error.status === 429) {
             // api - moc dotazů
-            setTimeout(function () { fetchJson(url, errorText); }, 3000);
+            return await fetchJson(url, errorText);
+            // UPOZORNĚNÍ -> HROZÍ NEKONEČNÁ SMYČKA
         }
-        else {
-            // jiná chyba
-            hideLoading(elementError.text() + '<br>' + errorText + json.error.message);
-        }
+        // jiná chyba
+        hideLoading(elementError.text() + '\n' + errorText + '\n' + json.error.message);
+        console.log('fetch error - from spotify: ' + json.error.message);
         return null;
     }
     return json;
@@ -127,7 +138,7 @@ async function fetchJson(url, errorText) {
  */
 function showLoading(message) {
     elementLoader.show();
-    elementMessage.text(message);
+    elementMessage.text('Please wait: ' + message + '...');
 }
 
 /**
@@ -147,7 +158,7 @@ function hideLoading(message) {
 function showError(title, message) {
     elementTitle.text(title);
     if (elementError.text()) {
-        message = elementError.text() + '<br>' + message;
+        message = elementError.text() + '\n' + message;
     }
     elementError.html(message);
     elementMessage.remove();
@@ -201,7 +212,7 @@ window.onscroll = function () {
 /**
  * Načtení stránky.
  */
-$(document).ready(function () {
+$(document).ready(async function () {
     // TODO : dodělat načítání z url
 
     // získám z úložiště prohlížeče userAccess
@@ -210,13 +221,13 @@ $(document).ready(function () {
         // uživatel je přihlášen
         // -> získám informace o uživateli
         // PŘIHLÁŠENÍ -> krok 5
-        loginGetUserInfo();
+        await loginGetUserInfo();
 
         // získám parametry
         var params = getHashParams();
         if (params.show == 'albums') {
             // zobrazím albumy
-            showAlbumsMain();
+            showAlbums();
         }
     }
     else {
