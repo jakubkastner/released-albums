@@ -19,10 +19,11 @@ p {
 
 .in-body {
     display: block;
-    width: 100%;
+    /*width: 100%;*/
 }
 main .in-body {    
     margin: calc(10px + 0.3vw) calc(20px + 1vw);
+    width: calc(100% - 50px - 2vw);
 }
 
 .album, .years a:hover, .months li, .selected-month, .selected-year {
@@ -63,11 +64,6 @@ main, .months a:hover, .current-month, .current-year {
     cursor: pointer;
 }
 
-.nav-date {
-    display: contents;
-    overflow: auto;
-    height: 100%;
-}
 
 .nav-date ul {
     list-style: none;
@@ -84,6 +80,10 @@ main, .months a:hover, .current-month, .current-year {
     cursor: pointer;
     padding: 0.5vw 1vw;
     display: block;
+    width: calc(50px + 2vw);
+}
+.year {
+    text-align: end;
 }
 
 .nav-date .years {
@@ -263,9 +263,9 @@ footer p {
     /*main {
         min-height: 150px;
     }*/
-    .in-body {
+    /*.in-body {
         width: 100%;
-    }
+    }*/
     .nav-date a {
         padding: 10px 15px;
     }
@@ -279,7 +279,7 @@ footer p {
     header, footer {
         display: none;
     }
-    .in-body {
+    /*.in-body {
         width: 100%;
-    }
+    }*/
 }

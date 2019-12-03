@@ -85,6 +85,13 @@ $(document).on('click', '.year', function (e) {
     elementMenuYear.removeClass('selected-year current-year');
     $('#' + clickedYear).addClass('current-year');
 
+    var elementMenuYearID = $('#' + clickedYear);
+    elementMenuYear.removeClass('selected-year');
+    elementMenuYearID.addClass('selected-year');
+
+    $('.months').removeClass('selected-month');
+    $('#m' + clickedYear).addClass('selected-month');
+
     // odstraní třídy vybraného a aktuálního měsíce
     elementMenuMonth.removeClass('selected-month current-month');
     $('#' + clickedYear + '-all').addClass('current-month');
@@ -100,7 +107,7 @@ $(document).on('click', '.year', function (e) {
     viewAlbums(clickedYear, 0, list, show);
 });
 
-$(document).on('mouseover', '.nav-year', function (e) {
+/*$(document).on('mouseover', '.nav-year', function (e) {
     // odstraní třídy vybraného roku a skrytí jeho měsíce
     // přidá třídy vybraného roku a zobrazení jeho měsíců
 
@@ -130,7 +137,7 @@ $(document).on('mouseover', '.nav-year', function (e) {
         viewAlbums(lastYear, 0);
     }
     //elementBody.scrollTop(100);*/
-});
+/*});
 $(document).on('mouseout', '.nav-year', function (e) {
     var selectedYear = e.currentTarget.id;
     selectedYear = selectedYear.replace('y', '');
@@ -152,10 +159,10 @@ $(document).on('click', '.month', function (e) {
     var idSplit = id.split('-');
     var year = idSplit[0];
     var month = idSplit[1];
-    if (month === 'all') {
+    /*if (month === 'all') {
         month = 0;
     }
-    else if (month === 'undefined') {
+    else*/ if (month === 'undefined') {
         month = -1;
     }
     // odstraní třídy vybraného a aktuálního roku

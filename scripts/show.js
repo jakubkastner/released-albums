@@ -179,7 +179,7 @@ function addMenuMonths(yearToAdd, text) {
     }
     var months = [];
     var undefinedMonth = false; // měsíc není ve spotify vyplněn
-    months.push('all');
+    //months.push('all');
     libraryAlbums.forEach(album => {
         // projde získané alba a získá z nich rok a měsíc
         var date = album.release.split('-');
