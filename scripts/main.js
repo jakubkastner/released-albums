@@ -42,6 +42,8 @@ var userTracks = null;
 
 var libraryArtists = null;
 var libraryTracks = null;
+var libraryAppears = null;
+var libraryCompilations = null;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
@@ -57,6 +59,8 @@ var elementMenuDate = $('.nav-date');
 
 var elementAlbums = $('.albums');
 var elementTracks = $('.tracks');
+var elementAppears = $('.appears');
+var elementCompilations = $('.compilations');
 
 var elementTop = $('#top');
 var elementBody = $('body, html');
@@ -65,6 +69,8 @@ var elementNav= $('nav');
 
 var elementAlbumsButton = $('.albums-button');
 var elementTracksButton = $('.tracks-button');
+var elementAppearsButton = $('.appears-button');
+var elementCompilationsButton = $('.compilations-button');
 
 var viewAll = false;
 var lastYear = 0;
@@ -232,9 +238,13 @@ $(document).ready(async function () {
             // zobrazím albumy
             showAlbums();
         }
-        if (params.show == 'tracks') {
+        else if (params.show == 'tracks') {
             // zobrazím albumy
             showTracks();
+        }
+        else if (params.show == 'appears') {
+            // zobrazím albumy
+            showAppears();
         }
     }
     else {

@@ -96,6 +96,14 @@ $(document).on('click', '.year', function (e) {
         show = 't';
         list = libraryTracks;
     }
+    else if (params.show == 'appears') {
+        show = 'p';
+        list = libraryAppears;
+    }
+    else if (params.show == 'compilations') {
+        show = 'c';
+        list = libraryCompilations;
+    }
     else {
         return;
     }
@@ -120,6 +128,14 @@ $(document).on('click', '.month', function (e) {
     else if (params.show == 'tracks') {
         show = 't';
         list = libraryTracks;
+    }
+    else if (params.show == 'appears') {
+        show = 'p';
+        list = libraryAppears;
+    }
+    else if (params.show == 'compilations') {
+        show = 'c';
+        list = libraryCompilations;
     }
     else {
         return;

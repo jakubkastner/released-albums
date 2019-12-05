@@ -110,6 +110,12 @@ async function viewReleases(year, month, releaseList, releaseType) {
     else if (releaseType == 't') {
         releaseTypeText = 'tracks';
     }
+    else if (releaseType == 'p') {
+        releaseTypeText = 'appears';
+    }
+    else if (releaseType == 'c') {
+        releaseTypeText = 'compilations';
+    }
 
     // element ze seznamem
     var elementReleases = $('.' + releaseTypeText);
