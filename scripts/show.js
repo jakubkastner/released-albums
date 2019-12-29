@@ -3,9 +3,24 @@
 /**
  * 
  * @param {*} realeseList 
- * @param {*} releaseType a = albums / t = tracks
+ * @param {*} releaseType a = albums / t = tracks / p = appears / c = compilations
  */
-async function addMenuYears(releaseList, releaseType) {
+async function addMenuYears(releaseType) {
+    // získání názvu typu a seznamů releasů
+    var releaseList;
+    if (releaseType == 'a') {
+        releaseList = libraryAlbums;
+    }
+    else if (releaseType == 't') {
+        releaseList = libraryTracks;
+    }
+    else if (releaseType == 'p') {
+        releaseList = libraryAppears;
+    }
+    else if (releaseType == 'c') {
+        releaseList = libraryCompilations;
+    }
+    console.log(releaseList);
     var years = [];
 
     // projde získané releasy (album, songy, ...)
@@ -103,51 +118,79 @@ async function addMenuMonths(year, releaseList, releaseType) {
 /**
  * releaseType a = albums / t = tracks
  */
-async function viewReleases(year, month, releaseList, releaseType) {
+async function viewReleases(releaseType, year = '0', month = '0') {
+    var releaseName;
+    var releaseList;
     if (releaseType == 'a') {
-        releaseTypeText = 'albums';
+        releaseName = 'albums';
+        releaseList = libraryAlbums;
     }
     else if (releaseType == 't') {
-        releaseTypeText = 'tracks';
+        releaseName = 'tracks';
+        releaseList = libraryTracks;
     }
     else if (releaseType == 'p') {
-        releaseTypeText = 'appears';
+        releaseName = 'appears';
+        releaseList = libraryAppears;
     }
     else if (releaseType == 'c') {
-        releaseTypeText = 'compilations';
+        releaseName = 'compilations';
+        releaseList = libraryCompilations;
     }
 
     // element ze seznamem
-    var elementReleases = $('.' + releaseTypeText);
+    var elementReleases = $('.' + releaseName);
     elementReleases.empty();
 
     // zobrazení nadpisu
     if (year == 0 && month == 0) {
         // zobrazuji všechny alba
-        elementTitle.text('All ' + releaseTypeText + ' releases');
+        elementTitle.text('All ' + releaseName + ' releases');
     }
     else if (month == 0) {
         // zobrazuji alba ve vybraném roce
-        elementTitle.text('Released ' + releaseTypeText + ' in ' + year);
+        elementTitle.text('Released ' + releaseName + ' in ' + year);
     }
     else if (month == 100) {
         // zobrazuji alba ve vybraném měsíci, který není ve spotify vyplněn
-        elementTitle.text('Released ' + releaseTypeText + ' in ' + year + ' with undefined month');
+        elementTitle.text('Released ' + releaseName + ' in ' + year + ' with undefined month');
     }
     else {
         // zobrazuji alba ve vybraném měsíci
-        elementTitle.text('Released ' + releaseTypeText + ' in ' + year + '-' + month);
+        elementTitle.text('Released ' + releaseName + ' in ' + year + '-' + month);
     }
 
     var elementReleaseDiv = '';
+    var viewedReleases = [];
+
     await asyncForEach(releaseList, async release => {
         var date = release.release_date.split('-');
         var releaseYear = date[0];
         var releaseMonth = date[1];
+        var viewed = false;
+
         if (year == releaseYear || year == 0) {
-            // zobrazuji všechna alba nebo se jedná o vybraný rok
+            // zobrazuji všechny releasy nebo se jedná o vybraný rok
             if ((month == 0) || (month == releaseMonth) || (month == 100 && !releaseMonth)) {
-                // zobrazuji alba ve vybraném roce nebo se jedná o správný měsíc
+                // zobrazuji releasy ve vybraném roce nebo se jedná o správný měsíc
+
+                // projde seznam releasů a zkontroluje, jestli už není release zobrazený
+                await asyncForEach(viewedReleases, async viewRelease => {
+                    // id se schodují
+                    if (viewRelease == release.id) {
+                        // release je již zobrazen
+                        viewed = true;
+                        return;
+                    }
+                });
+                if (viewed) {
+                    return;
+                }                
+                // release není zobrazen
+
+                // přidá do seznamu zobrazených releasů
+                viewedReleases.push(release.id);
+
                 // získám div a zobrazím ho
                 var releaseLibrary = '';
                 if (release.library === true) {
@@ -160,10 +203,11 @@ async function viewReleases(year, month, releaseList, releaseType) {
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
                             <div class="album-flex">
                                 <div class="album-img">
-                                    <img src="` + release.cover + `"></img>
+                                    <img src="` + release.cover + `"</img>
                                 </div>
                                 <div class="album-info">
-                                    <h2>` + release.name + `</h2><h3>` + release.artistsString + `</h3>
+                                    <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><h2>` + release.name + `</h2></a>
+                                    <a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>
                                     <p>` + release.release_date + `</p>
                                     <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"></i>`;
                 elementReleaseDiv += releaseLibrary;
@@ -174,7 +218,7 @@ async function viewReleases(year, month, releaseList, releaseType) {
             }
         }
     });
-    $('.' + releaseTypeText).append(elementReleaseDiv);
+    $('.' + releaseName).append(elementReleaseDiv);
     await selectInMenu(year, month, releaseType);
 }
 

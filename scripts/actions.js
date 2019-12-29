@@ -4,23 +4,23 @@
 $(document).on('click', '.album-tracklist', function (e) {
     var albumTracklist = e.currentTarget.id;
     var albumId = albumTracklist.replace("_t", "");
-    var albumTracklistIcon = $('#' + albumTracklist);
-    viewTracklist(albumId, albumTracklistIcon);
+    viewTracklist(albumId);
 });
 
-function viewTracklist(albumId, albumTracklistIcon) {
-    var albumDiv = '#' + albumId;
-    if ($(albumDiv).find('.album-player').length > 0) {
+function viewTracklist(albumId) {
+    var albumDiv = $('#' + albumId);
+    var albumTracklistIcon = $('#' + albumId + '_t');
+    if (albumDiv.find('.album-player').length > 0) {
         // již je zobrazený přehrávač = odstraním ho
-        $(albumDiv).children('.album-player').remove();
-        //e.currentTarget.title = "View tracklist";
+        albumDiv.children('.album-player').remove();
+        albumTracklistIcon.prop('title', 'View tracklist');
         albumTracklistIcon.removeClass("album-tracklist-visible");
     }
     else {
         // zobrazím přehrávač alba
         var player = '<iframe class="album-player" src="https://open.spotify.com/embed/album/' + albumId + '" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>';
-        $(albumDiv).append(player);
-        //e.currentTarget.title = "Close tracklist";
+        albumDiv.append(player);
+        albumTracklistIcon.prop('title', 'Close tracklist');
         albumTracklistIcon.addClass("album-tracklist-visible");
     }
 }
@@ -87,27 +87,22 @@ $(document).on('click', '.year', function (e) {
 
     var params = getHashParams();
     var show;
-    var list;
     if (params.show == 'albums') {
         show = 'a';
-        list = libraryAlbums;
     }
     else if (params.show == 'tracks') {
         show = 't';
-        list = libraryTracks;
     }
     else if (params.show == 'appears') {
         show = 'p';
-        list = libraryAppears;
     }
     else if (params.show == 'compilations') {
         show = 'c';
-        list = libraryCompilations;
     }
     else {
         return;
     }
-    viewReleases(year, 0, list, show);
+    viewReleases(show, year);
 });
 
 /* menu - kliknutí na měsíc */
@@ -120,25 +115,20 @@ $(document).on('click', '.month', function (e) {
     // zobrazí alba vybraného měsíce
     var params = getHashParams();
     var show;
-    var list;
     if (params.show == 'albums') {
         show = 'a';
-        list = libraryAlbums;
     }
     else if (params.show == 'tracks') {
         show = 't';
-        list = libraryTracks;
     }
     else if (params.show == 'appears') {
         show = 'p';
-        list = libraryAppears;
     }
     else if (params.show == 'compilations') {
         show = 'c';
-        list = libraryCompilations;
     }
     else {
         return;
     }
-    viewReleases(year, month, list, show);
+    viewReleases(show, year, month);
 });

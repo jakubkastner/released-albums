@@ -62,10 +62,11 @@ async function libraryGetArtistsApi(url) {
         if (!artist.fetch_url) {
             artist.fetch_url = {};
         }
-        artist.fetch_url.album = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=album&market=' + userCountry;
-        artist.fetch_url.track = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=single&market=' + userCountry;
-        artist.fetch_url.appears = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=appears_on&market=' + userCountry;
-        artist.fetch_url.compilation = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=compilation&market=' + userCountry;
+        var fetchUrl = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=';
+        artist.fetch_url.album = fetchUrl + 'album&market=' + userCountry;
+        artist.fetch_url.track = fetchUrl + 'single&market=' + userCountry;
+        artist.fetch_url.appears = fetchUrl + 'appears_on&market=' + userCountry;
+        artist.fetch_url.compilation = fetchUrl + 'compilation&market=' + userCountry;
     });
 
     // uložení do seznamu interpretů
@@ -115,7 +116,8 @@ async function showAlbums() {
     if (!libraryAlbums) {
         // albumy dosud nebyly načteny
         // -> získá albumy a zobrazí je
-        await libraryGetAlbums();
+        //await libraryGetAlbums();
+        await libraryGetReleases('a');
     }
     if (!libraryAlbums) {
         // albumy byly načteny, ale žádné se nenašly
@@ -138,7 +140,7 @@ async function showAlbums() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('2019', '0', libraryAlbums, 'a');
+        await viewReleases('a', '2019');
         elementMessage.hide();
     }
 
@@ -152,6 +154,110 @@ async function showAlbums() {
     $('.nav-a').show();
     elementNav.show();
     elementTitle.show();
+}
+
+/**
+ * projde seznam umělců a získá z api jejich release
+ * @param {*} releaseType a = albums / t = tracks / p = appears / c = compilations
+ */
+async function libraryGetReleases(releaseType) {
+    // nebyli získáni žádní umělci
+    if (!libraryArtists) {
+        await libraryGetArtists();
+    }
+
+    // získání názvu typu a seznamů releasů
+    var releaseName;
+    if (releaseType == 'a') {
+        releaseName = 'albums';
+        if (!libraryAlbums) {
+            libraryAlbums = [];
+        }
+    }
+    else if (releaseType == 't') {
+        releaseName = 'tracks';
+        if (!libraryTracks) {
+            libraryTracks = [];
+        }
+    }
+    else if (releaseType == 'p') {
+        releaseName = 'appears';
+        if (!libraryAppears) {
+            libraryAppears = [];
+        }
+    }
+    else if (releaseType == 'c') {
+        releaseName = 'compilations';
+        if (!libraryCompilations) {
+            libraryCompilations = [];
+        }
+    }
+
+    // zobrazení načítání
+    showLoading('Getting ' + releaseName + ' from artists');
+
+    // uloží hodnoty
+    var libraryArtistsLength = libraryArtists.length;
+    var index = 0;
+
+    // projde sledované interprety
+    await asyncForEach(libraryArtists, async artist => {
+        // získá ze spotify api jejich albumy
+        await libraryGetReleasesApi(releaseType, artist, ++index, libraryArtistsLength);
+    });
+    
+    // získá seznam releasů
+    var releaseList;
+    if (releaseType == 'a') {
+        releaseList = libraryAlbums;
+    }
+    else if (releaseType == 't') {
+        releaseList = libraryTracks;
+    }
+    else if (releaseType == 'p') {
+        releaseList = libraryAppears;
+    }
+    else if (releaseType == 'c') {
+        releaseList = libraryCompilations;
+    }
+
+    if (releaseList.length < 1) {
+        // nebyly získány žádné releasy
+        // TODO nice2have: zobrazit tlačítko - načíst znovu
+        return;
+    }
+
+    // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
+    releaseList.sort(function (a, b) {
+        var keyA = new Date(a.release_date);
+        var keyB = new Date(b.release_date);
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
+        return 0;
+    });
+
+    // zobrazí/skryje příslušné prvky a zobrazí zprávu
+    hideLoading('Select which year of albums releases you want to display.');
+
+    // uloží do proměnných získaný seznam releasů
+    if (releaseType == 'a') {
+        libraryAlbums = releaseList;
+    }
+    else if (releaseType == 't') {
+        libraryTracks = releaseList;
+    }
+    else if (releaseType == 'p') {
+        libraryAppears = releaseList;
+    }
+    else if (releaseType == 'c') {
+        libraryCompilations = releaseList;
+    }
+    
+    // přidá do menu roky a měsíce releasů
+    await addMenuYears(releaseType);
+
+    // zobrazí albumy
+    //await showAlbums();
 }
 
 /**
@@ -199,10 +305,62 @@ async function libraryGetAlbums() {
     hideLoading('Select which year of albums releases you want to display.');
 
     // přidá do menu roky a měsíce albumů
-    await addMenuYears(libraryAlbums, 'a');
+    await addMenuYears('a');
 
     // zobrazí albumy
     //await showAlbums();
+}
+
+/**
+ * Získá ze Spotify api seznam albumů pro jednotlivé interprety.
+ * @param {*} releaseType a = albums / t = tracks / p = appears / c = compilations
+ * @param {*} artist interpret k získání albumů
+ * @param {*} index pořadí aktuálního interpreta v seznamu
+ * @param {*} artistsLength celkový počet interpretů, které uživatel sleduje
+ */
+async function libraryGetReleasesApi(releaseType, artist, index, artistsLength, url = '') {
+    // získání názvu typu release
+    var releaseName;
+    var releaseFetch;
+    if (releaseType == 'a') {
+        releaseName = 'albums';
+        releaseFetch = 'album';
+    }
+    else if (releaseType == 't') {
+        releaseName = 'tracks';
+        releaseFetch = 'single';
+    }
+    else if (releaseType == 'p') {
+        releaseName = 'appears';
+        releaseFetch = 'appears_on';
+    }
+    else if (releaseType == 'c') {
+        releaseName = 'compilations';
+        releaseFetch = 'compilation';
+    }
+
+    // získá url pro fetch
+    if (url == '') {
+        url = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=' + releaseFetch + '&market=' + userCountry;
+    }
+
+    // zobrazí zprávu
+    elementMessage.text('Please wait: Getting ' + releaseName + ' from artists... (' + index + ' / ' + artistsLength + ')');
+
+    // získá json releasů ze spotify api
+    var json = await fetchJson(url, 'Failed to get ' + releaseName + ' from artist ' + artist.name);
+
+    if (json == null) {
+        return;
+    }
+
+    // přidá release do seznamu
+    await libraryAddRelease(releaseType, artist, json.items);
+
+    // načte další stránku
+    if (json.next) {
+        await libraryGetReleasesApi(releaseType, artist, index, artistsLength, json.next);
+    }
 }
 
 /**
@@ -230,6 +388,88 @@ async function libraryGetAlbumsApi(artist, index, artistsLength, url = artist.fe
     if (json.next) {
         await libraryGetAlbumsApi(artist, index, artistsLength, json.next);
     }
+}
+
+/**
+ * Přidá vybrané alba do seznamu alb (interpreta a všech alb)
+ * @param {*} releaseType a = albums / t = tracks / p = appears / c = compilations
+ * @param {*} artist interpret releasu
+ * @param {*} releases seznam releasů získaných ze spotify
+ */
+async function libraryAddRelease(releaseType, artist, releases) {
+    // interpret nemá žádné releasy
+    if (!releases) {
+        return;
+    }
+    if (releases.length < 1) {
+        return;
+    }
+
+    // projde nově získané releasy
+    await asyncForEach(releases, async release => {
+        // získá všechny umělce releasu
+        var releaseArtists = release.artists;
+
+        // zapíše všechny umělce releasu do stringu s oddělovači
+        var albumArtistsLength = releaseArtists.length;
+        var albumArtistsString = '';
+        if (albumArtistsLength > 0) {
+            albumArtistsString = releaseArtists[0].name;
+            for (let index = 1; index < albumArtistsLength - 1; index++) {
+                albumArtistsString += ', ' + releaseArtists[index].name;
+            }
+        }
+        if (albumArtistsLength > 1) {
+            albumArtistsString += ' & ' + releaseArtists[albumArtistsLength - 1].name;
+        }
+
+        // získá cover
+        var coverUrl = '';
+        if (release.images.length > 0) {
+            coverUrl = release.images[1].url;
+        }
+        else {
+            coverUrl = 'images/no-cover.png';
+        }
+
+        // přidá potřebné věci k releasu
+        release.cover = coverUrl;
+        release.url = release.external_urls.spotify;
+        release.artist = artist;
+        release.artistsString = albumArtistsString;
+    });
+
+    if (releaseType == 'a') {
+        // nastaví interpretovi releasy
+        if (!artist.albums) {
+            artist.albums = [];
+        }
+        // přidá nové releasy do seznamu
+        artist.albums = artist.albums.concat(releases);
+        libraryAlbums = libraryAlbums.concat(releases);
+    }
+    else if (releaseType == 't') {
+        if (!artist.tracks) {
+            artist.tracks = [];
+        }
+        artist.tracks = artist.tracks.concat(releases);
+        libraryTracks = libraryTracks.concat(releases);
+    }
+    else if (releaseType == 'p') {
+        if (!artist.appears) {
+            artist.appears = [];
+        }
+        artist.appears = artist.appears.concat(releases);
+        libraryAppears = libraryAppears.concat(releases);
+    }
+    else if (releaseType == 'c') {
+        if (!artist.compilations) {
+            artist.compilations = [];
+        }
+        artist.compilations = artist.compilations.concat(releases);
+        libraryCompilations = libraryCompilations.concat(releases);
+    }
+
 }
 
 /**
@@ -281,6 +521,7 @@ async function libraryAddAlbum(artist, albums) {
         // přidá potřebné věci k albumu
         album.cover = coverUrl;
         album.url = album.external_urls.spotify;
+        album.artist = artist;
         album.artistsString = albumArtistsString;
     });
 
@@ -513,7 +754,7 @@ async function showTracks() {
         // -> získá albumy a zobrazí je
         await libraryGetTracks();
     }
-    
+
     if (!libraryTracks) {
         // albumy byly načteny, ale žádné se nenašly
         showError('No tracks', 'Cannot show any track, because you are following only artists without tracks.');
@@ -535,7 +776,7 @@ async function showTracks() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('2019', '0', libraryTracks, 't');
+        await viewReleases('t', '2019');
         elementMessage.hide();
     }
 
@@ -724,7 +965,7 @@ async function showAppears() {
         // nebyla nastavena url
         window.location.replace("#show=appears");
     }
-    
+
     if (!libraryAppears) {
         // Appears dosud nebyly načteny
         // -> získá Appears a zobrazí je
@@ -751,7 +992,7 @@ async function showAppears() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('2019', '0', libraryAppears, 'p');
+        await viewReleases('p', '2019');
         elementMessage.hide();
     }
 
