@@ -345,7 +345,13 @@ async function libraryAddRelease(releaseType, artist, releases) {
         // získá cover
         var coverUrl = '';
         if (release.images.length > 0) {
+            coverUrl = release.images[0].url;
+        }
+        else if (release.images.length > 1) {
             coverUrl = release.images[1].url;
+        }
+        else if (release.images.length > 3) {
+            coverUrl = release.images[3].url;
         }
         else {
             coverUrl = 'images/no-cover.png';

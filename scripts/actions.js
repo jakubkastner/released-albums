@@ -42,7 +42,7 @@ $(document).on('click', '.album-like', function (e) {
             success: function () {
                 albumLikeIcon.removeClass("far");
                 albumLikeIcon.addClass("fas");
-                albumLikeIcon.title = "Remove album from library";
+                albumLikeIcon.prop('title', 'Remove album from library');
             },
             error: function (result) {
                 console.log(result.message);
@@ -60,7 +60,7 @@ $(document).on('click', '.album-like', function (e) {
             success: function () {
                 albumLikeIcon.removeClass("fas");
                 albumLikeIcon.addClass("far");
-                albumLikeIcon.title = "Add album to library";
+                albumLikeIcon.prop('title', 'Add album to library');
             },
             error: function (result) {
                 console.log(result.message);
