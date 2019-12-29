@@ -20,7 +20,7 @@ async function addMenuYears(releaseType) {
     else if (releaseType == 'c') {
         releaseList = libraryCompilations;
     }
-    console.log(releaseList);
+    
     var years = [];
 
     // projde získané releasy (album, songy, ...)

@@ -86,23 +86,23 @@ $(document).on('click', '.year', function (e) {
     var year = idSplit[1];
 
     var params = getHashParams();
-    var show;
+    var releaseType;
     if (params.show == 'albums') {
-        show = 'a';
+        releaseType = 'a';
     }
     else if (params.show == 'tracks') {
-        show = 't';
+        releaseType = 't';
     }
     else if (params.show == 'appears') {
-        show = 'p';
+        releaseType = 'p';
     }
     else if (params.show == 'compilations') {
-        show = 'c';
+        releaseType = 'c';
     }
     else {
         return;
     }
-    viewReleases(show, year);
+    viewReleases(releaseType, year);
 });
 
 /* menu - kliknutí na měsíc */
@@ -114,21 +114,21 @@ $(document).on('click', '.month', function (e) {
     var month = idSplit[2];
     // zobrazí alba vybraného měsíce
     var params = getHashParams();
-    var show;
+    var releaseType;
     if (params.show == 'albums') {
-        show = 'a';
+        releaseType = 'a';
     }
     else if (params.show == 'tracks') {
-        show = 't';
+        releaseType = 't';
     }
     else if (params.show == 'appears') {
-        show = 'p';
+        releaseType = 'p';
     }
     else if (params.show == 'compilations') {
-        show = 'c';
+        releaseType = 'c';
     }
     else {
         return;
     }
-    viewReleases(show, year, month);
+    viewReleases(releaseType, year, month);
 });

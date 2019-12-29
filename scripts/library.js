@@ -116,7 +116,6 @@ async function showAlbums() {
     if (!libraryAlbums) {
         // albumy dosud nebyly načteny
         // -> získá albumy a zobrazí je
-        //await libraryGetAlbums();
         await libraryGetReleases('a');
     }
     if (!libraryAlbums) {
@@ -255,60 +254,6 @@ async function libraryGetReleases(releaseType) {
     
     // přidá do menu roky a měsíce releasů
     await addMenuYears(releaseType);
-
-    // zobrazí albumy
-    //await showAlbums();
-}
-
-/**
- * Projde seznam interpretů a získá ze Spotify jejich alba.
- */
-async function libraryGetAlbums() {
-    if (!libraryArtists) {
-        await libraryGetArtists();
-    }
-
-    // zobrazení načítání
-    showLoading('Getting albums from artists');
-
-    // uloží hodnoty
-    var libraryArtistsLength = libraryArtists.length;
-    var index = 0;
-
-    // nastaví seznam albumů
-    if (!libraryAlbums) {
-        libraryAlbums = [];
-    }
-
-    // projde sledované interprety
-    await asyncForEach(libraryArtists, async artist => {
-        // získá ze spotify api jejich albumy
-        await libraryGetAlbumsApi(artist, ++index, libraryArtistsLength);
-    });
-
-    if (libraryAlbums.length < 1) {
-        // nebyly získány žádné albumy
-        // TODO nice2have: zobrazit tlačítko - načíst znovu
-        return;
-    }
-
-    // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
-    libraryAlbums.sort(function (a, b) {
-        var keyA = new Date(a.release_date);
-        var keyB = new Date(b.release_date);
-        if (keyA < keyB) return 1;
-        if (keyA > keyB) return -1;
-        return 0;
-    });
-
-    // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    hideLoading('Select which year of albums releases you want to display.');
-
-    // přidá do menu roky a měsíce albumů
-    await addMenuYears('a');
-
-    // zobrazí albumy
-    //await showAlbums();
 }
 
 /**
@@ -363,32 +308,6 @@ async function libraryGetReleasesApi(releaseType, artist, index, artistsLength, 
     }
 }
 
-/**
- * Získá ze Spotify api seznam albumů pro jednotlivé interprety.
- * @param {*} artist interpret k získání albumů
- * @param {*} index pořadí aktuálního interpreta v seznamu
- * @param {*} artistsLength celkový počet interpretů, které uživatel sleduje
- * @param {*} url adresa dotazu api
- */
-async function libraryGetAlbumsApi(artist, index, artistsLength, url = artist.fetch_url.album) {
-    // zobrazí zprávu
-    elementMessage.text('Please wait: Getting albums from artists... (' + index + ' / ' + artistsLength + ')');
-
-    // získá json albumů ze spotify api
-    var json = await fetchJson(url, 'Failed to get albums from artist ' + artist.name);
-
-    if (json == null) {
-        return;
-    }
-
-    // přidá album do seznamu
-    await libraryAddAlbum(artist, json.items);
-
-    // načte další stránku
-    if (json.next) {
-        await libraryGetAlbumsApi(artist, index, artistsLength, json.next);
-    }
-}
 
 /**
  * Přidá vybrané alba do seznamu alb (interpreta a všech alb)
@@ -472,65 +391,6 @@ async function libraryAddRelease(releaseType, artist, releases) {
 
 }
 
-/**
- * Přidá vybrané alba do seznamu alb (interpreta a všech alb)
- * @param {*} artist interpret albumu
- * @param {*} albums seznam albumů získaných ze spotify
- */
-async function libraryAddAlbum(artist, albums) {
-    // interpret nemá žádné albumy
-    if (!albums) {
-        return;
-    }
-    if (albums.length < 1) {
-        return;
-    }
-
-    // nastaví interpretovi albumy
-    if (!artist.albums) {
-        artist.albums = [];
-    }
-
-    // projde nově získané alba
-    await asyncForEach(albums, async album => {
-        // získá všechny umělce alba
-        var releaseArtists = album.artists;
-
-        // zapíše všechny umělce alba do stringu s oddělovači
-        var albumArtistsLength = releaseArtists.length;
-        var albumArtistsString = '';
-        if (albumArtistsLength > 0) {
-            albumArtistsString = releaseArtists[0].name;
-            for (let index = 1; index < albumArtistsLength - 1; index++) {
-                albumArtistsString += ', ' + releaseArtists[index].name;
-            }
-        }
-        if (albumArtistsLength > 1) {
-            albumArtistsString += ' & ' + releaseArtists[albumArtistsLength - 1].name;
-        }
-
-        // získá cover
-        var coverUrl = '';
-        if (album.images.length > 0) {
-            coverUrl = album.images[1].url;
-        }
-        else {
-            coverUrl = 'images/no-cover.png';
-        }
-
-        // přidá potřebné věci k albumu
-        album.cover = coverUrl;
-        album.url = album.external_urls.spotify;
-        album.artist = artist;
-        album.artistsString = albumArtistsString;
-    });
-
-    // přidá nové albumy do seznamu
-    artist.albums = artist.albums.concat(albums);
-    libraryAlbums = libraryAlbums.concat(albums);
-}
-
-
 // PODROBNÉ INFORMACE O ALBU //
 
 // TODO!!!!
@@ -599,133 +459,6 @@ elementTracksButton.click(function () {
 });
 
 // TODO !!!
-/* projde seznam umělců a získá z api jejich skladby */
-async function libraryGetTracks() {
-    if (!libraryArtists) {
-        await libraryGetArtists();
-    }
-
-    // zobrazení načítání
-    showLoading('Getting tracks from artists');
-
-    // uloží hodnoty
-    var libraryArtistsLength = libraryArtists.length;
-    var index = 0;
-
-    // nastaví seznam tracků
-    if (!libraryTracks) {
-        libraryTracks = [];
-    }
-
-    await asyncForEach(libraryArtists, async artist => {
-        await libraryGetTracksApi(artist, ++index, libraryArtistsLength);
-    });
-
-    if (libraryTracks.length < 1) {
-        // nebyly získány žádné tracky
-        // TODO nice2have: zobrazit tlačítko - načíst znovu
-        return;
-    }
-
-    // seřadí seznam tracků podle data vydání od nejnovějších po nejstarší
-    libraryTracks.sort(function (a, b) {
-        var keyA = new Date(a.release_date);
-        var keyB = new Date(b.release_date);
-        if (keyA < keyB) return 1;
-        if (keyA > keyB) return -1;
-        return 0;
-    });
-
-    // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    hideLoading('Select which year of tracks releases you want to display.');
-
-    // přidá do menu roky a měsíce albumů
-    await addMenuYears(libraryTracks, 't');
-
-    // zobrazí tracky
-    //await showTracks();
-}
-
-// TODO !!!
-async function libraryGetTracksApi(artist, index, artistsLength, url = artist.fetch_url.track) {
-    // zobrazí zprávu
-    elementMessage.text('Please wait: Getting tracks from artists... (' + index + ' / ' + artistsLength + ')');
-
-    // získá json tracků ze spotify api
-    var json = await fetchJson(url, 'Failed to get tracks from artist ' + artist.name);
-
-    if (json == null) {
-        return;
-    }
-
-    // přidá track do seznamu
-    await libraryAddTrack(artist, json.items);
-
-    // načte další stránku
-    if (json.next) {
-        await libraryGetTracksApi(artist, index, artistsLength, json.next);
-    }
-}
-
-
-/**
- * Přidá vybrané tracky do seznamu tracků (interpreta a všech tracků)
- * @param {*} artist interpret tracku
- * @param {*} tracks seznam tracků získaných ze spotify
- */
-async function libraryAddTrack(artist, tracks) {
-    // interpret nemá žádné tracky
-    if (!tracks) {
-        return;
-    }
-    if (tracks.length < 1) {
-        return;
-    }
-
-    // nastaví interpretovi tracky
-    if (!artist.tracks) {
-        artist.tracks = [];
-    }
-
-    // projde nově získané tracky
-    await asyncForEach(tracks, async track => {
-        // získá všechny umělce alba
-        var releaseArtists = track.artists;
-
-        // zapíše všechny umělce alba do stringu s oddělovači
-        var albumArtistsLength = releaseArtists.length;
-        var albumArtistsString = '';
-        if (albumArtistsLength > 0) {
-            albumArtistsString = releaseArtists[0].name;
-            for (let index = 1; index < albumArtistsLength - 1; index++) {
-                albumArtistsString += ', ' + releaseArtists[index].name;
-            }
-        }
-        if (albumArtistsLength > 1) {
-            albumArtistsString += ' & ' + releaseArtists[albumArtistsLength - 1].name;
-        }
-
-        // získá cover
-        var coverUrl = '';
-        if (track.images.length > 0) {
-            coverUrl = track.images[1].url;
-        }
-        else {
-            coverUrl = 'images/no-cover.png';
-        }
-
-        // přidá potřebné věci k albumu
-        track.cover = coverUrl;
-        track.url = track.external_urls.spotify;
-        track.artistsString = albumArtistsString;
-    });
-
-    // přidá nové albumy do seznamu
-    artist.tracks = artist.tracks.concat(tracks);
-    libraryTracks = libraryTracks.concat(tracks);
-}
-
-// TODO !!!
 /**
  * Zobrazení tracků
  */
@@ -752,7 +485,7 @@ async function showTracks() {
     if (!libraryTracks) {
         // albumy dosud nebyly načteny
         // -> získá albumy a zobrazí je
-        await libraryGetTracks();
+        await libraryGetReleases('t');
     }
 
     if (!libraryTracks) {
@@ -792,148 +525,6 @@ async function showTracks() {
     elementTitle.show();
 }
 
-
-/**
- * Projde seznam interpretů a získá ze Spotify jejich Appears.
- */
-async function libraryGetAppears() {
-    if (!libraryArtists) {
-        await libraryGetArtists();
-    }
-
-    // zobrazení načítání
-    showLoading('Getting appears from artists');
-
-    // uloží hodnoty
-    var libraryArtistsLength = libraryArtists.length;
-    var index = 0;
-
-    // nastaví seznam Appears
-    if (!libraryAppears) {
-        libraryAppears = [];
-    }
-
-    // projde sledované interprety
-    await asyncForEach(libraryArtists, async artist => {
-        // získá ze spotify api jejich Appears
-        await libraryGetAppearsApi(artist, ++index, libraryArtistsLength);
-    });
-
-    if (libraryAppears.length < 1) {
-        // nebyly získány žádné Appears
-        // TODO nice2have: zobrazit tlačítko - načíst znovu
-        return;
-    }
-
-    // seřadí seznam Appears podle data vydání alba od nejnovějších po nejstarší
-    libraryAppears.sort(function (a, b) {
-        var keyA = new Date(a.release_date);
-        var keyB = new Date(b.release_date);
-        if (keyA < keyB) return 1;
-        if (keyA > keyB) return -1;
-        return 0;
-    });
-
-    // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    hideLoading('Select which year of appears releases you want to display.');
-
-    // přidá do menu roky a měsíce Appears
-    await addMenuYears(libraryAppears, 'p');
-
-    // zobrazí Appears
-    //await showAppears();
-}
-
-/**
- * Získá ze Spotify api seznam Appears pro jednotlivé interprety.
- * @param {*} artist interpret k získání Appears
- * @param {*} index pořadí aktuálního interpreta v seznamu
- * @param {*} artistsLength celkový počet interpretů, které uživatel sleduje
- * @param {*} url adresa dotazu api
- */
-async function libraryGetAppearsApi(artist, index, artistsLength, url = artist.fetch_url.appears) {
-    // zobrazí zprávu
-    elementMessage.text('Please wait: Getting appears from artists... (' + index + ' / ' + artistsLength + ')');
-
-    // získá json Appears ze spotify api
-    var json = await fetchJson(url, 'Failed to get appears from artist ' + artist.name);
-
-    if (json == null) {
-        return;
-    }
-
-    // přidá album do seznamu
-    await libraryAddAppear(artist, json.items);
-
-    // načte další stránku
-    if (json.next) {
-        await libraryGetAppearsApi(artist, index, artistsLength, json.next);
-    }
-}
-
-/**
- * Přidá vybrané Appears do seznamu Appears (interpreta a všech Appears)
- * @param {*} artist interpret Appears
- * @param {*} appears seznam Appears získaných ze spotify
- */
-async function libraryAddAppear(artist, appears) {
-    // interpret nemá žádné Appears
-    if (!appears) {
-        return;
-    }
-    if (appears.length < 1) {
-        return;
-    }
-
-    // nastaví interpretovi Appears
-    if (!artist.appears) {
-        artist.appears = [];
-    }
-
-    // projde nově získané alba
-    await asyncForEach(appears, async appear => {
-        // získá všechny umělce alba
-        var releaseArtists = appear.artists;
-
-        // zapíše všechny umělce alba do stringu s oddělovači
-        var appearArtistsLength = releaseArtists.length;
-        var albumArtistsString = '';
-        if (appearArtistsLength > 0) {
-            albumArtistsString = releaseArtists[0].name;
-            for (let index = 1; index < appearArtistsLength - 1; index++) {
-                albumArtistsString += ', ' + releaseArtists[index].name;
-            }
-        }
-        if (appearArtistsLength > 1) {
-            albumArtistsString += ' & ' + releaseArtists[appearArtistsLength - 1].name;
-        }
-
-        // získá cover
-        var coverUrl = '';
-        if (appear.images.length > 0) {
-            if (appear.images[1]) {
-                coverUrl = appear.images[1].url;
-            }
-            else {
-                coverUrl = appear.images[0].url;
-            }
-        }
-        else {
-            coverUrl = 'images/no-cover.png';
-        }
-
-        // přidá potřebné věci k albumu
-        appear.cover = coverUrl;
-        appear.url = appear.external_urls.spotify;
-        appear.artistsString = albumArtistsString;
-    });
-
-    // přidá nové albumy do seznamu
-    artist.appears = artist.appears.concat(appears);
-    libraryAppears = libraryAppears.concat(appears);
-}
-
-
 /**
  * Kliknutí na tlačítko Appears.
  */
@@ -969,7 +560,7 @@ async function showAppears() {
     if (!libraryAppears) {
         // Appears dosud nebyly načteny
         // -> získá Appears a zobrazí je
-        await libraryGetAppears();
+        await libraryGetReleases('p');
     }
     if (!libraryAppears) {
         // Appears byly načteny, ale žádné se nenašly
@@ -1004,6 +595,80 @@ async function showAppears() {
 
     elementAppears.show();
     $('.nav-p').show();
+    elementNav.show();
+    elementTitle.show();
+}
+
+
+// TODO !!!
+elementCompilationsButton.click(function () {
+    showCompilations();
+});
+
+
+// TODO !!!
+/**
+ * Zobrazení Compilations
+ */
+async function showCompilations() {
+    elementNav.hide();
+    elementTitle.hide();
+
+    elementAlbums.hide();
+    elementTracks.hide();
+    elementAppears.hide();
+    //elementCompilations.hide();
+
+    $('.nav-a').hide();
+    $('.nav-t').hide();
+    $('.nav-p').hide();
+    //$('.nav-c').hide();
+
+    var params = getHashParams();
+    if (params.show != 'compilations') {
+        // nebyla nastavena url
+        window.location.replace("#show=compilations");
+    }
+
+    if (!libraryCompilations) {
+        // albumy dosud nebyly načteny
+        // -> získá albumy a zobrazí je
+        await libraryGetReleases('c');
+    }
+
+    if (!libraryCompilations) {
+        // albumy byly načteny, ale žádné se nenašly
+        showError('No compilations', 'Cannot show any compilation, because you are following only artists without compilations.');
+    }
+    else if (libraryCompilations.length < 1) {
+        // albumy byly načteny, ale žádné se nenašly
+        showError('No compilations', 'Cannot show any compilation, because you are following only artists without compilations.');
+    }
+    else {
+        // byly načteny albumy
+
+        // TODO : dodělat přepínání
+        /*if (elementAlbums.is(':hidden')) {
+            // albumy jsou již zobrazeny
+            return;
+        }*/
+
+        // albumy nejsou zobrazeny
+        // -> zobrazím albumy
+
+        // TODO : zobrazit albumy (podle roku z url) a menu -> nenačítat rok 2019 ale všechno
+        await viewReleases('c', '2019');
+        elementMessage.hide();
+    }
+
+    // TODO : přesunout zobrazování jinam
+    elementAlbumsButton.removeClass('current-year');
+    elementTracksButton.removeClass('current-year');
+    elementAppearsButton.removeClass('current-year');
+    elementCompilationsButton.addClass('current-year');
+
+    elementCompilations.show();
+    $('.nav-c').show();
     elementNav.show();
     elementTitle.show();
 }
