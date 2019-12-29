@@ -110,7 +110,7 @@ async function showAlbums() {
     var params = getHashParams();
     if (params.show != 'albums') {
         // nebyla nastavena url
-        window.location.replace("#show=albums");
+        window.location.replace('#show=albums');
     }
 
     if (!libraryAlbums) {
@@ -139,7 +139,15 @@ async function showAlbums() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('a', '2019');
+        var year = '0';
+        var month = '0';
+        if (params.year) {
+            year = params.year;
+        }
+        if (params.month) {
+            month = params.month;
+        }
+        await viewReleases('a', year, month);
         elementMessage.hide();
     }
 
@@ -204,7 +212,7 @@ async function libraryGetReleases(releaseType) {
         // získá ze spotify api jejich albumy
         await libraryGetReleasesApi(releaseType, artist, ++index, libraryArtistsLength);
     });
-    
+
     // získá seznam releasů
     var releaseList;
     if (releaseType == 'a') {
@@ -251,7 +259,7 @@ async function libraryGetReleases(releaseType) {
     else if (releaseType == 'c') {
         libraryCompilations = releaseList;
     }
-    
+
     // přidá do menu roky a měsíce releasů
     await addMenuYears(releaseType);
 }
@@ -515,7 +523,15 @@ async function showTracks() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('t', '2019');
+        var year = '0';
+        var month = '0';
+        if (params.year) {
+            year = params.year;
+        }
+        if (params.month) {
+            month = params.month;
+        }
+        await viewReleases('t', year, month);
         elementMessage.hide();
     }
 
@@ -589,7 +605,15 @@ async function showAppears() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu
-        await viewReleases('p', '2019');
+        var year = '0';
+        var month = '0';
+        if (params.year) {
+            year = params.year;
+        }
+        if (params.month) {
+            month = params.month;
+        }
+        await viewReleases('p', year, month);
         elementMessage.hide();
     }
 
@@ -663,7 +687,15 @@ async function showCompilations() {
         // -> zobrazím albumy
 
         // TODO : zobrazit albumy (podle roku z url) a menu -> nenačítat rok 2019 ale všechno
-        await viewReleases('c', '2019');
+        var year = '0';
+        var month = '0';
+        if (params.year) {
+            year = params.year;
+        }
+        if (params.month) {
+            month = params.month;
+        }
+        await viewReleases('c', year, month);
         elementMessage.hide();
     }
 

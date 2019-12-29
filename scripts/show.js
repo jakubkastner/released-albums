@@ -119,6 +119,7 @@ async function addMenuMonths(year, releaseList, releaseType) {
  * releaseType a = albums / t = tracks
  */
 async function viewReleases(releaseType, year = '0', month = '0') {
+    
     var releaseName;
     var releaseList;
     if (releaseType == 'a') {
@@ -137,6 +138,10 @@ async function viewReleases(releaseType, year = '0', month = '0') {
         releaseName = 'compilations';
         releaseList = libraryCompilations;
     }
+    
+    // změna url parametrů
+    var params = getHashParams();
+    window.location.replace('#show=' + params.show + '&year=' + year + '&month=' + month);
 
     // element ze seznamem
     var elementReleases = $('.' + releaseName);

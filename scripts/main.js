@@ -37,9 +37,9 @@
 
 var API_ID = 'd1c9a91ea65443af90946fde02fdda64';
 var API_SECRET = '26bbf4fad9384fd4bb3543649ade8b05';
-//var REDIRECT_URI = 'http://192.168.1.25:5500';
+var REDIRECT_URI = 'http://192.168.1.25:5500';
 //var REDIRECT_URI = 'http://localhost:5500';
-var REDIRECT_URI = 'http://127.0.0.1:5500';
+//var REDIRECT_URI = 'http://127.0.0.1:5500';
 var STATE_KEY = 'spotify_auth_state';
 var USER_ACCESS = 'spotify_user_access';
 var API_URL = 'https://api.spotify.com/v1';
@@ -254,6 +254,10 @@ $(document).ready(async function () {
         else if (params.show == 'appears') {
             // zobrazím albumy
             showAppears();
+        }
+        else if (params.show == 'compilations') {
+            // zobrazím albumy
+            showCompilations();
         }
     }
     else {
