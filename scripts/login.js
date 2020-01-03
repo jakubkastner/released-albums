@@ -38,7 +38,7 @@ function loginGetUrl() {
     localStorage.setItem(STATE_KEY, stateValue);
 
     // otevře přihlašovací okno do spotify a získá access token
-    var scope = 'user-follow-read user-read-private user-library-read user-library-modify';
+    var scope = 'user-follow-read user-read-private user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private';
     var url = 'https://accounts.spotify.com/authorize';
     url += '?response_type=token';
     url += '&client_id=' + encodeURIComponent(API_ID);
@@ -154,8 +154,9 @@ async function loginGetUserInfo() {
 
     elementMessage.text('User @' + json.display_name + ' has been successfully logged in.');
 
-    // uloží stát
+    // uloží stát a id
     userCountry = json.country;
+    userId = json.id;
 
     // získá interprety z knihovny uživatele
     await libraryGetArtists();

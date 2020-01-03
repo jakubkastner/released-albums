@@ -10,6 +10,10 @@ $(document).on('click', '.album-tracklist', function (e) {
 function viewTracklist(albumId) {
     var albumDiv = $('#' + albumId);
     var albumTracklistIcon = $('#' + albumId + '_t');
+    albumDiv.children('.playlists').remove();
+    var albumIconPlaylist = $('#' + albumId + '_p');
+    albumIconPlaylist.removeClass('album-tracklist-visible');
+
     if (albumDiv.find('.album-player').length > 0) {
         // již je zobrazený přehrávač = odstraním ho
         albumDiv.children('.album-player').remove();
@@ -67,7 +71,7 @@ $(document).on('click', '.album-like', function (e) {
             }
         });
     }
-    $('.nav-date').scrollIntoView();
+    //$('.nav-date').scrollIntoView();
 });
 
 /*$(document).on('click', '.album', function (e) {
@@ -132,3 +136,251 @@ $(document).on('click', '.month', function (e) {
     }
     viewReleases(releaseType, year, month);
 });
+
+$(document).on('click', '.album-playlist', async function (e) {
+    var albumId = e.currentTarget.id;
+    albumId = albumId.replace("_p", "");
+    var albumPlaylistsIcon = $('#' + albumId + '_p');
+    var albumDiv = $('#' + albumId);
+    albumDiv.children('.album-player').remove();
+    var albumIconTracklist = $('#' + albumId + '_t');
+    albumIconTracklist.removeClass('album-tracklist-visible');
+
+    if (albumDiv.find('.playlists').length > 0) {
+        // již je zobrazený seznam playlistu = odstraním ho
+        albumDiv.children('.playlists').remove();
+        albumPlaylistsIcon.prop('title', 'Add to playlist');
+        albumPlaylistsIcon.removeClass("album-tracklist-visible");
+    }
+    else {
+        await libraryGetPlaylists(albumId);
+        albumPlaylistsIcon.prop('title', 'Close playlists');
+        albumPlaylistsIcon.addClass("album-tracklist-visible");
+    }
+});
+
+async function libraryGetPlaylists(albumId) {
+    // zobrazení načítání
+    //showLoading('Getting list of your followed artists');
+
+    // odeslání dotazu api
+    var playlists = await libraryGetPlaylistsApi(API_URL + '/me/playlists?limit=50');
+
+    if (!playlists) {
+        return;
+    }
+    if (playlists.length < 1) {
+        // nebyli získáni žádní interpreti
+        // TODO nice2have: zobrazit tlačítko - načíst znovu
+        return;
+    }
+    var albumDiv = $('#' + albumId);
+    var elementPlaylists = `<ul class="playlists">`;
+    var albumTracks = await libraryGetAlbumTracksApi(albumId);
+    // https://api.spotify.com/v1/albums/{id}}/tracks?market={market}&limit=50
+    await asyncForEach(playlists, async playlist => {
+        if (playlist.collaborative || playlist.owner.id == userId) {
+            var inPlaylist = true;
+            await asyncForEach(albumTracks, async albumTrack => {
+                var prevInPlaylist = inPlaylist;
+                inPlaylist = await libraryIsSongInPlaylist(albumTrack.id, playlist.id);
+                if (inPlaylist && !prevInPlaylist) {
+                    inPlaylist = false;
+                }
+            });
+            elementPlaylists += `<li class="playlist-add" id="p_` + playlist.id + `_` + albumId + `" title="Add release to playlist '` + playlist.name + `'"><span>`;
+            if (inPlaylist) {
+                elementPlaylists += `<i class="fas fa-minus"></i>`;
+            }
+            else {
+                elementPlaylists += `<i class="fas fa-plus"></i>`;
+            }
+            elementPlaylists += `</span>` + playlist.name + `</li>`;
+            // přidáno (v playlistu) <i class="fas fa-check"></i>
+            // přidat 
+        }
+    });
+    elementPlaylists += `</ul>`;
+    albumDiv.append(elementPlaylists);
+}
+
+async function libraryGetPlaylistsApi(url) {
+    // získá json z api
+    var json = await fetchJson(url, 'Failed to get list of your playlists:'); // !!
+
+    if (json == null) {
+        // chyba získávání
+        return null;
+    }
+
+    // získá umělce
+    var playlists = json.items;
+    if (!playlists) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return null;
+    }
+    if (playlists.length < 1) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return null;
+    }
+
+    if (json.next) {
+        // existuje další stránka seznamu umělců
+        // -> odešle se další dotaz
+        var newPlaylistList = await libraryGetPlaylistsApi(json.next);
+        playlists = playlists.concat(newPlaylistList);
+    }
+    return playlists;
+}
+
+async function libraryGetPlaylistsTracksApi(url) {
+    // získá json z api
+
+    // https://api.spotify.com/v1/playlists/{id}/tracks?market={market}&limit=100
+    var json = await fetchJson(url, 'Failed to get list of your playlists:'); // !!
+
+    if (json == null) {
+        // chyba získávání
+        return null;
+    }
+
+    // získá umělce
+    var tracks = json.items;
+    if (!tracks) {
+        showError('No playlists can be obtained', 'no album songs'); // !!
+        return null;
+    }
+    if (tracks.length < 1) {
+        showError('No playlists can be obtained', 'no album songs'); // !!
+        return null;
+    }
+
+    if (json.next) {
+        // existuje další stránka seznamu umělců
+        // -> odešle se další dotaz
+        var newTracksList = await libraryGetPlaylistsTracksApi(json.next);
+        tracks = tracks.concat(newTracksList);
+    }
+    return tracks;
+}
+
+async function libraryIsSongInPlaylist(songID, playlistID) {
+    // odeslání dotazu api
+    // https://api.spotify.com/v1/playlists/{id}/tracks?market={market}&limit=100
+    var playlistSongs = await libraryGetPlaylistsApi(API_URL + '/playlists/' + playlistID + '/tracks?market=' + userCountry + '&limit=100');
+
+    if (!playlistSongs) {
+        return false;
+    }
+    if (playlistSongs.length < 1) {
+        return false;
+    }
+    var inPlaylist = false;
+    await asyncForEach(playlistSongs, async song => {
+        if (song.track.id == songID) {
+            inPlaylist = true;
+            return;
+        }
+    });
+    return inPlaylist;
+}
+// https://api.spotify.com/v1/albums/{id}}/tracks?market={market}&limit=50
+async function libraryGetAlbumTracksApi(albumId) {
+    // získá json z api
+    var url = 'https://api.spotify.com/v1/albums/' + albumId + '/tracks?market=' + userCountry + '&limit=50';
+    var json = await fetchJson(url, 'Failed to get list of your playlists:'); // !!
+    if (json == null) {
+        // chyba získávání
+        return null;
+    }
+
+    // získá umělce
+    var tracks = json.items;
+    if (!tracks) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return null;
+    }
+    if (tracks.length < 1) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return null;
+    }
+
+    if (json.next) {
+        // existuje další stránka seznamu umělců
+        // -> odešle se další dotaz
+        var newTracksList = await libraryGetPlaylistsTracksApi(json.next);
+        tracks = tracks.concat(newTracksList);
+    }
+    return tracks;
+}
+
+
+
+
+
+
+$(document).on('click', '.playlist-add', async function (e) {    
+    var elementId = e.currentTarget.id;
+    var ids = elementId.split('_');
+    var playlistId = ids[1];
+    var albumId = ids[2];
+
+    var albumTracks = await libraryGetAlbumTracksApi(albumId);
+    var playlistDiv = $('#' + elementId + ' span i');
+
+    if (playlistDiv.hasClass('fa-plus')) {
+        // pridani do playlistu
+        await asyncForEach(albumTracks, async albumTrack => {
+            var inPlaylist = await libraryIsSongInPlaylist(albumTrack.id, playlistId);
+            if (!inPlaylist) {
+                // není v playlistu
+                await libraryAddToPlaylistApi(albumTrack.uri, playlistId, albumId);
+            }
+        });
+    }
+    else {
+        // odebrani z playlistu
+        await asyncForEach(albumTracks, async albumTrack => {
+            var inPlaylist = await libraryIsSongInPlaylist(albumTrack.id, playlistId);
+            if (inPlaylist) {
+                // je v playlistu
+                await libraryRemoveFromPlaylistApi(albumTrack.uri, playlistId, albumId);
+            }
+        });
+
+    }
+});
+
+
+async function libraryAddToPlaylistApi(trackUri, playlistId, albumId) {
+    var url = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks';
+    var response = await sendFetch(url, trackUri);
+    if (response.status == 201) {
+        // přidáno
+        var playlistDiv = $('#p_' + playlistId + '_' + albumId + ' span');        
+        playlistDiv.html(`<i class="fas fa-minus"></i>`);
+    }
+    else {
+        // chyba
+        console.log(response);
+    }
+}
+
+async function libraryRemoveFromPlaylistApi(trackUri, playlistId, albumId) {
+    var url = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks';
+    var json = "{\"tracks\":[{\"uri\":\"" + trackUri + "\"}]}";
+    var response = await deleteFetch(url, json);
+    if (response.status == 200) {
+        // odebráno
+        var playlistDiv = $('#p_' + playlistId + '_' + albumId + ' span');        
+        playlistDiv.html(`<i class="fas fa-plus"></i>`);
+    }
+    else {
+        // chyba
+        console.log(response);
+    }
+}
+
+
+
+///{ "tracks": [{ "uri": "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" },{ "uri": "spotify:track:1301WleyT98MSxVHPZCA6M" }] }

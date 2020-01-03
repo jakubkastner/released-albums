@@ -264,6 +264,32 @@ footer p {
     display: none;
 }
 
+.playlists {
+    margin-top: calc(5px + 1vw);
+    margin-bottom: calc(2px + 0.2vw);
+    list-style: none;
+    padding: 0;
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    max-height: 400px;
+    overflow: auto;
+}
+.playlist-add {
+    padding: calc(5px + 0.5vw);
+}
+.playlist-add i {
+    margin-right: calc(5px + 0.5vw);
+}
+.playlist-add:hover i {
+    color: #1ab26b;
+}
+
+.playlist-add:hover {
+    color: #1ab26b;
+    background-color: rgb(18, 18, 18);
+}
+
 @keyframes loader {
     50% {
         background-size: 80%;

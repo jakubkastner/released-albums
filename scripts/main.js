@@ -46,10 +46,10 @@ var API_URL = 'https://api.spotify.com/v1';
 
 var userAccess = null;
 var userCountry = null;
-var libraryAlbums = null;
-var userTracks = null;
+var userId = null;
 
 var libraryArtists = null;
+var libraryAlbums = null;
 var libraryTracks = null;
 var libraryAppears = null;
 var libraryCompilations = null;
@@ -74,7 +74,7 @@ var elementCompilations = $('.compilations');
 var elementTop = $('#top');
 var elementBody = $('body, html');
 
-var elementNav= $('nav');
+var elementNav = $('nav');
 
 var elementAlbumsButton = $('.albums-button');
 var elementTracksButton = $('.tracks-button');
@@ -126,8 +126,7 @@ async function fetchJson(url, errorText) {
     // získaný json
     let json = await response.json();
 
-    if (!json)
-    {
+    if (!json) {
         // nepodařilo se získat json
         hideLoading(elementError.text() + '\n' + errorText + '\nCan not get JSON from Spotify API');
         console.log('fetch error - from url: ' + url);
@@ -267,3 +266,28 @@ $(document).ready(async function () {
         loginParseUrl();
     }
 });
+
+
+async function sendFetch(url, trackUri, errorText = "") {
+    url = url + '?uris=' + trackUri;
+    var opt = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + userAccess
+        }
+    };
+    return await fetch(url, opt);
+}
+
+// https://api.spotify.com/v1/playlists/{playlist_id}/tracks
+async function deleteFetch(url, json, errorText = "") {
+    var opt = {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + userAccess,
+            'Content-Type': 'application/json'
+        },
+        body: json
+    };
+    return await fetch(url, opt);
+}
