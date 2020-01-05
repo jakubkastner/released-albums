@@ -5,7 +5,7 @@
     color: white;
 }
 
-body, .year {
+body, .year, .nav-mobile {
     background-color: rgb(36, 36, 36);
 }
 
@@ -21,7 +21,8 @@ p {
     display: block;
     /*width: 100%;*/
 }
-main .in-body {    
+
+main .in-body {
     margin: calc(10px + 0.3vw) calc(20px + 1vw);
     width: calc(100% - 50px - 2vw);
 }
@@ -50,7 +51,7 @@ main, .month:hover, .current-month, .current-year {
     margin: auto 0;
 }
 
-.in-header h1, .in-header a:hover, .message, .title {
+.in-header h1, .in-header a:hover, .message, .title, .album-info a:hover * {
     color: #1ab26b;
 }
 
@@ -63,7 +64,6 @@ main, .month:hover, .current-month, .current-year {
     text-align: right;
     cursor: pointer;
 }
-
 
 .nav-date ul {
     list-style: none;
@@ -78,14 +78,18 @@ main, .month:hover, .current-month, .current-year {
 .year {
     display: block;
 }
+.nav-hidden .nav-mobile {
+    width: auto;
+}
 
-.nav-date a {
+.nav-date a, .nav-mobile {
     font-size: calc(12px + 0.5vw);
     cursor: pointer;
     padding: 0.5vw 1vw;
     /*display: block;*/
     width: calc(50px + 2vw);
 }
+
 .year {
     text-align: end;
 }
@@ -125,8 +129,9 @@ main, .month:hover, .current-month, .current-year {
 }
 
 header .in-main {
-    padding: 0 0 0 calc(50px + 4vw) ;
+    padding: 0 0 0 calc(50px + 4vw);
 }
+
 header .in-main .button {
     margin-top: 0;
 }
@@ -155,13 +160,15 @@ header .in-main .button {
 }
 
 .album-info * {
-    margin-bottom: 0.3vw;
+    margin-bottom: calc(3px + 0.2vw);
     text-align: left;
 }
+
 .album-info i:hover, .album-like.fas, .album-tracklist-visible, .current-year, .current-month {
     color: #1ab26b;
     transition: 0.3s;
 }
+
 .album-like.fas:hover {
     font-weight: 400;
     transition: 0.4s;
@@ -190,7 +197,6 @@ header .in-main .button {
     width: 9%;
 }
 
-
 .album h2 {
     font-size: calc(10px + 0.8vw);
 }
@@ -204,8 +210,8 @@ header .in-main .button {
 }
 
 .album-info i {
-    font-size: calc(5px + 1.3vw);
-    margin-right: calc(1px + 1vw);
+    font-size: calc(15px + 1.3vw);
+    margin-right: calc(5px + 1vw);
 }
 
 .album-player {
@@ -275,19 +281,42 @@ footer p {
     max-height: 400px;
     overflow: auto;
 }
+
 .playlist-add {
     padding: calc(5px + 0.5vw);
 }
+
 .playlist-add i {
     margin-right: calc(5px + 0.5vw);
 }
-.playlist-add:hover i {
+
+.playlist-add:hover, .playlist-remove {
+    background-color: rgb(18, 18, 18);
+}
+
+.playlist-remove:hover {
+    background-color: rgb(36, 36, 36);
+}
+
+.playlist-remove, .playlist-remove i {
     color: #1ab26b;
 }
 
-.playlist-add:hover {
+.nav-mobile {
+    /*margin-left: 10px;*/
+    font-size: 16px;
+    display: none;
+    cursor: pointer;
+}
+
+.nav-mobile:hover i {
     color: #1ab26b;
+}
+.nav-mobile:hover {
     background-color: rgb(18, 18, 18);
+}
+.hidden {
+    display: none !important;
 }
 
 @keyframes loader {
@@ -306,11 +335,45 @@ footer p {
     /*.in-body {
         width: 100%;
     }*/
-    .nav-date a {
+    .nav-date a, .nav-mobile {
         padding: 10px 15px;
     }
 }
 
+@media screen and (max-width: 450px) {
+    .nav-mobile {
+        display: block;
+    }
+    .nav-hidden .nav-left {
+        display: none;    
+    }
+    .nav-date {        
+        position: absolute;
+    }
+    .in-main .title {
+        margin-left: calc(30px + 0.6vw);
+    }
+}
+@media screen and (max-width: 300px) {
+    main .in-body {
+        margin: 0;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 200px) {
+    .album-flex {
+        display: inline-block;
+    }
+}
+
+@media screen and (max-width: 100px) {
+    .album-img {
+        min-width: 100%;
+        min-height: 0px;
+        height: auto;
+    }
+}
 @media print {
     * {
         background: white !important;

@@ -20,7 +20,7 @@ async function addMenuYears(releaseType) {
     else if (releaseType == 'c') {
         releaseList = libraryCompilations;
     }
-    
+
     var years = [];
 
     // projde získané releasy (album, songy, ...)
@@ -40,19 +40,21 @@ async function addMenuYears(releaseType) {
         return 0;
     });
     years.unshift(0);
-
+    elementMenuMobile.removeClass('hidden');
+    var elementMenuDateLeft = $('<div class="nav-left"></div>');
+    elementMenuDate.append(elementMenuDateLeft);
     // projde všechny roky
     await asyncForEach(years, async year => {
         // pro každý rok získá měsíce
-        await addMenuMonths(year, releaseList, releaseType);
+        await addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft);
     });
 }
 
 /* menu - přidání měsíců */
-async function addMenuMonths(year, releaseList, releaseType) {
+async function addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft) {
     // přidá rok do menu (ostatní)
     var elementMenuYear = $('<ul class="nav-' + releaseType + '" id="' + releaseType + '-y-' + year + '"></ul>');
-    elementMenuDate.append(elementMenuYear);
+    elementMenuDateLeft.append(elementMenuYear);
 
     // přidá rok (all) do menu
     if (year === 0) {
@@ -119,7 +121,7 @@ async function addMenuMonths(year, releaseList, releaseType) {
  * releaseType a = albums / t = tracks
  */
 async function viewReleases(releaseType, year = '0', month = '0') {
-    
+
     var releaseName;
     var releaseList;
     if (releaseType == 'a') {
@@ -138,7 +140,7 @@ async function viewReleases(releaseType, year = '0', month = '0') {
         releaseName = 'compilations';
         releaseList = libraryCompilations;
     }
-    
+
     // změna url parametrů
     var params = getHashParams();
     window.location.replace('#show=' + params.show + '&year=' + year + '&month=' + month);
@@ -190,7 +192,7 @@ async function viewReleases(releaseType, year = '0', month = '0') {
                 });
                 if (viewed) {
                     return;
-                }                
+                }
                 // release není zobrazen
 
                 // přidá do seznamu zobrazených releasů
@@ -240,3 +242,13 @@ async function selectInMenu(year, month, releaseType) {
     $('#' + releaseType + '-' + year + '-' + month).addClass('current-month');
     $('.' + releaseType + '-' + year).addClass('selected-month');
 }
+
+
+$(document).on('click', '.nav-mobile', async function (e) {    
+    if (leftNavigationDate.hasClass('nav-hidden')) {
+        leftNavigationDate.removeClass('nav-hidden');
+    }
+    else {
+        leftNavigationDate.addClass('nav-hidden');
+    }
+});

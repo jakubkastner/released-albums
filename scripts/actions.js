@@ -107,6 +107,9 @@ $(document).on('click', '.year', function (e) {
         return;
     }
     viewReleases(releaseType, year);
+    if (params.year == year || year == 0) {        
+        leftNavigationDate.addClass('nav-hidden');
+    }
 });
 
 /* menu - kliknutí na měsíc */
@@ -118,6 +121,10 @@ $(document).on('click', '.month', function (e) {
     var month = idSplit[2];
     // zobrazí alba vybraného měsíce
     var params = getHashParams();
+    if (params.year == year && params.month == month) {        
+        leftNavigationDate.addClass('nav-hidden');
+        return;
+    }
     var releaseType;
     if (params.show == 'albums') {
         releaseType = 'a';
@@ -134,7 +141,8 @@ $(document).on('click', '.month', function (e) {
     else {
         return;
     }
-    viewReleases(releaseType, year, month);
+    viewReleases(releaseType, year, month);    
+    leftNavigationDate.addClass('nav-hidden');
 });
 
 $(document).on('click', '.album-playlist', async function (e) {
@@ -145,17 +153,16 @@ $(document).on('click', '.album-playlist', async function (e) {
     albumDiv.children('.album-player').remove();
     var albumIconTracklist = $('#' + albumId + '_t');
     albumIconTracklist.removeClass('album-tracklist-visible');
-
-    if (albumDiv.find('.playlists').length > 0) {
+    if (albumPlaylistsIcon.hasClass('album-tracklist-visible')) {
         // již je zobrazený seznam playlistu = odstraním ho
         albumDiv.children('.playlists').remove();
         albumPlaylistsIcon.prop('title', 'Add to playlist');
         albumPlaylistsIcon.removeClass("album-tracklist-visible");
     }
     else {
-        await libraryGetPlaylists(albumId);
         albumPlaylistsIcon.prop('title', 'Close playlists');
         albumPlaylistsIcon.addClass("album-tracklist-visible");
+        await libraryGetPlaylists(albumId);
     }
 });
 
@@ -188,13 +195,27 @@ async function libraryGetPlaylists(albumId) {
                     inPlaylist = false;
                 }
             });
-            elementPlaylists += `<li class="playlist-add" id="p_` + playlist.id + `_` + albumId + `" title="Add release to playlist '` + playlist.name + `'"><span>`;
+
+            var icon;
+            var title;
+            var classEl = '';
             if (inPlaylist) {
-                elementPlaylists += `<i class="fas fa-minus"></i>`;
+                icon = `<i class="fas fa-minus"></i>`;
+                title = `Remove release from playlist '` + playlist.name + `'`;
+                classEl = ' playlist-remove';
             }
             else {
-                elementPlaylists += `<i class="fas fa-plus"></i>`;
+                icon = `<i class="fas fa-plus"></i>`;
+                title = `Add release to playlist '` + playlist.name + `'`;
             }
+
+
+            elementPlaylists += `<li class="playlist-add`;
+            elementPlaylists += classEl;
+            elementPlaylists += `" id="p_` + playlist.id + `_` + albumId + `" title="`
+            elementPlaylists += title;
+            elementPlaylists += `"><span>`;
+            elementPlaylists += icon;
             elementPlaylists += `</span>` + playlist.name + `</li>`;
             // přidáno (v playlistu) <i class="fas fa-check"></i>
             // přidat 
@@ -319,7 +340,7 @@ async function libraryGetAlbumTracksApi(albumId) {
 
 
 
-$(document).on('click', '.playlist-add', async function (e) {    
+$(document).on('click', '.playlist-add', async function (e) {
     var elementId = e.currentTarget.id;
     var ids = elementId.split('_');
     var playlistId = ids[1];
@@ -357,8 +378,12 @@ async function libraryAddToPlaylistApi(trackUri, playlistId, albumId) {
     var response = await sendFetch(url, trackUri);
     if (response.status == 201) {
         // přidáno
-        var playlistDiv = $('#p_' + playlistId + '_' + albumId + ' span');        
-        playlistDiv.html(`<i class="fas fa-minus"></i>`);
+        var playlistDivSpan = $('#p_' + playlistId + '_' + albumId + ' span');
+        playlistDivSpan.html(`<i class="fas fa-minus"></i>`);
+
+        var playlistDiv = $('#p_' + playlistId + '_' + albumId);
+        playlistDiv.addClass('playlist-remove');
+        playlistDiv.prop('title', `Remove release from playlist '` + playlistDiv.text() + `'`);
     }
     else {
         // chyba
@@ -372,8 +397,12 @@ async function libraryRemoveFromPlaylistApi(trackUri, playlistId, albumId) {
     var response = await deleteFetch(url, json);
     if (response.status == 200) {
         // odebráno
-        var playlistDiv = $('#p_' + playlistId + '_' + albumId + ' span');        
-        playlistDiv.html(`<i class="fas fa-plus"></i>`);
+        var playlistDivSpan = $('#p_' + playlistId + '_' + albumId + ' span');
+        playlistDivSpan.html(`<i class="fas fa-plus"></i>`);
+
+        var playlistDiv = $('#p_' + playlistId + '_' + albumId);
+        playlistDiv.removeClass('playlist-remove');
+        playlistDiv.prop('title', `Add release to playlist '` + playlistDiv.text() + `'`);
     }
     else {
         // chyba

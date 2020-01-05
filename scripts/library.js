@@ -168,6 +168,7 @@ async function showAlbums() {
  * @param {*} releaseType a = albums / t = tracks / p = appears / c = compilations
  */
 async function libraryGetReleases(releaseType) {
+    elementMenuMobile.addClass('hidden');
     // nebyli získáni žádní umělci
     if (!libraryArtists) {
         await libraryGetArtists();

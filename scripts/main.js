@@ -65,6 +65,8 @@ var elementLoader = $('.loader');
 var elementTitle = $('.title');
 
 var elementMenuDate = $('.nav-date');
+var elementMenuMobile = $('.nav-mobile');
+var leftNavigationDate = $('.nav-date');
 
 var elementAlbums = $('.albums');
 var elementTracks = $('.tracks');
