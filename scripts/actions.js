@@ -12,8 +12,10 @@ function viewTracklist(albumId) {
     var albumTracklistIcon = $('#' + albumId + '_t');
     albumDiv.children('.playlists').remove();
     var albumIconPlaylist = $('#' + albumId + '_p');
+    albumIconPlaylist.removeClass('rotate');
     albumIconPlaylist.removeClass('album-tracklist-visible');
-
+    // TODO - ZASTAVIT NAČÍTÁNÍ PLAYLISTŮ !!!!!!!!!!!!!
+    
     if (albumDiv.find('.album-player').length > 0) {
         // již je zobrazený přehrávač = odstraním ho
         albumDiv.children('.album-player').remove();
@@ -147,23 +149,25 @@ $(document).on('click', '.month', function (e) {
 
 $(document).on('click', '.album-playlist', async function (e) {
     var albumId = e.currentTarget.id;
+    var albumIconPlaylists = $('#' + albumId);
+    albumIconPlaylists.addClass("rotate");
     albumId = albumId.replace("_p", "");
-    var albumPlaylistsIcon = $('#' + albumId + '_p');
     var albumDiv = $('#' + albumId);
     albumDiv.children('.album-player').remove();
     var albumIconTracklist = $('#' + albumId + '_t');
     albumIconTracklist.removeClass('album-tracklist-visible');
-    if (albumPlaylistsIcon.hasClass('album-tracklist-visible')) {
+    if (albumIconPlaylists.hasClass('album-tracklist-visible')) {
         // již je zobrazený seznam playlistu = odstraním ho
         albumDiv.children('.playlists').remove();
-        albumPlaylistsIcon.prop('title', 'Add to playlist');
-        albumPlaylistsIcon.removeClass("album-tracklist-visible");
+        albumIconPlaylists.prop('title', 'Add to playlist');
+        albumIconPlaylists.removeClass("album-tracklist-visible");
     }
     else {
-        albumPlaylistsIcon.prop('title', 'Close playlists');
-        albumPlaylistsIcon.addClass("album-tracklist-visible");
+        albumIconPlaylists.prop('title', 'Close playlists');
+        albumIconPlaylists.addClass("album-tracklist-visible");
         await libraryGetPlaylists(albumId);
     }
+    albumIconPlaylists.removeClass("rotate");
 });
 
 async function libraryGetPlaylists(albumId) {

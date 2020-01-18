@@ -78,6 +78,7 @@ main, .month:hover, .current-month, .current-year {
 .year {
     display: block;
 }
+
 .nav-hidden .nav-mobile {
     width: auto;
 }
@@ -312,9 +313,11 @@ footer p {
 .nav-mobile:hover i {
     color: #1ab26b;
 }
+
 .nav-mobile:hover {
     background-color: rgb(18, 18, 18);
 }
+
 .hidden {
     display: none !important;
 }
@@ -345,15 +348,16 @@ footer p {
         display: block;
     }
     .nav-hidden .nav-left {
-        display: none;    
+        display: none;
     }
-    .nav-date {        
+    .nav-date {
         position: absolute;
     }
     .in-main .title {
         margin-left: calc(30px + 0.6vw);
     }
 }
+
 @media screen and (max-width: 300px) {
     main .in-body {
         margin: 0;
@@ -374,6 +378,7 @@ footer p {
         height: auto;
     }
 }
+
 @media print {
     * {
         background: white !important;
@@ -385,4 +390,17 @@ footer p {
     /*.in-body {
         width: 100%;
     }*/
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate {
+    animation: spin 1.3s linear infinite;
 }
