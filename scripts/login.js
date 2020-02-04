@@ -160,6 +160,8 @@ async function loginGetUserInfo() {
 
     // získá interprety z knihovny uživatele
     await libraryGetArtists();
+    // získá playlisty uživatele
+    await libraryGetPlaylists();
 }
 
 /**

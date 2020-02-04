@@ -53,6 +53,7 @@ var libraryAlbums = null;
 var libraryTracks = null;
 var libraryAppears = null;
 var libraryCompilations = null;
+var libraryPlaylists = null;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
@@ -145,6 +146,7 @@ async function fetchJson(url, errorText) {
         // jiná chyba
         hideLoading(elementError.text() + '\n' + errorText + '\n' + json.error.message);
         console.log('fetch error - from spotify: ' + json.error.message);
+        console.log(json.error);
         return null;
     }
     return json;

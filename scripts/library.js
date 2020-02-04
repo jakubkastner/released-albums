@@ -711,3 +711,159 @@ async function showCompilations() {
     elementNav.show();
     elementTitle.show();
 }
+
+
+
+// získá playlisty uživatele
+async function libraryGetPlaylists() {
+    elementNav.hide();
+    // zobrazení načítání
+    showLoading('Getting your playlists');
+
+    // načtení seznamu playlistů
+    if (!libraryPlaylists) {
+        libraryPlaylists = [];
+    }
+
+    // odeslání dotazu api
+    await libraryGetPlaylistsApi(API_URL + '/me/playlists?limit=50');
+
+    if (libraryPlaylists.length < 1) {
+        // nebyli získáni žádní interpreti
+        // TODO nice2have: zobrazit tlačítko - načíst znovu
+        return;
+    }
+
+    // zobrazí/skryje příslušné prvky a zobrazí zprávu
+    elementNav.show();
+    hideLoading('Select which releases you want to display.');
+}
+// získá playlisty uživatele z api
+async function libraryGetPlaylistsApi(url) {
+    // získá json z api
+    var json = await fetchJson(url, 'Failed to get list of your playlists:');
+
+    if (json == null) {
+        // chyba získávání
+        return null;
+    }
+
+    // získá umělce
+    var playlists = json.items;
+    if (!playlists) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return;
+    }
+    if (playlists.length < 1) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return;
+    }
+
+    // získá seznam tracků pro playlisty uživatele
+    await asyncForEach(playlists, async playlist => {
+        if (playlist.tracks.total < 1) {
+            return;
+        }
+        if (!playlist.tracks.href) {
+            return; //??
+        }
+        playlist.tracks.list = await libraryGetPlaylistsTracksApi(playlist.tracks.href);
+    });
+
+    // uložení do seznamu playlistů
+    libraryPlaylists = libraryPlaylists.concat(playlists);
+
+    if (json.next) {
+        // existuje další stránka seznamu playlistů
+        // -> odešle se další dotaz
+        await libraryGetPlaylistsApi(json.next);
+    }
+}
+
+
+async function libraryGetPlaylistsTracksApi(url) {
+    // získá json z api
+
+    // https://api.spotify.com/v1/playlists/{id}/tracks?market={market}&limit=100
+    var json = await fetchJson(url, 'Failed to get list of your playlists:'); // !!
+
+    if (json == null) {
+        // chyba získávání
+        return null;
+    }
+
+    // získá umělce
+    var tracks = json.items;
+    if (!tracks) {
+        showError('No playlists can be obtained', 'no album songs'); // !!
+        return null;
+    }
+    if (tracks.length < 1) {
+        showError('No playlists can be obtained', 'no album songs'); // !!
+        return null;
+    }
+
+    if (json.next) {
+        // existuje další stránka seznamu umělců
+        // -> odešle se další dotaz
+        var newTracksList = await libraryGetPlaylistsTracksApi(json.next);
+        tracks = tracks.concat(newTracksList);
+    }
+    return tracks;
+}
+async function libraryGetReleaseTracks(releaseId) {
+    var release;
+    // získám parametry
+    var params = getHashParams();
+    if (params.show == 'albums') {
+        // zobrazím albumy
+        release = libraryAlbums.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'tracks') {
+        // zobrazím albumy
+        release = libraryTracks.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'appears') {
+        // zobrazím albumy
+        release = libraryAppears.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'compilations') {
+        // zobrazím albumy
+        release = libraryCompilations.find(x => x.id === releaseId);
+    }
+    if (release.tracks) {
+        return;
+    }
+    if (release.tracks > 0) {
+        return;
+    }
+    release.tracks = [];
+    var url = 'https://api.spotify.com/v1/albums/' + releaseId + '/tracks?market=' + userCountry + '&limit=50';
+    await libraryGetReleaseTracksApi(url, release);
+}
+
+async function libraryGetReleaseTracksApi(url, release) {
+    var json = await fetchJson(url, 'Failed to get list of your playlists:'); // !!
+    if (json == null) {
+        // chyba získávání
+        return;
+    }
+
+    // získá umělce
+    var tracks = json.items;
+    if (!tracks) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return;
+    }
+    if (tracks.length < 1) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return;
+    }
+    release.tracks = release.tracks.concat(tracks);
+
+    if (json.next) {
+        // existuje další stránka seznamu umělců
+        // -> odešle se další dotaz
+        await libraryGetReleaseTracksApi(json.next, release);
+    }
+}
