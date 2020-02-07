@@ -244,7 +244,7 @@ async function libraryAddToPlaylistApi(track, playlistId, albumId) {
         playlistDiv.addClass('playlist-remove');
         playlistDiv.prop('title', `Remove release from playlist '` + playlistDiv.text() + `'`);
         var playlist = libraryPlaylists.find(x => x.id === playlistId);
-        var inPlaylistObject = {track: track};
+        var inPlaylistObject = { track: track };
         playlist.tracks.list.push(inPlaylistObject);
     }
     else {
@@ -291,9 +291,9 @@ async function libraryRemoveFromPlaylistApi(track, playlistId, albumId) {
             else if (obj.id) releasePlaylistId = obj.id;
             /*console.log(releasePlaylistId);
             console.log(track.id);*/
-            /*return releasePlaylistId !== track.id;
-        });
-        console.log(playlist.tracks.list);*/
+        /*return releasePlaylistId !== track.id;
+    });
+    console.log(playlist.tracks.list);*/
     }
     else {
         // chyba

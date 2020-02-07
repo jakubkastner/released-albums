@@ -134,6 +134,26 @@ async function loginGetUserInfo() {
     // získá informace o uživateli
     var json = await fetchJson(API_URL + '/me', 'Failed to login, please try it again.');
 
+    if (json.error) {
+        if (json.error.status === 401) {
+            // vypršela platnost access tokenu
+
+            userAccess = null;
+            // získá stránku pro přihlášení do spotify
+            var url = loginGetUrl();
+
+            if (url) {
+                // naviguje na přihlašovací stránku Spotify
+                window.location = url;
+            }
+            else {
+                // uživatel je přihlášen
+                // loginGetUserInfo(); došlo by k zacyklení
+                console.log('Spotify login error');
+            }
+        }
+    }
+
     if (json == null) {
         // chyba získání informací
         localStorage.removeItem(USER_ACCESS);

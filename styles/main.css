@@ -232,7 +232,7 @@ header .in-main .button {
     border: 0;
     position: fixed;
     bottom: calc(10px + 2vw);
-    right: calc(10px + 2vw);
+    left: calc(100px + 2vw);
     display: none;
     padding: 0;
 }
