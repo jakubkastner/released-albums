@@ -3,11 +3,11 @@
 /**
  * Kliknutí na tlačítko přihlášení.
  */
-$('.login').click(function () {
+$('.login').click(async function () {
     // PŘIHLÁŠENÍ -> krok 1
 
     // získá stránku pro přihlášení do spotify
-    var url = loginGetUrl();
+    var url = await loginGetUrl();
 
     if (url) {
         // naviguje na přihlašovací stránku Spotify
@@ -25,7 +25,7 @@ $('.login').click(function () {
  *  null = uživatel je již přihlášen /
  *  url = url přihlašovací stránky Spotify 
  */
-function loginGetUrl() {
+async function loginGetUrl() {
     // PŘIHLÁŠENÍ -> krok 2
     // kontrola přihlášení
     if (userAccess) {
@@ -34,7 +34,7 @@ function loginGetUrl() {
     }
 
     // zapíše do lokálního úložiště náhodnou hodnotu
-    var stateValue = generateRandomString(16);
+    var stateValue = await generateRandomString(16);
     localStorage.setItem(STATE_KEY, stateValue);
 
     // otevře přihlašovací okno do spotify a získá access token
@@ -52,7 +52,7 @@ function loginGetUrl() {
      * @param {*} length délka vygenerovaného stringu
      * @returns vygenerovaný náhodný string
      */
-    function generateRandomString(length) {
+    async function generateRandomString(length) {
         var text = '';
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -67,13 +67,14 @@ function loginGetUrl() {
 /**
  * Zachytí odpověď přihlašovací stránky Spotify.
  */
-function loginParseUrl() {
+async function loginParseUrl() {
     // PŘIHLÁŠENÍ -> krok 4
     // zobrazí příslušné informace po přihlášení
 
     // získá aktuální url adresu
     var currentUrl = window.location.href;
-
+    console.log(window.location.href);
+    
     if (currentUrl.includes('access_denied')) {
         // nesouhlas s podmínkami
         elementError.text('Failed to login, you must accept the premissions.');
@@ -133,26 +134,6 @@ async function loginGetUserInfo() {
 
     // získá informace o uživateli
     var json = await fetchJson(API_URL + '/me', 'Failed to login, please try it again.');
-
-    if (json.error) {
-        if (json.error.status === 401) {
-            // vypršela platnost access tokenu
-
-            userAccess = null;
-            // získá stránku pro přihlášení do spotify
-            var url = loginGetUrl();
-
-            if (url) {
-                // naviguje na přihlašovací stránku Spotify
-                window.location = url;
-            }
-            else {
-                // uživatel je přihlášen
-                // loginGetUserInfo(); došlo by k zacyklení
-                console.log('Spotify login error');
-            }
-        }
-    }
 
     if (json == null) {
         // chyba získání informací

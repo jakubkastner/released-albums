@@ -31,47 +31,39 @@ function viewTracklist(albumId) {
     }
 }
 
-/* kliknutí na přidání albumu do knihovny - přidá album do knihovny na spotify */
-// todo - odebírání ???????????
-$(document).on('click', '.album-like', function (e) {
+/* kliknutí na přidání albumu do knihovny - přidá/odebere album do/z knihovny na spotify */
+$(document).on('click', '.album-like', async function (e) {
     var albumLike = e.currentTarget.id;
     var albumLikeIcon = $('#' + albumLike);
     var albumId = albumLike.replace("_l", "");
     if (albumLikeIcon.hasClass("far")) {
         // album nebylo při přidávání v knihovně
-        $.ajax({
-            url: API_URL + '/me/albums?ids=' + albumId,
-            type: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + userAccess
-            },
-            success: function () {
-                albumLikeIcon.removeClass("far");
-                albumLikeIcon.addClass("fas");
-                albumLikeIcon.prop('title', 'Remove album from library');
-            },
-            error: function (result) {
-                console.log(result.message);
-            }
-        });
+        // -> přidám ho
+        var response = await putFetch(API_URL + '/me/albums?ids=' + albumId);
+        if (response.status == 200) {
+            albumLikeIcon.removeClass("far");
+            albumLikeIcon.addClass("fas");
+            albumLikeIcon.prop('title', 'Remove album from library');
+
+        }
+        else {
+            // chyba
+            console.log(response);
+        }
     }
     else {
         // album je v knihovně
-        $.ajax({
-            url: API_URL + '/me/albums?ids=' + albumId,
-            type: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + userAccess
-            },
-            success: function () {
-                albumLikeIcon.removeClass("fas");
-                albumLikeIcon.addClass("far");
-                albumLikeIcon.prop('title', 'Add album to library');
-            },
-            error: function (result) {
-                console.log(result.message);
-            }
-        });
+        // -> odstraním ho
+        var response = await deleteFetch(API_URL + '/me/albums?ids=' + albumId);
+        if (response.status == 200) {
+            albumLikeIcon.removeClass("fas");
+            albumLikeIcon.addClass("far");
+            albumLikeIcon.prop('title', 'Add album to library');
+        }
+        else {
+            // chyba
+            console.log(response);
+        }
     }
     //$('.nav-date').scrollIntoView();
 });

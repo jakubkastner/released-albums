@@ -407,11 +407,12 @@ async function libraryAddRelease(releaseType, artist, releases) {
 }
 
 // PODROBNÉ INFORMACE O ALBU //
-
+// aktuálně nepoužíváno nikde !
 // TODO!!!!
 /* získá info o albumu (máli ho uživatel v knihovně atd.) */
 function getAlbumInfo(artist, album) {
     // TODO : spuštět až po kliknutí na dané album
+
     fetchUrl = API_URL + '/me/albums/contains?ids=' + album.id;
     fetch(fetchUrl, options)
         .then(response => response.json())

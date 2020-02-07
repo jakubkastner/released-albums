@@ -143,6 +143,26 @@ async function fetchJson(url, errorText) {
             return await fetchJson(url, errorText);
             // UPOZORNĚNÍ -> HROZÍ NEKONEČNÁ SMYČKA
         }
+        else if (json.error.status === 401) {
+            // vypršela platnost access tokenu
+            localStorage.removeItem(USER_ACCESS);
+            userAccess = null;
+            // získá stránku pro přihlášení do spotify
+            var url = await loginGetUrl();
+
+            if (url) {
+                // naviguje na přihlašovací stránku Spotify
+                //window.location = url;
+                console.log(url);
+            }
+            else {
+                // uživatel je přihlášen
+                // loginGetUserInfo(); došlo by k zacyklení
+                console.log('Spotify login error');
+            }
+            return await fetchJson(url, errorText);
+            // UPOZORNĚNÍ -> HROZÍ NEKONEČNÁ SMYČKA
+        }
         // jiná chyba
         hideLoading(elementError.text() + '\n' + errorText + '\n' + json.error.message);
         console.log('fetch error - from spotify: ' + json.error.message);
@@ -229,13 +249,10 @@ window.onscroll = function () {
 };
 
 
-// TODO !!!!!
 /**
  * Načtení stránky.
  */
 $(document).ready(async function () {
-    // TODO : dodělat načítání z url
-
     // získám z úložiště prohlížeče userAccess
     userAccess = localStorage.getItem(USER_ACCESS);
     if (userAccess) {
@@ -267,10 +284,10 @@ $(document).ready(async function () {
         // uživatel není přihlášen
         // -> zkontoluji, zdali nepřišla odpověď z přihlašovací stránky Spotify
         // PŘIHLÁŠENÍ -> krok 3
-        loginParseUrl();
+        console.log(window.location.href);
+        await loginParseUrl();
     }
 });
-
 
 async function sendFetch(url, trackUri, errorText = "") {
     url = url + '?uris=' + trackUri;
@@ -283,15 +300,30 @@ async function sendFetch(url, trackUri, errorText = "") {
     return await fetch(url, opt);
 }
 
+async function putFetch(url, errorText = "") {
+    var opt = {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + userAccess
+        }
+    };
+    return await fetch(url, opt);
+}
+
 // https://api.spotify.com/v1/playlists/{playlist_id}/tracks
-async function deleteFetch(url, json, errorText = "") {
+async function deleteFetch(url, json = null, errorText = "") {
     var opt = {
         method: 'DELETE',
         headers: {
+            'Authorization': 'Bearer ' + userAccess
+        }
+    };
+    if (json) {
+        opt.body = json;
+        opt.headers = {
             'Authorization': 'Bearer ' + userAccess,
             'Content-Type': 'application/json'
-        },
-        body: json
-    };
+        }
+    }
     return await fetch(url, opt);
 }
