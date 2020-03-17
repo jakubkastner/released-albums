@@ -262,6 +262,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 {
                     defaultPlaylistButton = `<i class="fas fa-plus-circle album-playlist-add-default" title="Add to default playlist '` + defaultPlaylist.name + `'" id="pd_` + defaultPlaylist.id + `_` + release.id + `"></i>`;
                 }
+                console.log(release);
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
                             <div class="album-flex">
                                 <div class="album-img">
@@ -271,7 +272,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                                     <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><h2>` + release.name + `</h2></a>
                                     <a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>
                                     <p>` + release.release_date + `</p>
-                                    <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"></i>`;
+                                    <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"><span>` + release.total_tracks + `</span></i>`;
                 elementReleaseDiv += releaseLibrary;
                 elementReleaseDiv += `<i class="fas fa-plus album-playlist" title="Add to playlist" id="` + release.id + `_p"></i>`;
                 elementReleaseDiv += defaultPlaylistButton;

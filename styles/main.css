@@ -165,7 +165,7 @@ header .in-main .button {
     text-align: left;
 }
 
-.album-info i:hover, .album-like.fas, .album-tracklist-visible, .current-year, .current-month {
+.album-info i:hover, .album-info i:hover span, .album-like.fas, .album-tracklist-visible, .current-year, .current-month {
     color: #1ab26b;
     transition: 0.3s;
 }
@@ -178,6 +178,7 @@ header .in-main .button {
 .album-info i {
     margin-bottom: 0;
     cursor: pointer;
+    font-size: calc(15px + 1.3vw);
 }
 
 .album img {
@@ -211,8 +212,11 @@ header .in-main .button {
 }
 
 .album-info i {
-    font-size: calc(15px + 1.3vw);
     margin-right: calc(5px + 1vw);
+}
+.album-info i span {
+    margin-left: calc(2.5px + 0.5vw);
+    font-size: calc(10px + 0.6vw);
 }
 
 .album-player {
