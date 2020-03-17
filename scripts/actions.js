@@ -303,11 +303,12 @@ async function showPlaylist(releaseId) {
         return;
     }
 
+    // vytvoření elementu pro playlist
+    var elementPlaylists = `<ul class="playlists">`;
+
     // získání tracků albumu z api
     await libraryGetReleaseTracks(releaseId);
 
-    // získání divu albumu
-    var releaseDiv = $('#' + releaseId);
     var release;
     // získám parametry
     var params = getHashParams();
@@ -328,33 +329,11 @@ async function showPlaylist(releaseId) {
         release = libraryCompilations.find(x => x.id === releaseId);
     }
 
-    // vytvoření elementu pro playlist
-    var elementPlaylists = `<ul class="playlists">`;
-
     // projde playlisty uživatele
     await asyncForEach(libraryPlaylists, async playlist => {
         // pouze pokud se jedná o playlist do kterého lze přidat album
         if (playlist.collaborative || playlist.owner.id == userId) {
-            var inPlaylist = false;
-            // projde tracky playlistu   
-            await asyncForEach(playlist.tracks.list, async playlistTrack => {
-                if (inPlaylist) {
-                    // track je v playlistu, ukončím foreach
-                    return;
-                }
-                // projde tracky albumu
-                await asyncForEach(release.tracks, async releaseTrack => {
-                    // shoduje se id
-                    var releasePlaylistId;
-                    if (playlistTrack.track) releasePlaylistId = playlistTrack.track.id;
-                    else if (playlistTrack.id) releasePlaylistId = playlistTrack.id;
-                    if (releaseTrack.id == releasePlaylistId) {
-                        // track je v playlistu
-                        inPlaylist = true;
-                        return;
-                    }
-                });
-            });
+            var inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, release.tracks);
             var icon;
             var title;
             var classEl = '';
@@ -378,11 +357,34 @@ async function showPlaylist(releaseId) {
         }
     });
     elementPlaylists += `</ul>`;
+    // získání divu albumu
+    var releaseDiv = $('#' + releaseId);
     releaseDiv.append(elementPlaylists);
 }
 
-
-
+async function libraryIsSongInPlaylist(playlistTracks, releaseTracks) {
+    var inPlaylist = false;
+    // projde tracky playlistu   
+    await asyncForEach(playlistTracks, async playlistTrack => {
+        if (inPlaylist) {
+            // track je v playlistu, ukončím foreach
+            return;
+        }
+        // projde tracky albumu
+        await asyncForEach(releaseTracks, async releaseTrack => {
+            // shoduje se id
+            var releasePlaylistId;
+            if (playlistTrack.track) releasePlaylistId = playlistTrack.track.id;
+            else if (playlistTrack.id) releasePlaylistId = playlistTrack.id;
+            if (releaseTrack.id == releasePlaylistId) {
+                // track je v playlistu
+                inPlaylist = true;
+                return;
+            }
+        });
+    });
+    return inPlaylist;
+}
 // staré
 async function libraryIsSongInPlaylist_old(songID, playlistID) {
     // odeslání dotazu api

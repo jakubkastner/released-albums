@@ -368,7 +368,7 @@ async function showSettings() {
     }
     elementSettings.html('');
     elementTitle.text('Settings');
-    elementMessage.text('Default playlist');
+    elementMessage.text('Default playlist'); // todo - při přepínání se zpráva nezobrazuje, takže zmizí (přidat nadpis přímo do nějakého divu spolu s obsahem)
     var elementPlaylists = `<ul class="playlists settings-playlist">`;
     // projde playlisty uživatele
     await asyncForEach(libraryPlaylists, async playlist => {
@@ -486,25 +486,34 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
         // zobrazím albumy
         release = libraryCompilations.find(x => x.id === releaseId);
     }
+    var playlist = libraryPlaylists.find(x => x.id === playlistId);
 
+    var inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, release.tracks);
+    // přidat
     if (playlistIcon.hasClass('fa-plus-circle')) {
         // pridani do playlistu
-        await asyncForEach(release.tracks, async releaseTrack => {
-            // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
-            await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
-        });
+        if (!inPlaylist)
+        {
+            await asyncForEach(release.tracks, async releaseTrack => {
+                // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
+                await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
+            });
+        }
         playlistIcon.removeClass('fa-plus-circle');
         playlistIcon.addClass('fa-minus-circle');
-        playlistIcon.title(`Remove from default playlist '` + defaultPlaylist.name + `'`);
+        playlistIcon.title = `Remove from default playlist '` + defaultPlaylist.name + `'`;
     }
     else {
-        // odebrani z playlistu
-        await asyncForEach(release.tracks, async albumTrack => {
-            await libraryRemoveFromPlaylistApi(albumTrack, playlistId, releaseId);
-        });
+        if (inPlaylist)
+        {
+            // odebrani z playlistu
+            await asyncForEach(release.tracks, async albumTrack => {
+                await libraryRemoveFromPlaylistApi(albumTrack, playlistId, releaseId);
+            });
+        }
         playlistIcon.removeClass('fa-minus-circle');
         playlistIcon.addClass('fa-plus-circle');
-        playlistIcon.title(`Add to default playlist '` + defaultPlaylist.name + `'`);
+        playlistIcon.title = `Add to default playlist '` + defaultPlaylist.name + `'`;
     }
 });
 
