@@ -102,7 +102,7 @@ $(document).on('click', '.year', function (e) {
     }
     viewReleases(releaseType, year);
     if (params.year == year || year == 0) {
-        leftNavigationDate.addClass('nav-hidden');
+        elementMenuDate.addClass('nav-hidden');
     }
 });
 
@@ -116,7 +116,7 @@ $(document).on('click', '.month', function (e) {
     // zobrazí alba vybraného měsíce
     var params = getHashParams();
     if (params.year == year && params.month == month) {
-        leftNavigationDate.addClass('nav-hidden');
+        elementMenuDate.addClass('nav-hidden');
         return;
     }
     var releaseType;
@@ -136,7 +136,7 @@ $(document).on('click', '.month', function (e) {
         return;
     }
     viewReleases(releaseType, year, month);
-    leftNavigationDate.addClass('nav-hidden');
+    elementMenuDate.addClass('nav-hidden');
 });
 
 // přidaní do playlistu
@@ -186,7 +186,7 @@ $(document).on('click', '.playlist-add', async function (e) {
     var releaseId = ids[2];
 
     await libraryGetReleaseTracks(releaseId);
-    var playlistDiv = $('#' + elementId + ' span i');
+    var playlistIcon = $('#' + elementId + ' span i');
 
     var release;
     // získám parametry
@@ -208,7 +208,7 @@ $(document).on('click', '.playlist-add', async function (e) {
         release = libraryCompilations.find(x => x.id === releaseId);
     }
 
-    if (playlistDiv.hasClass('fa-plus')) {
+    if (playlistIcon.hasClass('fa-plus')) {
         // pridani do playlistu
         await asyncForEach(release.tracks, async releaseTrack => {
             await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);

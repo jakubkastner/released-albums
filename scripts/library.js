@@ -101,7 +101,9 @@ async function showAlbums() {
     elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
+    elementSettings.hide();
 
+    elementMenuDate.show();
     //$('.nav-a').hide();
     $('.nav-t').hide();
     $('.nav-p').hide();
@@ -156,6 +158,7 @@ async function showAlbums() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementSettingsButton.removeClass('current-year');
 
     elementAlbums.show();
     $('.nav-a').show();
@@ -486,7 +489,9 @@ async function showTracks() {
     //elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
+    elementSettings.hide();
 
+    elementMenuDate.show();
     $('.nav-a').hide();
     //$('.nav-t').hide();
     $('.nav-p').hide();
@@ -542,6 +547,7 @@ async function showTracks() {
     elementTracksButton.addClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementSettingsButton.removeClass('current-year');
 
     elementTracks.show();
     $('.nav-t').show();
@@ -569,7 +575,9 @@ async function showAppears() {
     elementTracks.hide();
     //elementAppears.hide();
     elementCompilations.hide();
+    elementSettings.hide();
 
+    elementMenuDate.show();
     $('.nav-a').hide();
     $('.nav-t').hide();
     //$('.nav-p').hide();
@@ -624,6 +632,7 @@ async function showAppears() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.addClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementSettingsButton.removeClass('current-year');
 
     elementAppears.show();
     $('.nav-p').show();
@@ -650,7 +659,9 @@ async function showCompilations() {
     elementTracks.hide();
     elementAppears.hide();
     //elementCompilations.hide();
+    elementSettings.hide();
 
+    elementMenuDate.show();
     $('.nav-a').hide();
     $('.nav-t').hide();
     $('.nav-p').hide();
@@ -706,6 +717,7 @@ async function showCompilations() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.addClass('current-year');
+    elementSettingsButton.removeClass('current-year');
 
     elementCompilations.show();
     $('.nav-c').show();

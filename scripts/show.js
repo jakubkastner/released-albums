@@ -257,7 +257,11 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 else {
                     releaseLibrary = `<i class="far fa-heart album-like" title="Add album to library" id="` + release.id + `_l"></i>`;
                 }
-
+                var defaultPlaylistButton = '';
+                if (defaultPlaylist)
+                {
+                    defaultPlaylistButton = `<i class="fas fa-plus-circle album-playlist-add-default" title="Add to default playlist '` + defaultPlaylist.name + `'" id="pd_` + defaultPlaylist.id + `_` + release.id + `"></i>`;
+                }
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
                             <div class="album-flex">
                                 <div class="album-img">
@@ -269,8 +273,9 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                                     <p>` + release.release_date + `</p>
                                     <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"></i>`;
                 elementReleaseDiv += releaseLibrary;
-                elementReleaseDiv += `<i class="fas fa-plus album-playlist" title="Add to playlist" id="` + release.id + `_p"></i>
-                                    <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>
+                elementReleaseDiv += `<i class="fas fa-plus album-playlist" title="Add to playlist" id="` + release.id + `_p"></i>`;
+                elementReleaseDiv += defaultPlaylistButton;
+                elementReleaseDiv += `<a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>
                                 </div>
                             </div>
                           </div>`;
@@ -297,10 +302,10 @@ async function selectInMenu(year, month, releaseType) {
 
 /* mobilní navigace */
 $(document).on('click', '.nav-mobile', async function (e) {
-    if (leftNavigationDate.hasClass('nav-hidden')) {
-        leftNavigationDate.removeClass('nav-hidden');
+    if (elementMenuDate.hasClass('nav-hidden')) {
+        elementMenuDate.removeClass('nav-hidden');
     }
     else {
-        leftNavigationDate.addClass('nav-hidden');
+        elementMenuDate.addClass('nav-hidden');
     }
 });

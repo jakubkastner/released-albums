@@ -36,6 +36,7 @@ async function loginGetUrl() {
     // zapíše do lokálního úložiště náhodnou hodnotu
     var stateValue = await generateRandomString(16);
     localStorage.setItem(STATE_KEY, stateValue);
+    console.log("ukládám " + stateValue);
 
     // otevře přihlašovací okno do spotify a získá access token
     var scope = 'user-follow-read user-read-private user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private';
@@ -91,11 +92,14 @@ async function loginParseUrl() {
         var params = getHashParams();
         userAccess = params.access_token;
         window.location.replace('');
+        console.log(userAccess);
 
         // získá hodnotu úloženou v úložišti
         var storedState = localStorage.getItem(STATE_KEY);
 
         if (userAccess) {
+            console.log(storedState);
+            console.log(params.state);
             // existuje userAccess
             if (params.state !== null && params.state === storedState) {
                 // získal jsem hodnotu ze spotify loginu
@@ -114,6 +118,7 @@ async function loginParseUrl() {
             elementError.text('Failed to login, please try it again.');
         }
         // odstraní z úložiště kontrolní string
+        console.log("odstranění loginPAreseUrl");
         localStorage.removeItem(STATE_KEY);
     }
 }

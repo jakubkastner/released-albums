@@ -27,7 +27,7 @@ main .in-body {
     width: calc(100% - 50px - 2vw);
 }
 
-.album, .year:hover, .months li, .selected-month, .selected-year {
+.album, .year:hover, .months li, .selected-month, .selected-year, .settings-playlist {
     background-color: rgb(26, 26, 26);
 }
 
@@ -283,23 +283,23 @@ footer p {
     overflow: auto;
 }
 
-.playlist-add {
+.playlist-add, .playlist-default {
     padding: calc(5px + 0.5vw);
 }
 
-.playlist-add i {
+.playlist-add i, .playlist-default i {
     margin-right: calc(5px + 0.5vw);
 }
 
-.playlist-add:hover, .playlist-remove {
+.playlist-add:hover, .playlist-remove, .playlist-default-set:hover, .playlist-default-remove {
     background-color: rgb(18, 18, 18);
 }
 
-.playlist-remove:hover {
+.playlist-remove:hover, .playlist-default-remove:hover {
     background-color: rgb(36, 36, 36);
 }
 
-.playlist-remove, .playlist-remove i {
+.playlist-remove, .playlist-remove i, .playlist-default-remove, .playlist-default-remove i {
     color: #1ab26b;
 }
 

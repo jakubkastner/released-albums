@@ -54,6 +54,7 @@ var libraryTracks = null;
 var libraryAppears = null;
 var libraryCompilations = null;
 var libraryPlaylists = null;
+var defaultPlaylist = null;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
@@ -67,12 +68,12 @@ var elementTitle = $('.title');
 
 var elementMenuDate = $('.nav-date');
 var elementMenuMobile = $('.nav-mobile');
-var leftNavigationDate = $('.nav-date');
 
 var elementAlbums = $('.albums');
 var elementTracks = $('.tracks');
 var elementAppears = $('.appears');
 var elementCompilations = $('.compilations');
+var elementSettings = $('.settings');
 
 var elementTop = $('#top');
 var elementBody = $('body, html');
@@ -83,6 +84,7 @@ var elementAlbumsButton = $('.albums-button');
 var elementTracksButton = $('.tracks-button');
 var elementAppearsButton = $('.appears-button');
 var elementCompilationsButton = $('.compilations-button');
+var elementSettingsButton = $('.settings-button');
 
 var viewAll = false;
 var lastYear = 0;
@@ -153,7 +155,7 @@ async function fetchJson(url, errorText) {
             if (url) {
                 // naviguje na přihlašovací stránku Spotify
                 //window.location = url;
-                console.log(url);
+                console.log("naviguji");
             }
             else {
                 // uživatel je přihlášen
@@ -253,6 +255,8 @@ window.onscroll = function () {
  * Načtení stránky.
  */
 $(document).ready(async function () {
+    var storedState = localStorage.getItem(STATE_KEY);
+    console.log(storedState);
     // získám z úložiště prohlížeče userAccess
     userAccess = localStorage.getItem(USER_ACCESS);
     if (userAccess) {
@@ -278,6 +282,10 @@ $(document).ready(async function () {
         else if (params.show == 'compilations') {
             // zobrazím albumy
             showCompilations();
+        }
+        else if (params.settings) {
+            // zobrazím albumy
+            showSettings();
         }
     }
     else {
@@ -327,3 +335,180 @@ async function deleteFetch(url, json = null, errorText = "") {
     }
     return await fetch(url, opt);
 }
+
+
+// nastavení
+elementSettingsButton.click(function () {
+    showSettings();
+});
+
+async function showSettings() {    
+    elementAlbums.hide();
+    elementTracks.hide();
+    elementAppears.hide();
+    elementCompilations.hide();
+    elementSettings.show();
+    elementMenuDate.hide();
+
+    elementAlbumsButton.removeClass('current-year');
+    elementTracksButton.removeClass('current-year');
+    elementAppearsButton.removeClass('current-year');
+    elementCompilationsButton.removeClass('current-year');
+    elementSettingsButton.addClass('current-year');
+    
+    // todo - přidává donekonečna seznam playlistů !!!!
+    window.location.replace('#settings');
+    if (!libraryPlaylists) {
+        showError('zadny playlisty');
+        return;
+    }
+    if (libraryPlaylists.length < 1) {
+        showError('zadny playlisty');
+        return;
+    }
+    elementSettings.html('');
+    elementTitle.text('Settings');
+    elementMessage.text('Default playlist');
+    var elementPlaylists = `<ul class="playlists settings-playlist">`;
+    // projde playlisty uživatele
+    await asyncForEach(libraryPlaylists, async playlist => {
+        // pouze pokud se jedná o playlist do kterého lze přidat album
+        if (playlist.collaborative || playlist.owner.id == userId)
+        {
+            var icon;
+            var title;
+            var classEl = '';
+            if (!defaultPlaylist) {
+                icon = `<i class="fas fa-plus"></i>`;
+                title = `Set playlist '` + playlist.name + `' as default`;
+                classEl = 'playlist-default-set';
+            }
+            else if (defaultPlaylist.id != playlist.id) {
+                icon = `<i class="fas fa-plus"></i>`;
+                title = `Set playlist '` + playlist.name + `' as default`;
+                classEl = 'playlist-default-set';
+            }
+            else {
+                icon = `<i class="fas fa-check"></i>`;
+                title = `Unset playlist '` + playlist.name + `'`;
+                classEl = 'playlist-default-remove';
+            }
+            elementPlaylists += `<li class="playlist-default `;
+            elementPlaylists += classEl;
+            elementPlaylists += `" id="p_` + playlist.id + `" title="`
+            elementPlaylists += title;
+            elementPlaylists += `"><span>`;
+            elementPlaylists += icon;
+            elementPlaylists += `</span>` + playlist.name + `</li>`;            
+        }
+    });
+    elementPlaylists += `</ul>`;
+    elementSettings.append(elementPlaylists);
+}
+
+$(document).on('click', '.playlist-default-set', async function (e) {  
+    // todo - odebraní výchozího playlistu
+    var elementId = e.currentTarget.id;
+    var ids = elementId.split('_');
+    var playlistId = ids[1];
+
+    var playlistDiv = $('#' + elementId);
+    var playlistDivSpan = $('#' + elementId + ' span');
+
+    // ikona
+    playlistDivSpan.html(`<i class="fas fa-check"></i>`);
+    // class
+    playlistDiv.removeClass('playlist-default-set');
+    playlistDiv.addClass('playlist-default-remove');
+    // titulek
+    playlistDiv.prop('title', `Unset playlist '` + playlistDiv.text() + `'`);
+    // nastavení výchozího playlistu
+    var playlist = libraryPlaylists.find(x => x.id === playlistId);
+    defaultPlaylist = playlist;
+
+    // todo - odstranit ikonky jiných checknutých playlistů (ted se donekonecna pridavaji) !!!!
+});
+
+$(document).on('click', '.playlist-default-remove', async function (e) {  
+    var elementId = e.currentTarget.id;
+    var ids = elementId.split('_');
+    var playlistId = ids[1];
+
+    var playlistDiv = $('#' + elementId);
+    var playlistDivSpan = $('#' + elementId + ' span');
+
+    // ikona
+    playlistDivSpan.html(`<i class="fas fa-plus"></i>`);
+    // class
+    playlistDiv.removeClass('playlist-default-remove');
+    playlistDiv.addClass('playlist-default-set');
+    // titulek
+    playlistDiv.prop('title', `Set playlist '` + playlistDiv.text() + `' as default`);
+    // nastavení výchozího playlistu
+    defaultPlaylist = null;
+});
+
+// todo - aktuálně se načítá ikona pro přidání do defaultního playlistu pouze při načítání releasů (což není ok)
+// může nastat situace kdy odeberu defaultní playlist a pak ikonky zůstanou zobrazené, což tak nemá být
+
+
+// todo při načítání albumů, kontrolovat, jestli už není přidaný v defaultním playlistu a podle toho měnit ikonku????? nebo to kontrolovat až při přidávání (tzn. nekontrolovat podle class ikonky) = zabrání duplicitám v playlistu
+// a změnit při zobrazení přidání do playlistů !
+
+$(document).on('click', '.album-playlist-add-default', async function (e) {    
+
+    // todo přidat do class (stejné se volá v actions.js)
+    // todo změnit ikonky
+    var elementId = e.currentTarget.id;
+    var ids = elementId.split('_');
+    var playlistId = ids[1];
+    var releaseId = ids[2];
+
+    await libraryGetReleaseTracks(releaseId);
+    var playlistIcon = $('#' + elementId);
+
+    var release;
+    // získám parametry
+    var params = getHashParams();
+    if (params.show == 'albums') {
+        // zobrazím albumy
+        release = libraryAlbums.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'tracks') {
+        // zobrazím albumy
+        release = libraryTracks.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'appears') {
+        // zobrazím albumy
+        release = libraryAppears.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'compilations') {
+        // zobrazím albumy
+        release = libraryCompilations.find(x => x.id === releaseId);
+    }
+
+    if (playlistIcon.hasClass('fa-plus-circle')) {
+        // pridani do playlistu
+        await asyncForEach(release.tracks, async releaseTrack => {
+            // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
+            await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
+        });
+        playlistIcon.removeClass('fa-plus-circle');
+        playlistIcon.addClass('fa-minus-circle');
+        playlistIcon.title(`Remove from default playlist '` + defaultPlaylist.name + `'`);
+    }
+    else {
+        // odebrani z playlistu
+        await asyncForEach(release.tracks, async albumTrack => {
+            await libraryRemoveFromPlaylistApi(albumTrack, playlistId, releaseId);
+        });
+        playlistIcon.removeClass('fa-minus-circle');
+        playlistIcon.addClass('fa-plus-circle');
+        playlistIcon.title(`Add to default playlist '` + defaultPlaylist.name + `'`);
+    }
+});
+
+
+
+
+// todo při přepínání albumy - tracky - apperas - nastavení neskrávat obsah, nýbrž obsah odstraňovat (což se aktuálně děje při přidávání, takže tam zůstává zbytečně)
