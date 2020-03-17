@@ -262,7 +262,6 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 {
                     defaultPlaylistButton = `<i class="fas fa-plus-circle album-playlist-add-default" title="Add to default playlist '` + defaultPlaylist.name + `'" id="pd_` + defaultPlaylist.id + `_` + release.id + `"></i>`;
                 }
-                console.log(release);
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
                             <div class="album-flex">
                                 <div class="album-img">
@@ -305,8 +304,7 @@ async function selectInMenu(year, month, releaseType) {
 $(document).on('click', '.nav-mobile', async function (e) {
     if (elementMenuDate.hasClass('nav-hidden')) {
         elementMenuDate.removeClass('nav-hidden');
+        return;
     }
-    else {
-        elementMenuDate.addClass('nav-hidden');
-    }
+    elementMenuDate.addClass('nav-hidden');
 });

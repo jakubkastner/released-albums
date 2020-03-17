@@ -5,10 +5,13 @@
  */
 $('.login').click(async function () {
     // PŘIHLÁŠENÍ -> krok 1
-
+    if (userId) {
+        console.log(user);
+        window.open(user.external_urls.spotify, '_blank');
+        return;
+    }
     // získá stránku pro přihlášení do spotify
     var url = await loginGetUrl();
-
     if (url) {
         // naviguje na přihlašovací stránku Spotify
         window.location = url;
@@ -75,7 +78,7 @@ async function loginParseUrl() {
     // získá aktuální url adresu
     var currentUrl = window.location.href;
     console.log(window.location.href);
-    
+
     if (currentUrl.includes('access_denied')) {
         // nesouhlas s podmínkami
         elementError.text('Failed to login, you must accept the premissions.');
@@ -152,17 +155,43 @@ async function loginGetUserInfo() {
     $('#login-button').remove();
     elementError.text('');
 
-    var elementLogin = $('#login');
-    elementLogin.html('Logged in as "' + json.display_name + '" | Click to logout');
-    elementLogin.attr('title', 'Click to logout');
-    elementLogin.attr('href', '');
-    elementLogin.attr('id', 'logout');
+    var elementUser = $('#user');
+    elementUser.attr('title', 'Logged in as "' + json.display_name + '"');
 
+    var elementUserName = $('#user p');
+    elementUserName.html(json.display_name);
+
+    var elementUserIcon = $('#user i');
+
+    if (json.images.length > 0) {
+        elementUserIcon.remove();
+        elementUser.prepend(`<img src="` + json.images[0].url + `" alt="">`);
+    }
+    else {
+        // <i class="fab fa-spotify"></i>
+        // <i class="fas fa-user"></i>    
+        elementUserIcon.removeClass('fab');
+        elementUserIcon.addClass('fas');
+        elementUserIcon.removeClass('fa-spotify');
+        elementUserIcon.addClass('fa-user');
+    }
+
+    var elementMenu = $('header .in-main');
+    elementMenu.append(`<nav class="nav-user"><a class="button settings-button hidden-menu">Settings</a><a class="button" id="logout">Logout</a></nav>`);
     elementMessage.text('User @' + json.display_name + ' has been successfully logged in.');
+
+    elementSettingsButton = $('.settings-button');
+    elementHiddenMenu = $('.hidden-menu');
+
+    // nastavení
+    elementSettingsButton.click(function () {
+        showSettings();
+    });
 
     // uloží stát a id
     userCountry = json.country;
     userId = json.id;
+    user = json;
 
     // získá interprety z knihovny uživatele
     await libraryGetArtists();
@@ -176,4 +205,6 @@ async function loginGetUserInfo() {
 $(document).on('click', '#logout', function (e) {
     // odstraní userAccess
     localStorage.removeItem(USER_ACCESS);
+    $('.nav-user').remove();
+    window.location = '';
 });

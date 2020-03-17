@@ -27,7 +27,7 @@ main .in-body {
     width: calc(100% - 50px - 2vw);
 }
 
-.album, .year:hover, .months li, .selected-month, .selected-year, .settings-playlist {
+.album, .year:hover, .months li, .selected-month, .selected-year, .settings-section {
     background-color: rgb(26, 26, 26);
 }
 
@@ -39,28 +39,45 @@ main, .month:hover, .current-month, .current-year {
     display: flex;
 }
 
-.in-header h1 {
+.in-header .page-name {
     cursor: context-menu;
 }
 
-.in-header h1, .in-header a {
-    width: 50%;
-    display: block;
+.in-header > div {
+    display: flex;
+    padding: calc(10px + 0.5vw) calc(20px + 1vw);
+}
+.in-header > div * {
     font-size: calc(13px + 0.8vw);
-    padding: calc(20px + 0.5vw) calc(20px + 1vw);
     margin: auto 0;
+    font-weight: 700;
 }
 
-.in-header h1, .in-header a:hover, .message, .title, .album-info a:hover * {
+.in-header > div img {
+    height: calc(22px + 1vw);
+    font-size: calc(20px + 0.8vw);
+}
+
+.in-header > div i, .in-header > .login img {
+    line-height: normal;
+    margin-right: calc(5px + 0.5vw);
+    font-size: calc(20px + 1vw);
+}
+
+.in-header > .login {
+    margin-left: auto;
+}
+
+.in-header .page-name *, .in-header > div:hover *, .message, .title, .album-info a:hover *, .settings-section h3 {
     color: #1ab26b;
 }
 
-.in-header a:hover, .album-actions>div:hover {
+.in-header > div:hover, .album-actions > div:hover {
     background-color: rgb(46, 46, 46);
     transition: 0.5s;
 }
 
-.in-header a {
+.in-header > div {
     text-align: right;
     cursor: pointer;
 }
@@ -130,7 +147,12 @@ main, .month:hover, .current-month, .current-year {
 }
 
 header .in-main {
-    padding: 0 0 0 calc(50px + 4vw);
+    padding: 0;
+    display: flex;
+}
+
+.nav-user {
+    margin-left: auto;
 }
 
 header .in-main .button {
@@ -203,7 +225,7 @@ header .in-main .button {
     font-size: calc(10px + 0.8vw);
 }
 
-.album h3 {
+.album h3, .settings-section {
     font-size: calc(9px + 0.7vw);
 }
 
@@ -284,8 +306,12 @@ footer p {
     cursor: pointer;
     width: 100%;
     max-height: 400px;
+    overflow: hidden;
+}
+.playlists:hover {    
     overflow: auto;
 }
+
 
 .playlist-add, .playlist-default {
     padding: calc(5px + 0.5vw);
@@ -320,6 +346,22 @@ footer p {
 
 .nav-mobile:hover {
     background-color: rgb(18, 18, 18);
+}
+
+.settings-section {
+    padding: calc(5px + 1vw);
+}
+
+.settings-playlist {
+    padding: 0 calc(2.5px + 0.5vw);
+}
+
+.settings-section p {
+    margin-top: calc(2px + 0.5vw);
+}
+
+.playlists li {
+    font-size: 16px;
 }
 
 .hidden {
@@ -366,6 +408,9 @@ footer p {
     main .in-body {
         margin: 0;
         width: 100%;
+    }
+    .in-main .title {
+        margin-left: calc(50px + 0.6vw);
     }
 }
 

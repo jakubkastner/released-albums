@@ -237,7 +237,18 @@ async function libraryAddToPlaylistApi(track, playlistId, albumId) {
         playlistDiv.prop('title', `Remove release from playlist '` + playlistDiv.text() + `'`);
         var playlist = libraryPlaylists.find(x => x.id === playlistId);
         var inPlaylistObject = { track: track };
+        if (!playlist.tracks.list) {
+            playlist.tracks.list = [];
+        }
         playlist.tracks.list.push(inPlaylistObject);
+
+        if (defaultPlaylist)
+        {
+            var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
+            defaultPlaylistIcon.removeClass('fa-plus-circle');
+            defaultPlaylistIcon.addClass('fa-minus-circle');
+            defaultPlaylistIcon.title = `Remove from default playlist '` + defaultPlaylist.name + `'`;
+        }
     }
     else {
         // chyba
@@ -271,6 +282,14 @@ async function libraryRemoveFromPlaylistApi(track, playlistId, albumId) {
             }
             index++;
         });
+
+        if (defaultPlaylist)
+        {
+            var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
+            defaultPlaylistIcon.removeClass('fa-minus-circle');
+            defaultPlaylistIcon.addClass('fa-plus-circle');
+            defaultPlaylistIcon.title = `Add to default playlist '` + defaultPlaylist.name + `'`;
+        }
 
         /*console.log(track);
         console.log(index);
@@ -364,24 +383,29 @@ async function showPlaylist(releaseId) {
 
 async function libraryIsSongInPlaylist(playlistTracks, releaseTracks) {
     var inPlaylist = false;
-    // projde tracky playlistu   
+    // projde tracky playlistu
+    if (!playlistTracks) {
+        return inPlaylist;
+    }
     await asyncForEach(playlistTracks, async playlistTrack => {
         if (inPlaylist) {
             // track je v playlistu, ukončím foreach
             return;
         }
-        // projde tracky albumu
-        await asyncForEach(releaseTracks, async releaseTrack => {
-            // shoduje se id
-            var releasePlaylistId;
-            if (playlistTrack.track) releasePlaylistId = playlistTrack.track.id;
-            else if (playlistTrack.id) releasePlaylistId = playlistTrack.id;
-            if (releaseTrack.id == releasePlaylistId) {
-                // track je v playlistu
-                inPlaylist = true;
-                return;
-            }
-        });
+        if (releaseTracks) {
+            // projde tracky albumu
+            await asyncForEach(releaseTracks, async releaseTrack => {
+                // shoduje se id
+                var releasePlaylistId;
+                if (playlistTrack.track) releasePlaylistId = playlistTrack.track.id;
+                else if (playlistTrack.id) releasePlaylistId = playlistTrack.id;
+                if (releaseTrack.id == releasePlaylistId) {
+                    // track je v playlistu
+                    inPlaylist = true;
+                    return;
+                }
+            });
+        }
     });
     return inPlaylist;
 }

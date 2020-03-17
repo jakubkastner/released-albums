@@ -29,7 +29,6 @@ async function libraryGetArtists() {
     });
 
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    elementNav.show();
     hideLoading('Select which releases you want to display.');
 }
 
@@ -94,7 +93,7 @@ elementAlbumsButton.click(function () {
  * Zobrazení albumů
  */
 async function showAlbums() {
-    elementNav.hide();
+    elementHiddenMenu.hide();
     elementTitle.hide();
 
     //elementAlbums.hide();
@@ -162,7 +161,7 @@ async function showAlbums() {
 
     elementAlbums.show();
     $('.nav-a').show();
-    elementNav.show();
+    elementHiddenMenu.show();
     elementTitle.show();
 }
 
@@ -482,7 +481,7 @@ elementTracksButton.click(function () {
  * Zobrazení tracků
  */
 async function showTracks() {
-    elementNav.hide();
+    elementHiddenMenu.hide();
     elementTitle.hide();
 
     elementAlbums.hide();
@@ -551,7 +550,7 @@ async function showTracks() {
 
     elementTracks.show();
     $('.nav-t').show();
-    elementNav.show();
+    elementHiddenMenu.show();
     elementTitle.show();
 }
 
@@ -568,7 +567,7 @@ elementAppearsButton.click(function () {
  * Zobrazení Appears
  */
 async function showAppears() {
-    elementNav.hide();
+    elementHiddenMenu.hide();
     elementTitle.hide();
 
     elementAlbums.hide();
@@ -636,7 +635,7 @@ async function showAppears() {
 
     elementAppears.show();
     $('.nav-p').show();
-    elementNav.show();
+    elementHiddenMenu.show();
     elementTitle.show();
 }
 
@@ -652,7 +651,7 @@ elementCompilationsButton.click(function () {
  * Zobrazení Compilations
  */
 async function showCompilations() {
-    elementNav.hide();
+    elementHiddenMenu.hide();
     elementTitle.hide();
 
     elementAlbums.hide();
@@ -721,7 +720,7 @@ async function showCompilations() {
 
     elementCompilations.show();
     $('.nav-c').show();
-    elementNav.show();
+    elementHiddenMenu.show();
     elementTitle.show();
 }
 
@@ -729,7 +728,6 @@ async function showCompilations() {
 
 // získá playlisty uživatele
 async function libraryGetPlaylists() {
-    elementNav.hide();
     // zobrazení načítání
     showLoading('Getting your playlists');
 
@@ -748,7 +746,6 @@ async function libraryGetPlaylists() {
     }
 
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    elementNav.show();
     hideLoading('Select which releases you want to display.');
 }
 // získá playlisty uživatele z api
