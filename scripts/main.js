@@ -77,7 +77,7 @@ var elementCompilations = $('.compilations');
 var elementSettings = $('.settings');
 
 var elementTop = $('#top');
-var elementBody = $('body, html');
+var elementBody = $('body, html'); // $(window) - změna scrolování - 17.3.2020
 
 var elementNav = $('nav');
 
@@ -229,6 +229,27 @@ elementTop.click(function () {
 /**
  * Došlo k posunutí stránky.
  */
+
+ // změna scrolování - 17.3.2020
+/*elementBody.scroll(function () {
+    // načtení dalšího obsahu
+    var position = elementBody.scrollTop();
+    if (position > 20) {
+        // poloha je níže než 20px
+        // -> zobrazí posunovník nahoru
+        elementTop.show();
+        elementTop.animate({ "bottom": "50px" });
+        return;
+    }
+    if (!elementTop.is(':hidden')) {
+        // skryje posuvník nahoru
+        elementTop.animate({ "bottom": "0px" },);
+        elementTop.promise().done(function(){               
+            elementTop.hide();
+        });
+    }
+    return;*/
+    
 window.onscroll = function () {
     // načtení dalšího obsahu
 

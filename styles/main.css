@@ -257,8 +257,9 @@ header .in-main .button {
     background-color: rgb(76, 76, 76);
     border: 0;
     position: fixed;
-    bottom: calc(10px + 2vw);
-    left: calc(100px + 2vw);
+    bottom: calc(10px + 2vw); /* změna scrolování - 17.3.2020 - odstranit*/;
+    /*bottom: -80px; změna scrolování - 17.3.2020 - přidat*/
+    left: calc(60px + 4vw);
     display: none;
     padding: 0;
 }
@@ -401,6 +402,11 @@ footer p {
     }
     .in-main .title {
         margin-left: calc(30px + 0.6vw);
+    }
+    .top {
+        left: auto;
+        right: 10px;
+        bottom: 10px;
     }
 }
 
