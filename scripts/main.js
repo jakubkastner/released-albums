@@ -184,6 +184,7 @@ async function fetchJson(url, errorText) {
  * @param {*} message zpráva k zobrazení
  */
 function showLoading(message) {
+    document.title = message;
     elementHiddenMenu.hide();
     elementLoader.show();
     elementMessage.show();
@@ -195,6 +196,7 @@ function showLoading(message) {
  * @param {*} message zpráva k zobrazení
  */
 function hideLoading(message) {
+    document.title = 'Releases on Spotify';
     elementLoader.hide();
     elementMessage.text(message);
     elementHiddenMenu.show();
