@@ -1,0 +1,122 @@
+* {
+  margin: 0;
+  text-decoration: none;
+  font-family: 'Pontano Sans', sans-serif;
+  color: white;
+  background-color: black;
+}
+
+main {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/* text */
+p {
+  font-size: calc(12px + 0.3vw);
+}
+
+header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  text-align: right;
+}
+
+header .page-name, header .b-login {
+  margin: auto 0;
+}
+
+header > * {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: calc(10px + 0.5vw);
+}
+
+header > * * {
+  font-size: calc(13px + 0.8vw);
+  font-weight: 700;
+  color: red;
+}
+
+header .buttons {
+  padding-bottom: 0;
+}
+
+header .buttons > * {
+  padding: calc(2px + 0.5vw);
+  margin: auto 0 0 0;
+}
+
+header .button,
+header .buttons > * {
+  cursor: pointer;
+  font-size: calc(12px + 0.4vw);
+}
+
+header .button:hover,
+header .buttons > *:hover {
+  color: #1ab26b;
+  background-color: #2e2e2e;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+header .page-name {
+  cursor: context-menu;
+}
+
+header .page-name img {
+  height: calc(22px + 1vw);
+  font-size: calc(20px + 0.8vw);
+}
+
+header .page-name:hover img {
+  -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+.in-header > div i,
+.in-header > .login img {
+  line-height: normal;
+  margin-right: calc(5px + 0.5vw);
+  font-size: calc(20px + 1vw);
+}
+
+.in-header > .login {
+  margin-left: auto;
+}
+
+@media screen and (max-width: 1000px) {
+  header .page-name h1 {
+    display: none;
+  }
+  header .b-login p {
+    display: none;
+  }
+}
+/*# sourceMappingURL=layout.css.map */

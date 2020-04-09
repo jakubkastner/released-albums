@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="View all releases by years and months of your followed artists on Spotify.">
+    <meta name="keywords" content="spotify, spotify releases, album, albums, spotify albums, tracks, tracks, spotify tracks, spotify appears, appear, appears, spotify compilations, album, release, compilation, compilations, releases, music, stream music">
+    <meta name="author" content="Jakub Kastner">
+    <title>Releases on Spotify</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="styles/layout.css" />
+    <link rel="icon" type="image/ico" href="images/favicon.png">
+    <link href="https://fonts.googleapis.com/css?family=Pontano+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+</head>
+
+<body>
+    <header>
+        <div class="page-name">
+            <img src="images/favicon.png" alt="R"><h1>eleases on Spotify</h1>
+        </div>
+        <nav class="hidden menu-releases buttons">
+            <a class="b-albums-" title="View released albums">Albums</a>
+            <a class="b-tracks" title="View released tracks">Tracks</a>
+            <a class="b-appears" title="View released appears">Appears</a>
+            <a class="b-compilations" title="View released compilations">Compilations</a> 
+        </nav>       
+        <nav class="hidden menu-user buttons">
+            <a class="b-settings">Settings</a>
+            <a class="b-logout">Logout</a>
+        </nav>
+        <a class="b-login button" id="user" title="Click to login">
+            <i class="fab fa-spotify"></i>
+            <p>Login via Spotify</p>
+        </a>
+    </header>
+
+    <main>
+        <div class="nav-date nav-hidden">
+            <div class="nav-mobile hidden"><i class="fas fa-bars"></i></div>
+        </div>
+        <div class="in-body">
+            <div class="in-main">
+                <h2 class="title"></h2>
+                <h2 class="message">View all albums by years and months of your followed artists on Spotify</h2>
+                <p class="error">To see all albums releases, you must login with your Spotify account.</p>
+                <a class="button login login-button" id="login-button"><i class="fab fa-spotify"></i>Login via Spotify</a>
+                <div class="albums" style="display: none;"></div>
+                <div class="tracks" style="display: none;"></div>
+                <div class="appears" style="display: none;"></div>
+                <div class="compilations" style="display: none;"></div>
+                <div class="settings" style="display: none;"></div>
+            </div>
+            <div class="loader"></div>
+        </div>
+
+        <button class="top" id="top" title="Top"><i class="fas fa-angle-double-up"></i></button>
+    </main>
+    <footer>
+        <div class="in-body">
+            <p>&copy; 2018 - 2020 Jakub Kastner</p>
+        </div>
+    </footer>
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/login.js"></script>
+    <script src="scripts/library.js"></script>
+    <script src="scripts/show.js"></script>
+    <script src="scripts/actions.js"></script>
+</body>
+
+</html>

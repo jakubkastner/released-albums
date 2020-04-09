@@ -176,6 +176,7 @@ async function loginGetUserInfo() {
         elementUserIcon.addClass('fa-user');
     }
 
+    //var elementMenu = $('.menu-user'); nová verze
     var elementMenu = $('header .in-main');
     elementMenu.append(`<nav class="nav-user"><a class="button settings-button hidden-menu">Settings</a><a class="button" id="logout">Logout</a></nav>`);
     elementMessage.text('User @' + json.display_name + ' has been successfully logged in.');
