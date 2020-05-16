@@ -230,7 +230,7 @@ elementTop.click(function () {
  * Došlo k posunutí stránky.
  */
 
- // změna scrolování - 17.3.2020
+// změna scrolování - 17.3.2020
 /*elementBody.scroll(function () {
     // načtení dalšího obsahu
     var position = elementBody.scrollTop();
@@ -249,7 +249,7 @@ elementTop.click(function () {
         });
     }
     return;*/
-    
+
 window.onscroll = function () {
     // načtení dalšího obsahu
 
@@ -561,3 +561,79 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
 
 
 // todo při přepínání albumy - tracky - apperas - nastavení neskrávat obsah, nýbrž obsah odstraňovat (což se aktuálně děje při přidávání, takže tam zůstává zbytečně)
+
+
+
+
+// todo
+// pokud byl už playlist vytvořen (stejný název), nabídnout odstranění
+
+// vytvoření nového playlistu
+$(document).on('click', '.album-playlist-add-new', async function (e) {
+
+    // todo přidat do class (stejné se volá v actions.js)
+    // todo změnit ikonky
+    var elementId = e.currentTarget.id;
+    var ids = elementId.split('_');
+    var releaseId = ids[1];
+    var playlistIcon = $('#' + elementId);
+
+    await libraryGetReleaseTracks(releaseId);
+
+    var release;
+    // získám parametry
+    var params = getHashParams();
+    if (params.show == 'albums') {
+        // zobrazím albumy
+        release = libraryAlbums.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'tracks') {
+        // zobrazím albumy
+        release = libraryTracks.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'appears') {
+        // zobrazím albumy
+        release = libraryAppears.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'compilations') {
+        // zobrazím albumy
+        release = libraryCompilations.find(x => x.id === releaseId);
+    }
+    // vytvoreni playlistu
+    var newPlaylist = await createPlaylist(release.artistsString + ' - ' + release.name);
+    if (newPlaylist === null) {
+        return;
+    }
+    // pridani do playlistu
+    await asyncForEach(release.tracks, async releaseTrack => {
+        // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
+        await libraryAddToPlaylistApi(releaseTrack, newPlaylist.id, releaseId);
+    });
+    playlistIcon.addClass('current-month');
+});
+
+async function createPlaylist(playlistName) {
+    url = 'https://api.spotify.com/v1/users/' + user.id + '/playlists';
+    var options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + userAccess
+        },
+        body: JSON.stringify({
+            name: playlistName,
+            description: "",
+            public: false
+        }),
+        json: true
+    };
+    let response = await fetch(url, options);
+
+    // získaný json
+    let json = await response.json();
+    if (json.id) {
+        libraryPlaylists.push(json);
+        console.log(libraryPlaylists);
+        return json;
+    }
+    return null;
+}
