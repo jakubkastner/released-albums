@@ -276,8 +276,9 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 elementReleaseDiv += `<i class="fas fa-plus album-playlist" title="Add to playlist" id="` + release.id + `_p"></i>`;
                 elementReleaseDiv += defaultPlaylistButton;
                 elementReleaseDiv += `<i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_` + release.id + `"></i>`;
-                elementReleaseDiv += `<a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>
-                                </div>
+                elementReleaseDiv += `<a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>`;
+                elementReleaseDiv += `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`,``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
+                elementReleaseDiv += `</div>
                             </div>
                           </div>`;
             }
