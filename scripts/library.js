@@ -87,6 +87,94 @@ elementAlbumsButton.click(function () {
     // volá funkci zobrazení albumů
     showAlbums();
 });
+/**
+ * Kliknutí na tlačítko EP.
+ */
+elementEPsButton.click(function () {
+    // volá funkci zobrazení eps
+    showEPs();
+});
+
+// TODO !!!
+/**
+ * Zobrazení tracků
+ */
+async function showEPs() {
+    elementHiddenMenu.hide();
+    elementTitle.hide();
+
+    elementAlbums.hide();
+    //elementEPs.hide();
+    elementTracks.hide();
+    elementAppears.hide();
+    elementCompilations.hide();
+    elementSettings.hide();
+
+    elementMenuDate.show();
+    $('.nav-a').hide();
+    //$('.nav-e').hide();
+    $('.nav-t').hide();
+    $('.nav-p').hide();
+    $('.nav-c').hide();
+
+    var params = getHashParams();
+    if (params.show != 'eps') {
+        // nebyla nastavena url
+        window.location.replace("#show=eps");
+    }
+
+    if (!libraryEPs) {
+        // albumy dosud nebyly načteny
+        // -> získá albumy a zobrazí je
+        await libraryGetReleases('e');
+    }
+
+    if (!libraryEPs) {
+        // albumy byly načteny, ale žádné se nenašly
+        showError('No EPs', 'Cannot show any EP, because you are following only artists without EPs.');
+    }
+    else if (libraryEPs.length < 1) {
+        // albumy byly načteny, ale žádné se nenašly
+        showError('No EPs', 'Cannot show any EP, because you are following only artists without EPs.');
+    }
+    else {
+        // byly načteny albumy
+
+        // TODO : dodělat přepínání
+        /*if (elementAlbums.is(':hidden')) {
+            // albumy jsou již zobrazeny
+            return;
+        }*/
+
+        // albumy nejsou zobrazeny
+        // -> zobrazím albumy
+
+        // TODO : zobrazit albumy (podle roku z url) a menu
+        var year = '0';
+        var month = '0';
+        if (params.year) {
+            year = params.year;
+        }
+        if (params.month) {
+            month = params.month;
+        }
+        await viewReleases('e', year, month);
+        elementMessage.hide();
+    }
+
+    // TODO : přesunout zobrazování jinam
+    elementAlbumsButton.removeClass('current-year');
+    elementEPsButton.addClass('current-year');
+    elementTracksButton.removeClass('current-year');
+    elementAppearsButton.removeClass('current-year');
+    elementCompilationsButton.removeClass('current-year');
+    elementSettingsButton.removeClass('current-year');
+
+    elementEPs.show();
+    $('.nav-e').show();
+    elementHiddenMenu.show();
+    elementTitle.show();
+}
 
 // TODO !!!
 /**
@@ -97,6 +185,7 @@ async function showAlbums() {
     elementTitle.hide();
 
     //elementAlbums.hide();
+    elementEPs.hide();
     elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
@@ -104,6 +193,7 @@ async function showAlbums() {
 
     elementMenuDate.show();
     //$('.nav-a').hide();
+    $('.nav-e').hide();
     $('.nav-t').hide();
     $('.nav-p').hide();
     $('.nav-c').hide();
@@ -154,6 +244,7 @@ async function showAlbums() {
 
     // TODO : přesunout zobrazování jinam
     elementAlbumsButton.addClass('current-year');
+    elementEPsButton.removeClass('current-year');
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
@@ -182,6 +273,12 @@ async function libraryGetReleases(releaseType) {
         releaseName = 'albums';
         if (!libraryAlbums) {
             libraryAlbums = [];
+        }
+    }
+    else if (releaseType == 'e') {
+        releaseName = 'eps';
+        if (!libraryEPs) {
+            libraryEPs = [];
         }
     }
     else if (releaseType == 't') {
@@ -221,6 +318,9 @@ async function libraryGetReleases(releaseType) {
     if (releaseType == 'a') {
         releaseList = libraryAlbums;
     }
+    else if (releaseType == 'e') {
+        releaseList = libraryEPs;
+    }
     else if (releaseType == 't') {
         releaseList = libraryTracks;
     }
@@ -253,6 +353,9 @@ async function libraryGetReleases(releaseType) {
     if (releaseType == 'a') {
         libraryAlbums = releaseList;
     }
+    else if (releaseType == 'e') {
+        libraryEPs = releaseList;
+    }
     else if (releaseType == 't') {
         libraryTracks = releaseList;
     }
@@ -281,6 +384,10 @@ async function libraryGetReleasesApi(releaseType, artist, index, artistsLength, 
     if (releaseType == 'a') {
         releaseName = 'albums';
         releaseFetch = 'album';
+    }
+    else if (releaseType == 'e') {
+        releaseName = 'eps';
+        releaseFetch = 'single';
     }
     else if (releaseType == 't') {
         releaseName = 'tracks';
@@ -334,9 +441,25 @@ async function libraryAddRelease(releaseType, artist, releases) {
     if (releases.length < 1) {
         return;
     }
+    var rel = [];
 
     // projde nově získané releasy
     await asyncForEach(releases, async release => {
+        if (releaseType == 't')
+        {
+            if (release.total_tracks > 1)
+            {
+                return;
+            }            
+        }
+        else if (releaseType == 'e')
+        {
+            if (release.total_tracks <= 1)
+            {
+                return;
+            } 
+        }
+
         // získá všechny umělce releasu
         var releaseArtists = release.artists;
 
@@ -373,6 +496,7 @@ async function libraryAddRelease(releaseType, artist, releases) {
         release.url = release.external_urls.spotify;
         release.artist = artist;
         release.artistsString = albumArtistsString;
+        rel.push(release);
     });
 
     if (releaseType == 'a') {
@@ -381,29 +505,36 @@ async function libraryAddRelease(releaseType, artist, releases) {
             artist.albums = [];
         }
         // přidá nové releasy do seznamu
-        artist.albums = artist.albums.concat(releases);
-        libraryAlbums = libraryAlbums.concat(releases);
+        artist.albums = artist.albums.concat(rel);
+        libraryAlbums = libraryAlbums.concat(rel);
+    }
+    else if (releaseType == 'e') {
+        if (!artist.eps) {
+            artist.eps = [];
+        }
+        artist.eps = artist.eps.concat(rel);
+        libraryEPs = libraryEPs.concat(rel);
     }
     else if (releaseType == 't') {
         if (!artist.tracks) {
             artist.tracks = [];
         }
-        artist.tracks = artist.tracks.concat(releases);
-        libraryTracks = libraryTracks.concat(releases);
+        artist.tracks = artist.tracks.concat(rel);
+        libraryTracks = libraryTracks.concat(rel);
     }
     else if (releaseType == 'p') {
         if (!artist.appears) {
             artist.appears = [];
         }
-        artist.appears = artist.appears.concat(releases);
-        libraryAppears = libraryAppears.concat(releases);
+        artist.appears = artist.appears.concat(rel);
+        libraryAppears = libraryAppears.concat(rel);
     }
     else if (releaseType == 'c') {
         if (!artist.compilations) {
             artist.compilations = [];
         }
-        artist.compilations = artist.compilations.concat(releases);
-        libraryCompilations = libraryCompilations.concat(releases);
+        artist.compilations = artist.compilations.concat(rel);
+        libraryCompilations = libraryCompilations.concat(rel);
     }
 
 }
@@ -485,6 +616,7 @@ async function showTracks() {
     elementTitle.hide();
 
     elementAlbums.hide();
+    elementEPs.hide();
     //elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
@@ -492,6 +624,7 @@ async function showTracks() {
 
     elementMenuDate.show();
     $('.nav-a').hide();
+    $('.nav-e').hide();
     //$('.nav-t').hide();
     $('.nav-p').hide();
     $('.nav-c').hide();
@@ -543,6 +676,7 @@ async function showTracks() {
 
     // TODO : přesunout zobrazování jinam
     elementAlbumsButton.removeClass('current-year');
+    elementEPsButton.removeClass('current-year');
     elementTracksButton.addClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
@@ -571,6 +705,7 @@ async function showAppears() {
     elementTitle.hide();
 
     elementAlbums.hide();
+    elementEPs.hide();
     elementTracks.hide();
     //elementAppears.hide();
     elementCompilations.hide();
@@ -578,6 +713,7 @@ async function showAppears() {
 
     elementMenuDate.show();
     $('.nav-a').hide();
+    $('.nav-e').hide();
     $('.nav-t').hide();
     //$('.nav-p').hide();
     $('.nav-c').hide();
@@ -628,6 +764,7 @@ async function showAppears() {
 
     // TODO : přesunout zobrazování jinam
     elementAlbumsButton.removeClass('current-year');
+    elementEPsButton.removeClass('current-year');
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.addClass('current-year');
     elementCompilationsButton.removeClass('current-year');
@@ -655,6 +792,7 @@ async function showCompilations() {
     elementTitle.hide();
 
     elementAlbums.hide();
+    elementEPs.hide();
     elementTracks.hide();
     elementAppears.hide();
     //elementCompilations.hide();
@@ -662,6 +800,7 @@ async function showCompilations() {
 
     elementMenuDate.show();
     $('.nav-a').hide();
+    $('.nav-e').hide();
     $('.nav-t').hide();
     $('.nav-p').hide();
     //$('.nav-c').hide();
@@ -713,6 +852,7 @@ async function showCompilations() {
 
     // TODO : přesunout zobrazování jinam
     elementAlbumsButton.removeClass('current-year');
+    elementEPsButton.removeClass('current-year');
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.addClass('current-year');
@@ -826,6 +966,10 @@ async function libraryGetReleaseTracks(releaseId) {
     // získám parametry
     var params = getHashParams();
     if (params.show == 'albums') {
+        // zobrazím albumy
+        release = libraryAlbums.find(x => x.id === releaseId);
+    }
+    if (params.show == 'eps') {
         // zobrazím albumy
         release = libraryAlbums.find(x => x.id === releaseId);
     }

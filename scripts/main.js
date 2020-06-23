@@ -52,6 +52,7 @@ var user = null;
 
 var libraryArtists = null;
 var libraryAlbums = null;
+var libraryEPs = null;
 var libraryTracks = null;
 var libraryAppears = null;
 var libraryCompilations = null;
@@ -72,6 +73,7 @@ var elementMenuDate = $('.nav-date');
 var elementMenuMobile = $('.nav-mobile');
 
 var elementAlbums = $('.albums');
+var elementEPs = $('.eps');
 var elementTracks = $('.tracks');
 var elementAppears = $('.appears');
 var elementCompilations = $('.compilations');
@@ -83,6 +85,7 @@ var elementBody = $('body, html'); // $(window) - změna scrolování - 17.3.202
 var elementNav = $('nav');
 
 var elementAlbumsButton = $('.albums-button');
+var elementEPsButton = $('.eps-button');
 var elementTracksButton = $('.tracks-button');
 var elementAppearsButton = $('.appears-button');
 var elementCompilationsButton = $('.compilations-button');
@@ -306,6 +309,10 @@ $(document).ready(async function () {
             // zobrazím albumy
             showTracks();
         }
+        else if (params.show == 'eps') {
+            // zobrazím albumy
+            showEPs();
+        }
         else if (params.show == 'appears') {
             // zobrazím albumy
             showAppears();
@@ -371,6 +378,7 @@ async function deleteFetch(url, json = null, errorText = "") {
 
 async function showSettings() {
     elementAlbums.hide();
+    elementEPs.hide();
     elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
@@ -378,6 +386,7 @@ async function showSettings() {
     elementMenuDate.hide();
 
     elementAlbumsButton.removeClass('current-year');
+    elementEPsButton.removeClass('current-year');
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
@@ -517,6 +526,10 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
         // zobrazím albumy
         release = libraryAlbums.find(x => x.id === releaseId);
     }
+    else if (params.show == 'eps') {
+        // zobrazím albumy
+        release = libraryTracks.find(x => x.id === releaseId);
+    }
     else if (params.show == 'tracks') {
         // zobrazím albumy
         release = libraryTracks.find(x => x.id === releaseId);
@@ -587,6 +600,10 @@ $(document).on('click', '.album-playlist-add-new', async function (e) {
     if (params.show == 'albums') {
         // zobrazím albumy
         release = libraryAlbums.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'eps') {
+        // zobrazím albumy
+        release = libraryTracks.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy

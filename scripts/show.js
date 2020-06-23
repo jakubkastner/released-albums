@@ -11,6 +11,9 @@ async function addMenuYears(releaseType) {
     if (releaseType == 'a') {
         releaseList = libraryAlbums;
     }
+    else if (releaseType == 'e') {
+        releaseList = libraryEPs;
+    }
     else if (releaseType == 't') {
         releaseList = libraryTracks;
     }
@@ -67,6 +70,9 @@ async function addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft
     var releaseName;
     if (releaseType == 'a') {
         releaseName = 'albums';
+    }
+    else if (releaseType == 'e') {
+        releaseName = 'eps';
     }
     else if (releaseType == 't') {
         releaseName = 'tracks';
@@ -163,6 +169,10 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     if (releaseType == 'a') {
         releaseName = 'albums';
         releaseList = libraryAlbums;
+    }
+    else if (releaseType == 'e') {
+        releaseName = 'eps';
+        releaseList = libraryEPs;
     }
     else if (releaseType == 't') {
         releaseName = 'tracks';

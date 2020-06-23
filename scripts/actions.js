@@ -88,6 +88,9 @@ $(document).on('click', '.year', function (e) {
     if (params.show == 'albums') {
         releaseType = 'a';
     }
+    else if (params.show == 'eps') {
+        releaseType = 'e';
+    }
     else if (params.show == 'tracks') {
         releaseType = 't';
     }
@@ -122,6 +125,9 @@ $(document).on('click', '.month', function (e) {
     var releaseType;
     if (params.show == 'albums') {
         releaseType = 'a';
+    }
+    else if (params.show == 'eps') {
+        releaseType = 'e';
     }
     else if (params.show == 'tracks') {
         releaseType = 't';
@@ -192,6 +198,10 @@ $(document).on('click', '.playlist-add', async function (e) {
     // získám parametry
     var params = getHashParams();
     if (params.show == 'albums') {
+        // zobrazím albumy
+        release = libraryAlbums.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'eps') {
         // zobrazím albumy
         release = libraryAlbums.find(x => x.id === releaseId);
     }
@@ -334,6 +344,10 @@ async function showPlaylist(releaseId) {
     if (params.show == 'albums') {
         // zobrazím albumy
         release = libraryAlbums.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'eps') {
+        // zobrazím albumy
+        release = libraryTracks.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
