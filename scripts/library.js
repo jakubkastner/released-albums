@@ -355,9 +355,13 @@ async function libraryGetReleases(releaseType) {
     }
     else if (releaseType == 'e') {
         libraryEPs = releaseList;
+        await addMenuYears('t');
+        $('.nav-t').hide();
     }
     else if (releaseType == 't') {
         libraryTracks = releaseList;
+        await addMenuYears('e');
+        $('.nav-e').hide();
     }
     else if (releaseType == 'p') {
         libraryAppears = releaseList;
@@ -368,6 +372,7 @@ async function libraryGetReleases(releaseType) {
 
     // přidá do menu roky a měsíce releasů
     await addMenuYears(releaseType);
+    
 }
 
 /**
@@ -445,20 +450,6 @@ async function libraryAddRelease(releaseType, artist, releases) {
 
     // projde nově získané releasy
     await asyncForEach(releases, async release => {
-        if (releaseType == 't')
-        {
-            if (release.total_tracks > 1)
-            {
-                return;
-            }            
-        }
-        else if (releaseType == 'e')
-        {
-            if (release.total_tracks <= 1)
-            {
-                return;
-            } 
-        }
 
         // získá všechny umělce releasu
         var releaseArtists = release.artists;
@@ -496,6 +487,36 @@ async function libraryAddRelease(releaseType, artist, releases) {
         release.url = release.external_urls.spotify;
         release.artist = artist;
         release.artistsString = albumArtistsString;
+        if (releaseType == 't')
+        {
+            if (release.total_tracks > 1)
+            {
+                if (!artist.eps) {
+                    artist.eps = [];
+                }
+                artist.eps.push(release);
+                if (!libraryEPs) {
+                    libraryEPs = [];
+                }
+                libraryEPs.push(release);
+                return;
+            }            
+        }
+        else if (releaseType == 'e')
+        {
+            if (release.total_tracks <= 1)
+            {
+                if (!artist.tracks) {
+                    artist.tracks = [];
+                }
+                artist.tracks.push(release);
+                if (!libraryTracks) {
+                    libraryTracks = [];
+                }
+                libraryTracks.push(release);
+                return;
+            } 
+        }
         rel.push(release);
     });
 
