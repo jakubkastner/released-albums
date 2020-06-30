@@ -353,15 +353,18 @@ async function libraryGetReleases(releaseType) {
     else if (releaseType == 't') {
         releaseList2 = libraryEPs;
     }
-    if (releaseList2.length > 0) {
-        // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
-        releaseList2.sort(function (a, b) {
-            var keyA = new Date(a.release_date);
-            var keyB = new Date(b.release_date);
-            if (keyA < keyB) return 1;
-            if (keyA > keyB) return -1;
-            return 0;
-        });
+    if (releaseList2)
+    {
+        if (releaseList2.length > 0) {
+            // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
+            releaseList2.sort(function (a, b) {
+                var keyA = new Date(a.release_date);
+                var keyB = new Date(b.release_date);
+                if (keyA < keyB) return 1;
+                if (keyA > keyB) return -1;
+                return 0;
+            });
+        }
     }
 
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
