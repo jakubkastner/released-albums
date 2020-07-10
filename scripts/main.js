@@ -449,7 +449,6 @@ async function showSettings() {
 $(document).on('click', '.notifications-set', async function (e) {
     // nastavení notifikací
     var elementNotifications = $('.notifications-set');
-    var elementNotificationsSpan = $('.notifications-set span');
 
     if (!window.Notification) {
         console.log('Browser does not support notifications.');
@@ -460,7 +459,7 @@ $(document).on('click', '.notifications-set', async function (e) {
             // show notification here
             elementNotifications.removeClass('notifications-set');
             elementNotifications.addClass('notifications-disable');
-            elementNotificationsSpan.html(`<i class="fas fa-check"></i>`);
+            elementNotifications.html(`<span><i class="fas fa-check"></i></span>Notifications enabled`);
         }
         else {
             // request permission from user
@@ -469,7 +468,7 @@ $(document).on('click', '.notifications-set', async function (e) {
                     // show notification here
                     elementNotifications.removeClass('notifications-set');
                     elementNotifications.addClass('notifications-disable');
-                    elementNotificationsSpan.html(`<i class="fas fa-check"></i>`);
+                    elementNotifications.html(`<span><i class="fas fa-check"></span></i>Notifications enabled`);
                 }
                 else {
                     console.log('User blocked notifications.');
