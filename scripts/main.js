@@ -449,7 +449,7 @@ async function showSettings() {
 $(document).on('click', '.notifications-set', async function (e) {
     // nastavení notifikací
     var elementNotifications = e.currentTarget;
-    var elementId = elementNotifications.id;
+    var elementId = e.currentTarget.id;
     var elementNotificationsSpan = $('#' + elementId + ' span');
 
     if (!window.Notification) {
