@@ -59,6 +59,8 @@ var libraryCompilations = null;
 var libraryPlaylists = null;
 var defaultPlaylist = null;
 
+var notifications = false;
+
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
 
@@ -200,6 +202,15 @@ function showLoading(message) {
  * @param {*} message zpráva k zobrazení
  */
 function hideLoading(message) {
+    // show notification
+    if (notifications === true)
+    {
+        var notify = new Notification('Hi there!', {
+            body: 'How are you doing?',
+            icon: '/images/favicon.png',
+        });
+    }
+
     document.title = 'Releases on Spotify';
     elementLoader.hide();
     elementMessage.text(message);
@@ -449,6 +460,7 @@ async function showSettings() {
 $(document).on('click', '.notifications-set', async function (e) {
     // nastavení notifikací
     var elementNotifications = $('.notifications-set');
+    notifications = false;
 
     if (!window.Notification) {
         console.log('Browser does not support notifications.');
@@ -460,6 +472,7 @@ $(document).on('click', '.notifications-set', async function (e) {
             elementNotifications.removeClass('notifications-set');
             elementNotifications.addClass('notifications-disable');
             elementNotifications.html(`<span><i class="fas fa-check"></i></span>Notifications enabled`);
+            notifications = true;
         }
         else {
             // request permission from user
@@ -469,6 +482,7 @@ $(document).on('click', '.notifications-set', async function (e) {
                     elementNotifications.removeClass('notifications-set');
                     elementNotifications.addClass('notifications-disable');
                     elementNotifications.html(`<span><i class="fas fa-check"></span></i>Notifications enabled`);
+                    notifications = true;
                 }
                 else {
                     console.log('User blocked notifications.');
