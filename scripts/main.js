@@ -461,7 +461,7 @@ $(document).on('click', '.notifications-set', async function (e) {
             // show notification here
             elementNotifications.removeClass('notifications-set');
             elementNotifications.addClass('notifications-disable');
-            playlistDivSpan.html(`<i class="fas fa-check"></i>`);
+            elementNotificationsSpan.html(`<i class="fas fa-check"></i>`);
         }
         else {
             // request permission from user
@@ -470,7 +470,7 @@ $(document).on('click', '.notifications-set', async function (e) {
                     // show notification here
                     elementNotifications.removeClass('notifications-set');
                     elementNotifications.addClass('notifications-disable');
-                    playlistDivSpan.html(`<i class="fas fa-check"></i>`);
+                    elementNotificationsSpan.html(`<i class="fas fa-check"></i>`);
                 }
                 else {
                     console.log('User blocked notifications.');
