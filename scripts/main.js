@@ -100,6 +100,11 @@ var lastYear = 0;
 
 elementHiddenMenu.hide();
 
+if (Notification.permission === 'granted')
+{
+    notifications = true;
+}
+
 /**
  * Získá parametry z aktuální url adresy.
  * @returns objekt získaných parametrů aktuální url adresy
@@ -206,7 +211,7 @@ function hideLoading(message) {
     if (notifications === true)
     {
         var notify = new Notification('Releases on Spotify', {
-            body: message,
+            body: 'Releases was loaded',
             icon: '/images/favicon.png',
         });
     }
@@ -416,7 +421,16 @@ async function showSettings() {
     elementSettings.html('');
     elementMessage.html('');
     elementMessage.hide();
-    elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable broser notifications</p><ul class="playlists settings-playlist"><li class="playlist-default notifications-set" title="Click to enable browser notifications"><span><i class="fas fa-times"></i></span>Notifications disabled</li></ul></div>`);
+    var notificationsLi;
+    if (notifications === true)
+    {
+        notificationsLi = `<li class="playlist-default notifications-disable" title="Click to disable browser notifications"><i class="fas fa-check"></i>Notifications enabled</li>`;
+    }
+    else
+    {
+        notificationsLi = `<li class="playlist-default notifications-enable" title="Click to enable browser notifications"><i class="fas fa-times"></i>Notifications disabled</li>`;
+    }
+    elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable broser notifications</p><ul class="playlists settings-playlist"> ` + notificationsLi + `</ul></div>`);
     elementSettings.append(`<div class="settings-section" id="settings-playlist"><h3>Default playlist</h3><p>Set your default playlist to quickly add releases.</p></div>`);
     var elementSettingsPlaylist = $('#settings-playlist');
     elementTitle.text('Settings');
@@ -457,9 +471,9 @@ async function showSettings() {
     elementSettingsPlaylist.append(elementPlaylists);
 }
 
-$(document).on('click', '.notifications-set', async function (e) {
+$(document).on('click', '.notifications-enable', async function (e) {
     // nastavení notifikací
-    var elementNotifications = $('.notifications-set');
+    var elementNotifications = $('.notifications-enable');
     notifications = false;
 
     if (!window.Notification) {
@@ -469,9 +483,10 @@ $(document).on('click', '.notifications-set', async function (e) {
         // check if permission is already granted
         if (Notification.permission === 'granted') {
             // show notification here
-            elementNotifications.removeClass('notifications-set');
+            elementNotifications.removeClass('notifications-enable');
             elementNotifications.addClass('notifications-disable');
-            elementNotifications.html(`<span><i class="fas fa-check"></i></span>Notifications enabled`);
+            elementNotifications.title('Click to disable browser notifications');
+            elementNotifications.html(`<i class="fas fa-check"></i>Notifications enabled`);
             notifications = true;
         }
         else {
@@ -479,9 +494,10 @@ $(document).on('click', '.notifications-set', async function (e) {
             Notification.requestPermission().then(function (p) {
                 if (p === 'granted') {
                     // show notification here
-                    elementNotifications.removeClass('notifications-set');
+                    elementNotifications.removeClass('notifications-enable');
                     elementNotifications.addClass('notifications-disable');
-                    elementNotifications.html(`<span><i class="fas fa-check"></span></i>Notifications enabled`);
+                    elementNotifications.title('Click to disable browser notifications');
+                    elementNotifications.html(`<i class="fas fa-check"></i>Notifications enabled`);
                     notifications = true;
                 }
                 else {
