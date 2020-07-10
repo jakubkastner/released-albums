@@ -405,6 +405,7 @@ async function showSettings() {
     elementSettings.html('');
     elementMessage.html('');
     elementMessage.hide();
+    elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable broser notifications</p><ul class="playlists settings-playlist"><li class="playlist-default notifications-set" title="Click to enable browser notifications"><span><i class="fas fa-times"></i></span>Notifications disabled</li></ul></div>`);
     elementSettings.append(`<div class="settings-section" id="settings-playlist"><h3>Default playlist</h3><p>Set your default playlist to quickly add releases.</p></div>`);
     var elementSettingsPlaylist = $('#settings-playlist');
     elementTitle.text('Settings');
@@ -444,6 +445,34 @@ async function showSettings() {
     elementPlaylists += `</ul>`;
     elementSettingsPlaylist.append(elementPlaylists);
 }
+
+$(document).on('click', '.notifications-set', async function (e) {
+    // nastavení notifikací
+    //var elementNotifications = e.currentTarget;
+
+    if (!window.Notification) {
+        console.log('Browser does not support notifications.');
+    }
+    else {
+        // check if permission is already granted
+        if (Notification.permission === 'granted') {
+            // show notification here
+        }
+        else {
+            // request permission from user
+            Notification.requestPermission().then(function (p) {
+                if (p === 'granted') {
+                    // show notification here
+                }
+                else {
+                    console.log('User blocked notifications.');
+                }
+            }).catch(function (err) {
+                console.error(err);
+            });
+        }
+    }
+});
 
 $(document).on('click', '.playlist-default-set', async function (e) {
     // todo - odebraní výchozího playlistu

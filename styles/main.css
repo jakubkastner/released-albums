@@ -322,7 +322,7 @@ footer p {
     margin-right: calc(5px + 0.5vw);
 }
 
-.playlist-add:hover, .playlist-remove, .playlist-default-set:hover, .playlist-default-remove {
+.playlist-add:hover, .playlist-remove, .playlist-default-set:hover, .notifications-set:hover, .playlist-default-remove {
     background-color: rgb(18, 18, 18);
 }
 
