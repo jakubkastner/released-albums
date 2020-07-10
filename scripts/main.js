@@ -205,8 +205,8 @@ function hideLoading(message) {
     // show notification
     if (notifications === true)
     {
-        var notify = new Notification('Hi there!', {
-            body: 'How are you doing?',
+        var notify = new Notification('Releases on Spotify', {
+            body: message,
             icon: '/images/favicon.png',
         });
     }
