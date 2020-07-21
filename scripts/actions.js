@@ -239,6 +239,11 @@ async function libraryAddToPlaylistApi(track, playlistId, albumId) {
     var response = await sendFetch(url, track.uri);
     if (response.status == 201) {
         // přidáno
+        if (albumId === null)
+        {
+            elementActions.hide();
+            return;
+        }
         var playlistDivSpan = $('#p_' + playlistId + '_' + albumId + ' span');
         playlistDivSpan.html(`<i class="fas fa-minus"></i>`);
 

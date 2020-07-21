@@ -164,6 +164,9 @@ async function addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft
  */
 async function viewReleases(releaseType, year = 0, month = 0) {
 
+    elementActions.html(``);
+    elementActions.hide();
+
     var releaseName;
     var releaseList;
     if (releaseType == 'a') {
@@ -268,8 +271,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                     releaseLibrary = `<i class="far fa-heart album-like" title="Add album to library" id="` + release.id + `_l"></i>`;
                 }
                 var defaultPlaylistButton = '';
-                if (defaultPlaylist)
-                {
+                if (defaultPlaylist) {
                     defaultPlaylistButton = `<i class="fas fa-plus-circle album-playlist-add-default" title="Add to default playlist '` + defaultPlaylist.name + `'" id="pd_` + defaultPlaylist.id + `_` + release.id + `"></i>`;
                 }
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
@@ -287,7 +289,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 elementReleaseDiv += defaultPlaylistButton;
                 elementReleaseDiv += `<i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_` + release.id + `"></i>`;
                 elementReleaseDiv += `<a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>`;
-                elementReleaseDiv += `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`,``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
+                elementReleaseDiv += `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
                 elementReleaseDiv += `</div>
                             </div>
                           </div>`;
@@ -295,6 +297,17 @@ async function viewReleases(releaseType, year = 0, month = 0) {
         }
     });
     $('.' + releaseName).append(elementReleaseDiv);
+    // zobrazí tlačítko pro přidání všech songů do playlistu
+    if (releaseType == 't') {
+        if (year != 0) {
+            var text = `Add tracks to playlist "` + year;
+            if (month != 0) {
+                text += `-` + month;
+            }
+            elementActions.append(`<a id="playlist-add-month" class="button"><i class="fas fa-plus"></i>` + text + `"</a>`);
+            elementActions.show();
+        }
+    }
     await selectInMenu(year, month, releaseType);
 }
 
@@ -319,4 +332,62 @@ $(document).on('click', '.nav-mobile', async function (e) {
         return;
     }
     elementMenuDate.addClass('nav-hidden');
+});
+
+
+/* přidání tracků z měsíce / roku do playlistu */
+$(document).on('click', '#playlist-add-month', async function (e) {
+    var params = getHashParams();
+    if (params.show != 'tracks') {
+        return;
+    }
+    if (params.year == 0) {
+        return;
+    }
+
+    var year = params.year;
+    var month = params.month;
+    var name = year;
+    if (month != 0) {
+        name += `-` + month;
+    }
+
+    // vytvoreni playlistu
+    var newPlaylist = await createPlaylist(name);
+    if (newPlaylist === null) {
+        return;
+    }
+    // ziskani songu
+    var albums = await libraryTracks.filter(obj => {
+        return obj.release_date.indexOf(name) == 0
+    })
+
+    // seřadí seznam alb podle data vydání alba od nejstarších po nejnovější
+    await albums.sort(function (a, b) {
+        var keyA = new Date(a.release_date);
+        var keyB = new Date(b.release_date);
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+    });
+
+    // ziskani tracku albumu
+    await asyncForEach(albums, async releaseAlbum => {
+        // ziska tracky albumu
+        await libraryGetReleaseTracks(releaseAlbum.id);
+        // prida tracky do playlistu
+        if (releaseAlbum.tracks) {
+            await asyncForEach(releaseAlbum.tracks, async releaseTrack => {
+                // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
+                await libraryAddToPlaylistApi(releaseTrack, newPlaylist.id, null);
+            });
+        }
+        else {
+            // CHYBA !!!!!!!!!!!!!!
+            // pokud nenajdu tracky je neco spatne
+            console.log(releaseAlbum);
+        }
+    });
+
+
 });

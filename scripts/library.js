@@ -103,6 +103,9 @@ async function showEPs() {
     elementHiddenMenu.hide();
     elementTitle.hide();
 
+    elementActions.html(``);
+    elementActions.hide();
+
     elementAlbums.hide();
     //elementEPs.hide();
     elementTracks.hide();
@@ -183,6 +186,9 @@ async function showEPs() {
 async function showAlbums() {
     elementHiddenMenu.hide();
     elementTitle.hide();
+
+    elementActions.html(``);
+    elementActions.hide();
 
     //elementAlbums.hide();
     elementEPs.hide();
@@ -657,6 +663,9 @@ async function showTracks() {
     elementHiddenMenu.hide();
     elementTitle.hide();
 
+    elementActions.html(``);
+    elementActions.hide();
+
     elementAlbums.hide();
     elementEPs.hide();
     //elementTracks.hide();
@@ -746,6 +755,9 @@ async function showAppears() {
     elementHiddenMenu.hide();
     elementTitle.hide();
 
+    elementActions.html(``);
+    elementActions.hide();
+
     elementAlbums.hide();
     elementEPs.hide();
     elementTracks.hide();
@@ -832,6 +844,9 @@ elementCompilationsButton.click(function () {
 async function showCompilations() {
     elementHiddenMenu.hide();
     elementTitle.hide();
+
+    elementActions.html(``);
+    elementActions.hide();
 
     elementAlbums.hide();
     elementEPs.hide();
@@ -1027,15 +1042,20 @@ async function libraryGetReleaseTracks(releaseId) {
         // zobrazím albumy
         release = libraryCompilations.find(x => x.id === releaseId);
     }
-    if (release.tracks) {
+    else {
         return;
     }
+    /*if (release.tracks) {
+        console.log("tracks");
+        return;
+    }*/
     if (release.tracks > 0) {
         return;
     }
     release.tracks = [];
     var url = 'https://api.spotify.com/v1/albums/' + releaseId + '/tracks?market=' + userCountry + '&limit=50';
     await libraryGetReleaseTracksApi(url, release);
+    console.log(release.tracks);
 }
 
 async function libraryGetReleaseTracksApi(url, release) {
