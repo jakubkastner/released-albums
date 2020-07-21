@@ -57,12 +57,16 @@ var libraryTracks = null;
 var libraryAppears = null;
 var libraryCompilations = null;
 var libraryPlaylists = null;
+
 var defaultPlaylist = null;
+var defaultDevice = null;
 
 var notifications = false;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
+
+var devices = null;
 
 var options = {};
 
@@ -101,8 +105,7 @@ var lastYear = 0;
 
 elementHiddenMenu.hide();
 
-if (Notification.permission === 'granted')
-{
+if (Notification.permission === 'granted') {
     notifications = true;
 }
 
@@ -209,8 +212,7 @@ function showLoading(message) {
  */
 function hideLoading(message) {
     // show notification
-    if (notifications === true)
-    {
+    if (notifications === true) {
         var notify = new Notification('Releases on Spotify', {
             body: 'Releases was loaded',
             icon: '/images/favicon.png',
@@ -373,6 +375,18 @@ async function putFetch(url, errorText = "") {
     return await fetch(url, opt);
 }
 
+async function putFetchJson(url, json, errorText = "") {
+    var opt = {
+        method: 'PUT',
+        body: json,
+        headers: {
+        'Authorization': 'Bearer ' + userAccess,
+        'Content-Type': 'application/json'
+        }
+    };
+    return await fetch(url, opt);
+}
+
 // https://api.spotify.com/v1/playlists/{playlist_id}/tracks
 async function deleteFetch(url, json = null, errorText = "") {
     var opt = {
@@ -423,15 +437,58 @@ async function showSettings() {
     elementMessage.html('');
     elementMessage.hide();
     var notificationsLi;
-    if (notifications === true)
-    {
+    if (notifications === true) {
         notificationsLi = `<li class="playlist-default notifications-disable" title="Click to disable browser notifications"><i class="fas fa-check"></i>Notifications enabled</li>`;
     }
-    else
-    {
+    else {
         notificationsLi = `<li class="playlist-default notifications-enable" title="Click to enable browser notifications"><i class="fas fa-times"></i>Notifications disabled</li>`;
     }
     elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable broser notifications</p><ul class="playlists settings-playlist"> ` + notificationsLi + `</ul></div>`);
+
+    await getDevices();
+    elementSettings.append(`<div class="settings-section" id="settings-device"><h3>Default device</h3><p>Set your default device to play.</p></div>`);
+    var elementSettingsDevice = $('#settings-device');
+    if (user.product != 'premium')
+    {
+        elementSettings.append(`<p>This feature is available only for Spotify Premium users.</p>`);
+    }
+    else if (devices.length < 1) {
+        elementSettings.append(`<p>No device found</p>`);
+    }
+    else {
+        var elementDevices = `<ul class="devices settings-devices">`;
+        await asyncForEach(devices, async device => {
+            var icon;
+            var title;
+            var classEl = '';
+            if (!defaultDevice) {
+                icon = `<i class="fas fa-plus"></i>`;
+                title = `Set device '` + device.name + `' as default`;
+                classEl = 'device-default-set';
+            }
+            else if (defaultDevice.id != device.id) {
+                icon = `<i class="fas fa-plus"></i>`;
+                title = `Set playlist '` + device.name + `' as default`;
+                classEl = 'device-default-set';
+            }
+            else {
+                icon = `<i class="fas fa-check"></i>`;
+                title = `Unset device '` + device.name + `'`;
+                classEl = 'device-default-remove';
+            }
+            elementDevices += `<li class="device-default `;
+            elementDevices += classEl;
+            elementDevices += `" id="d_` + device.id + `" title="`
+            elementDevices += title;
+            elementDevices += `"><span>`;
+            elementDevices += icon;
+            elementDevices += `</span>` + device.name + `</li>`;
+        });
+        elementDevices += `</ul>`;
+        elementSettingsDevice.append(elementDevices);
+    }
+
+
     elementSettings.append(`<div class="settings-section" id="settings-playlist"><h3>Default playlist</h3><p>Set your default playlist to quickly add releases.</p></div>`);
     var elementSettingsPlaylist = $('#settings-playlist');
     elementTitle.text('Settings');
@@ -594,7 +651,7 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryTracks.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -669,7 +726,7 @@ $(document).on('click', '.album-playlist-add-new', async function (e) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryTracks.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -721,3 +778,76 @@ async function createPlaylist(playlistName) {
     }
     return null;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// prehravani
+
+
+
+$(document).on('click', '.device-default-set', async function (e) {
+    // todo - odebraní výchozího playlistu
+    var elementId = e.currentTarget.id;
+    var ids = elementId.split('_');
+    var deviceId = ids[1];
+
+    var deviceDiv = $('#' + elementId);
+    var deviceDivSpan = $('#' + elementId + ' span');
+
+    if (defaultDevice) {
+        if (deviceId != defaultDevice.id) {
+            var deviceDefaultDiv = $('#d_' + defaultDevice.id);
+            var deviceDefaultDivSpan = $('#d_' + defaultDevice.id + ' span');
+            // ikona
+            deviceDefaultDivSpan.html(`<i class="fas fa-plus"></i>`);
+            // class
+            deviceDefaultDiv.removeClass('device-default-remove');
+            deviceDefaultDiv.addClass('device-default-set');
+            // titulek
+            deviceDefaultDiv.prop('title', `Set device '` + deviceDiv.text() + `' as default`);
+        }
+    }
+    // ikona
+    deviceDivSpan.html(`<i class="fas fa-check"></i>`);
+    // class
+    deviceDiv.removeClass('device-default-set');
+    deviceDiv.addClass('device-default-remove');
+    // titulek
+    deviceDiv.prop('title', `Unset device '` + deviceDiv.text() + `'`);
+    // nastavení výchozího deviceu
+    var device = devices.find(x => x.id === deviceId);
+    defaultDevice = device;
+
+    // todo - odstranit ikonky jiných checknutých deviceů (ted se donekonecna pridavaji) !!!!
+});
+
+$(document).on('click', '.device-default-remove', async function (e) {
+    var elementId = e.currentTarget.id;
+    var ids = elementId.split('_');
+    var deviceId = ids[1];
+
+    var deviceDiv = $('#' + elementId);
+    var deviceDivSpan = $('#' + elementId + ' span');
+
+    // ikona
+    deviceDivSpan.html(`<i class="fas fa-plus"></i>`);
+    // class
+    deviceDiv.removeClass('device-default-remove');
+    deviceDiv.addClass('device-default-set');
+    // titulek
+    deviceDiv.prop('title', `Set device '` + deviceDiv.text() + `' as default`);
+    // nastavení výchozího deviceu
+    defaultDevice = null;
+});

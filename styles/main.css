@@ -298,7 +298,7 @@ footer p {
     display: none;
 }
 
-.playlists {
+.playlists, .devices {
     margin-top: calc(5px + 1vw);
     margin-bottom: calc(2px + 0.2vw);
     list-style: none;
@@ -309,28 +309,28 @@ footer p {
     max-height: 400px;
     overflow: hidden;
 }
-.playlists:hover {    
+.playlists:hover, .devices:hover {    
     overflow: auto;
 }
 
 
-.playlist-add, .playlist-default {
+.playlist-add, .playlist-default, .device-default {
     padding: calc(5px + 0.5vw);
 }
 
-.playlist-add i, .playlist-default i {
+.playlist-add i, .playlist-default i, .device-default i {
     margin-right: calc(5px + 0.5vw);
 }
 
-.playlist-add:hover, .playlist-remove, .playlist-default-set:hover, .notifications-set:hover, .playlist-default-remove {
+.playlist-add:hover, .playlist-remove, .playlist-default-set:hover, .notifications-set:hover, .playlist-default-remove, .device-default-set:hover {
     background-color: rgb(18, 18, 18);
 }
 
-.playlist-remove:hover, .playlist-default-remove:hover {
+.playlist-remove:hover, .playlist-default-remove:hover, .device-default-remove:hover {
     background-color: rgb(36, 36, 36);
 }
 
-.playlist-remove, .playlist-remove i, .playlist-default-remove, .playlist-default-remove i {
+.playlist-remove, .playlist-remove i, .playlist-default-remove, .playlist-default-remove i, .device-default-remove, .device-default-remove i {
     color: #1ab26b;
 }
 
@@ -353,7 +353,7 @@ footer p {
     padding: calc(5px + 1vw);
 }
 
-.settings-playlist {
+.settings-playlist, .settings-devices {
     padding: 0 calc(2.5px + 0.5vw);
 }
 
@@ -361,7 +361,7 @@ footer p {
     margin-top: calc(2px + 0.5vw);
 }
 
-.playlists li {
+.playlists li, .devices li {
     font-size: 16px;
 }
 

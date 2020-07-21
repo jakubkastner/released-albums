@@ -42,7 +42,7 @@ async function loginGetUrl() {
     console.log("ukládám " + stateValue);
 
     // otevře přihlašovací okno do spotify a získá access token
-    var scope = 'user-follow-read user-read-private user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private';
+    var scope = 'user-follow-read user-read-private user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-read-playback-state user-modify-playback-state';
     var url = 'https://accounts.spotify.com/authorize';
     url += '?response_type=token';
     url += '&client_id=' + encodeURIComponent(API_ID);
@@ -198,6 +198,9 @@ async function loginGetUserInfo() {
     await libraryGetArtists();
     // získá playlisty uživatele
     await libraryGetPlaylists();
+    // získá výstupní zařízení uživatele
+    await getDevices();
+    hideLoading('Select which releases you want to display.');
 }
 
 /**
@@ -209,3 +212,48 @@ $(document).on('click', '#logout', function (e) {
     $('.nav-user').remove();
     window.location = '';
 });
+
+// získá zařízení na kterých se dá přehrávat
+async function getDevices() {
+    // zobrazení načítání
+    showLoading('Getting your devices');
+
+    // načtení seznamu playlistů
+    if (!devices) {
+        devices = [];
+    }
+
+    // odeslání dotazu api
+    await getDevicesApi(API_URL + '/me/player/devices');
+
+    if (devices.length < 1) {
+        // nebyli získáni žádní interpreti
+        // TODO nice2have: zobrazit tlačítko - načíst znovu
+        return;
+    }
+
+    // zobrazí/skryje příslušné prvky a zobrazí zprávu
+    hideLoading('');
+}
+
+// získá zařízení na kterých se dá přehrávat z api
+async function getDevicesApi(url) {
+    // získá json z api
+    var json = await fetchJson(url, 'Failed to get list of your devices:');
+
+    if (json == null) {
+        // chyba získávání
+        return null;
+    }
+
+    // získá umělce
+    devices = json.devices;
+    if (!devices) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return;
+    }
+    if (devices.length < 1) {
+        //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
+        return;
+    }
+}

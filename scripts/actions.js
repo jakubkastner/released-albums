@@ -203,7 +203,7 @@ $(document).on('click', '.playlist-add', async function (e) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryAlbums.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -239,8 +239,7 @@ async function libraryAddToPlaylistApi(track, playlistId, albumId) {
     var response = await sendFetch(url, track.uri);
     if (response.status == 201) {
         // přidáno
-        if (albumId === null)
-        {
+        if (albumId === null) {
             elementActions.hide();
             return;
         }
@@ -257,8 +256,7 @@ async function libraryAddToPlaylistApi(track, playlistId, albumId) {
         }
         playlist.tracks.list.push(inPlaylistObject);
 
-        if (defaultPlaylist)
-        {
+        if (defaultPlaylist) {
             var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
             defaultPlaylistIcon.removeClass('fa-plus-circle');
             defaultPlaylistIcon.addClass('fa-minus-circle');
@@ -298,8 +296,7 @@ async function libraryRemoveFromPlaylistApi(track, playlistId, albumId) {
             index++;
         });
 
-        if (defaultPlaylist)
-        {
+        if (defaultPlaylist) {
             var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
             defaultPlaylistIcon.removeClass('fa-minus-circle');
             defaultPlaylistIcon.addClass('fa-plus-circle');
@@ -352,7 +349,7 @@ async function showPlaylist(releaseId) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryTracks.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -450,3 +447,57 @@ async function libraryIsSongInPlaylist_old(songID, playlistID) {
     return inPlaylist;
 }
 // https://api.spotify.com/v1/albums/{id}}/tracks?market={market}&limit=50
+
+
+
+
+
+/* kliknutí na přehrání release */
+$(document).on('click', '.release-play', async function (e) {
+    var releasePlay = e.currentTarget.id;
+    var releasePlayIcon = $('#' + releasePlay);
+    var releaseId = releasePlay.replace("_play", "");
+    if (defaultDevice) {
+        var release;
+        // získám parametry
+        var params = getHashParams();
+        if (params.show == 'albums') {
+            // zobrazím albumy
+            release = libraryAlbums.find(x => x.id === releaseId);
+        }
+        else if (params.show == 'eps') {
+            // zobrazím albumy
+            release = libraryEPs.find(x => x.id === releaseId);
+        }
+        else if (params.show == 'tracks') {
+            // zobrazím albumy
+            release = libraryTracks.find(x => x.id === releaseId);
+        }
+        else if (params.show == 'appears') {
+            // zobrazím albumy
+            release = libraryAppears.find(x => x.id === releaseId);
+        }
+        else if (params.show == 'compilations') {
+            // zobrazím albumy
+            release = libraryCompilations.find(x => x.id === releaseId);
+        }
+
+        var json = `{
+            "context_uri": "` + release.uri + `",
+            "offset": {
+              "position": 0
+            },
+            "position_ms": 0
+          }`;
+        var response = await putFetchJson(API_URL + '/me/player/play', json);
+
+        if (response.status == 200) {
+            releasePlayIcon.removeClass("far");
+            releasePlayIcon.addClass("fas");
+        }
+        else {
+            // chyba
+            console.log(response);
+        }
+    }
+});

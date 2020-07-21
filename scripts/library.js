@@ -359,8 +359,7 @@ async function libraryGetReleases(releaseType) {
     else if (releaseType == 't') {
         releaseList2 = libraryEPs;
     }
-    if (releaseList2)
-    {
+    if (releaseList2) {
         if (releaseList2.length > 0) {
             // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
             releaseList2.sort(function (a, b) {
@@ -399,7 +398,7 @@ async function libraryGetReleases(releaseType) {
 
     // přidá do menu roky a měsíce releasů
     await addMenuYears(releaseType);
-    
+
 }
 
 /**
@@ -514,10 +513,8 @@ async function libraryAddRelease(releaseType, artist, releases) {
         release.url = release.external_urls.spotify;
         release.artist = artist;
         release.artistsString = albumArtistsString;
-        if (releaseType == 't')
-        {
-            if (release.total_tracks > 1)
-            {
+        if (releaseType == 't') {
+            if (release.total_tracks > 1) {
                 if (!artist.eps) {
                     artist.eps = [];
                 }
@@ -527,12 +524,10 @@ async function libraryAddRelease(releaseType, artist, releases) {
                 }
                 libraryEPs.push(release);
                 return;
-            }            
+            }
         }
-        else if (releaseType == 'e')
-        {
-            if (release.total_tracks <= 1)
-            {
+        else if (releaseType == 'e') {
+            if (release.total_tracks <= 1) {
                 if (!artist.tracks) {
                     artist.tracks = [];
                 }
@@ -542,7 +537,7 @@ async function libraryAddRelease(releaseType, artist, releases) {
                 }
                 libraryTracks.push(release);
                 return;
-            } 
+            }
         }
         rel.push(release);
     });
@@ -941,9 +936,6 @@ async function libraryGetPlaylists() {
         // TODO nice2have: zobrazit tlačítko - načíst znovu
         return;
     }
-
-    // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    hideLoading('Select which releases you want to display.');
 }
 // získá playlisty uživatele z api
 async function libraryGetPlaylistsApi(url) {
@@ -1028,7 +1020,7 @@ async function libraryGetReleaseTracks(releaseId) {
     }
     if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryAlbums.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
