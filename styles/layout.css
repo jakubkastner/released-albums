@@ -3,7 +3,7 @@
   text-decoration: none;
   font-family: 'Pontano Sans', sans-serif;
   color: white;
-  background-color: black;
+  background-color: #242424;
 }
 
 main {
@@ -12,9 +12,59 @@ main {
   display: flex;
 }
 
+body {
+  margin: 0 calc(10px + 0.4vw);
+}
+
 /* text */
 p {
   font-size: calc(12px + 0.3vw);
+}
+
+.hidden {
+  /*display: none;*/
+}
+
+.in-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.in-header * {
+  font-size: calc(13px + 0.8vw);
+  font-weight: 700;
+  color: #1ab26b;
+}
+
+.buttons {
+  padding-bottom: 0;
+}
+
+.buttons > * {
+  padding: calc(2px + 0.5vw);
+  margin: auto 0 0 0;
+}
+
+.button,
+.buttons > * {
+  cursor: pointer;
+  font-size: calc(12px + 0.4vw);
+}
+
+.button:hover,
+.button:hover *,
+.buttons > *:hover,
+.buttons > *:hover * {
+  color: #1ab26b;
+  background-color: #2e2e2e;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.button i,
+.buttons > * i {
+  margin-right: calc(4px + 0.2vw);
 }
 
 header {
@@ -24,58 +74,78 @@ header {
   text-align: right;
 }
 
-header .page-name, header .b-login {
+header .page-name,
+header .s {
   margin: auto 0;
 }
 
-header > * {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+header > .in-header {
   padding: calc(10px + 0.5vw);
 }
 
-header > * * {
-  font-size: calc(13px + 0.8vw);
-  font-weight: 700;
-  color: red;
+header .div-login {
+  margin-left: auto;
+  position: relative;
+  padding: 0;
+  display: inline;
 }
 
-header .buttons {
-  padding-bottom: 0;
+header .div-login .menu-user {
+  /*display: block;*/
+  display: none;
+  position: absolute;
+  width: 100%;
 }
 
-header .buttons > * {
-  padding: calc(2px + 0.5vw);
-  margin: auto 0 0 0;
+header .div-login .menu-user > * {
+  display: block;
+  background-color: #1e1e1e;
 }
 
-header .button,
-header .buttons > * {
-  cursor: pointer;
-  font-size: calc(12px + 0.4vw);
-}
-
-header .button:hover,
-header .buttons > *:hover {
-  color: #1ab26b;
+header .div-login .menu-user > *:hover {
   background-color: #2e2e2e;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
+}
+
+header .div-login .menu-user > *:hover ~ .div-login {
+  background-color: yellow !important;
+}
+
+header .div-login .b-login {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  padding: calc(10px + 0.5vw);
+}
+
+header .div-login .b-login:hover {
+  background-color: #1e1e1e;
+}
+
+header .div-login .b-login:hover * {
+  background-color: #1e1e1e;
+}
+
+header .div-login:hover .menu-user {
+  display: block;
 }
 
 header .page-name {
   cursor: context-menu;
 }
 
-header .page-name img {
+header .page-name .favicon {
+  background: transparent;
   height: calc(22px + 1vw);
   font-size: calc(20px + 0.8vw);
 }
 
-header .page-name:hover img {
+header .page-name:hover .favicon {
   -webkit-animation: spin 2s linear infinite;
           animation: spin 2s linear infinite;
+}
+
+.page-name img:hover ~ .page-name h1 {
+  background-color: yellow;
 }
 
 @-webkit-keyframes spin {
@@ -100,17 +170,16 @@ header .page-name:hover img {
   }
 }
 
-.in-header > div i,
-.in-header > .login img {
-  line-height: normal;
-  margin-right: calc(5px + 0.5vw);
-  font-size: calc(20px + 1vw);
+/*.in-header>div i,
+.in-header>.login img {
+    line-height: normal;
+    margin-right: calc(5px + 0.5vw);
+    font-size: calc(20px + 1vw);
 }
 
-.in-header > .login {
-  margin-left: auto;
-}
-
+.in-header>.login {
+    margin-left: auto;
+}*/
 @media screen and (max-width: 1000px) {
   header .page-name h1 {
     display: none;

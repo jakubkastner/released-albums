@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,23 +17,26 @@
 
 <body>
     <header>
-        <div class="page-name">
-            <img src="images/favicon.png" alt="R"><h1>eleases on Spotify</h1>
+        <div class="page-name in-header">
+            <img class="favicon" src="images/favicon.png" alt="R">
+            <h1>eleases on Spotify</h1>
         </div>
-        <nav class="hidden menu-releases buttons">
-            <a class="b-albums-" title="View released albums">Albums</a>
+        <nav class="menu-releases buttons in-header hidden">
+            <a class="b-albums" title="View released albums">Albums</a>
             <a class="b-tracks" title="View released tracks">Tracks</a>
             <a class="b-appears" title="View released appears">Appears</a>
-            <a class="b-compilations" title="View released compilations">Compilations</a> 
-        </nav>       
-        <nav class="hidden menu-user buttons">
-            <a class="b-settings">Settings</a>
-            <a class="b-logout">Logout</a>
+            <a class="b-compilations" title="View released compilations">Compilations</a>
         </nav>
-        <a class="b-login button" id="user" title="Click to login">
-            <i class="fab fa-spotify"></i>
-            <p>Login via Spotify</p>
-        </a>
+        <div class="div-login in-header">
+            <a class="b-login button" id="user" title="Click to login">
+                <i class="fab fa-spotify"></i>
+                <p>Login via Spotify</p>
+            </a>
+            <nav class="menu-user buttons in-header hidden">
+                <a class="b-settings">Settings</a>
+                <a class="b-logout">Logout</a>
+            </nav>
+        </div>
     </header>
 
     <main>
