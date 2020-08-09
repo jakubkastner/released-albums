@@ -1,26 +1,28 @@
-
 // TLAČÍTKA
 .buttons {
-    padding-bottom: 0;
+	padding-bottom: 0;
 
-    &>* {
-        padding: calc(2px + 0.5vw);
-        margin: auto 0 0 0;
-    }
+	& > * {
+		padding: calc(2px + 0.5vw);
+		margin: auto 0 0 0;
+	}
 }
 .button,
-.buttons>* {
-    cursor: pointer;
-    font-size: calc(12px + 0.4vw);
+.buttons > * {
+	cursor: pointer;
+	font-size: calc(12px + 0.4vw);
+	margin-top: calc(5px + 0.2vw);
+    padding: calc(2px + 0.5vw);
+    display: inline-block;
 
-    &:hover,
-    &:hover * {
-        color: #1ab26b;
-        background-color: rgb(46, 46, 46);
-        transition: 0.5s;
-    }
+	&:hover,
+	&:hover * {
+		color: #1ab26b;
+		background-color: rgb(46, 46, 46);
+		transition: 0.5s;
+	}
 
-    i {
-        margin-right: calc(4px + 0.2vw);
-    }
+	i {
+		margin-right: calc(4px + 0.2vw);
+	}
 }

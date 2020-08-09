@@ -11,6 +11,9 @@
 .buttons > * {
   cursor: pointer;
   font-size: calc(12px + 0.4vw);
+  margin-top: calc(5px + 0.2vw);
+  padding: calc(2px + 0.5vw);
+  display: inline-block;
 }
 
 .button:hover,
