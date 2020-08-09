@@ -37,8 +37,8 @@
 
 var API_ID = 'd1c9a91ea65443af90946fde02fdda64';
 var API_SECRET = '26bbf4fad9384fd4bb3543649ade8b05';
-var REDIRECT_URI = 'https://jakubkastner.github.io/released-albums/';
-//var REDIRECT_URI = 'http://192.168.1.25:5500';
+//var REDIRECT_URI = 'https://jakubkastner.github.io/released-albums/';
+var REDIRECT_URI = 'http://192.168.1.25:5500';
 //var REDIRECT_URI = 'http://localhost:5500';
 //var REDIRECT_URI = 'http://127.0.0.1:5500';
 var STATE_KEY = 'spotify_auth_state';
@@ -364,6 +364,17 @@ async function sendFetch(url, trackUri, errorText = "") {
     };
     return await fetch(url, opt);
 }
+async function sendFetchQueue(url, trackUri, errorText = "") {
+    url = url + '?uri=' + trackUri + '&device_id=' + defaultDevice.id;
+    var opt = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + userAccess
+        }
+    };
+    return await fetch(url, opt);
+}
+
 
 async function putFetch(url, errorText = "") {
     var opt = {
@@ -380,8 +391,8 @@ async function putFetchJson(url, json, errorText = "") {
         method: 'PUT',
         body: json,
         headers: {
-        'Authorization': 'Bearer ' + userAccess,
-        'Content-Type': 'application/json'
+            'Authorization': 'Bearer ' + userAccess,
+            'Content-Type': 'application/json'
         }
     };
     return await fetch(url, opt);
@@ -448,8 +459,7 @@ async function showSettings() {
     await getDevices();
     elementSettings.append(`<div class="settings-section" id="settings-device"><h3>Default device</h3><p>Set your default device to play.</p></div>`);
     var elementSettingsDevice = $('#settings-device');
-    if (user.product != 'premium')
-    {
+    if (user.product != 'premium') {
         elementSettings.append(`<p>This feature is available only for Spotify Premium users.</p>`);
     }
     else if (devices.length < 1) {

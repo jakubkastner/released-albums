@@ -938,7 +938,7 @@ async function libraryGetPlaylists() {
     }
 }
 // získá playlisty uživatele z api
-async function libraryGetPlaylistsApi(url) {
+async function libraryGetPlaylistsApi(url, index = 0) {
     // získá json z api
     var json = await fetchJson(url, 'Failed to get list of your playlists:');
 
@@ -957,9 +957,9 @@ async function libraryGetPlaylistsApi(url) {
         //showError('No playlists can be obtained', 'You are not following any artist.'); // !!
         return;
     }
-
     // získá seznam tracků pro playlisty uživatele
-    await asyncForEach(playlists, async playlist => {
+    await asyncForEach(playlists, async playlist => {        
+        elementMessage.text('Please wait: Getting your playlists... (' + ++index + ')');
         if (playlist.tracks.total < 1) {
             return;
         }
@@ -975,7 +975,7 @@ async function libraryGetPlaylistsApi(url) {
     if (json.next) {
         // existuje další stránka seznamu playlistů
         // -> odešle se další dotaz
-        await libraryGetPlaylistsApi(json.next);
+        await libraryGetPlaylistsApi(json.next, index);
     }
 }
 

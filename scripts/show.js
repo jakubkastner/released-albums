@@ -306,11 +306,14 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     // zobrazí tlačítko pro přidání všech songů do playlistu
     if (releaseType == 't') {
         if (year != 0) {
-            var text = `Add tracks to playlist "` + year;
+            var text = ` "` + year;
             if (month != 0) {
                 text += `-` + month;
             }
-            elementActions.append(`<a id="playlist-add-month" class="button"><i class="fas fa-plus"></i>` + text + `"</a>`);
+            if (defaultDevice) {
+                elementActions.append(`<a id="playlist-play-month" class="button"><i class="fas fa-play"></i>Play all tracks</a>`);
+            }
+            elementActions.append(`<a id="playlist-add-month" class="button"><i class="fas fa-plus"></i>Add tracks to playlist` + text + `"</a>`);
             elementActions.show();
         }
     }
@@ -368,12 +371,12 @@ $(document).on('click', '#playlist-add-month', async function (e) {
         return obj.release_date.indexOf(name) == 0
     })
 
-    // seřadí seznam alb podle data vydání alba od nejstarších po nejnovější
+    // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
     await albums.sort(function (a, b) {
         var keyA = new Date(a.release_date);
         var keyB = new Date(b.release_date);
-        if (keyA < keyB) return -1;
-        if (keyA > keyB) return 1;
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
         return 0;
     });
 
@@ -396,4 +399,88 @@ $(document).on('click', '#playlist-add-month', async function (e) {
     });
 
 
+});
+
+/* přidání tracků z měsíce / roku do playlistu */
+$(document).on('click', '#playlist-play-month', async function (e) {
+    var params = getHashParams();
+    if (params.show != 'tracks') {
+        return;
+    }
+    if (params.year == 0) {
+        return;
+    }
+    if (!defaultDevice) {
+        return;
+    }
+    var year = params.year;
+    var month = params.month;
+    var name = year;
+    if (month != 0) {
+        name += `-` + month;
+    }
+    var firstSong = false;
+
+    // ziskani songu
+    var tracks = await libraryTracks.filter(obj => {
+        return obj.release_date.indexOf(name) == 0
+    })
+
+    // seřadí seznam alb podle data vydání alba od nejstarších po nejnovější
+    await tracks.sort(function (a, b) {
+        var keyA = new Date(a.release_date);
+        var keyB = new Date(b.release_date);
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
+        return 0;
+    });
+    // ziskani tracku albumu
+    await asyncForEach(tracks, async releaseAlbum => {
+        // prida do fronty
+        if (!firstSong) {
+            // prehrani (api pozadavek)
+            var json = `{
+                "context_uri": "` + releaseAlbum.uri + `",
+                "offset": {
+                    "position": 0
+                },
+                "position_ms": 0
+                }`;
+            var response = await putFetchJson(API_URL + '/me/player/play', json);
+
+            if (response.status == 200) {
+                releasePlayIcon.removeClass("far");
+                releasePlayIcon.addClass("fas");
+            }
+            else {
+                // chyba
+                console.log(response);
+            }
+
+            firstSong = true;
+        }
+        else {
+            // ziska tracky albumu
+            await libraryGetReleaseTracks(releaseAlbum.id);
+            // prida tracky do playlistu
+            if (releaseAlbum.tracks) {
+                await asyncForEach(releaseAlbum.tracks, async releaseTrack => {
+                    // pridani do fronty (api)
+                    var url = API_URL + '/me/player/queue';
+                    var response = await sendFetchQueue(url, releaseTrack.uri);
+                    if (response.status == 201) {
+                    }
+                    else {
+                        console.log(response);
+                    }
+
+                });
+            }
+            else {
+                // CHYBA !!!!!!!!!!!!!!
+                // pokud nenajdu tracky je neco spatne
+                console.log(releaseAlbum);
+            }
+        }
+    });
 });
