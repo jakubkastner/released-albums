@@ -1,0 +1,30 @@
+.buttons {
+  padding-bottom: 0;
+}
+
+.buttons > * {
+  padding: calc(2px + 0.5vw);
+  margin: auto 0 0 0;
+}
+
+.button,
+.buttons > * {
+  cursor: pointer;
+  font-size: calc(12px + 0.4vw);
+}
+
+.button:hover,
+.button:hover *,
+.buttons > *:hover,
+.buttons > *:hover * {
+  color: #1ab26b;
+  background-color: #2e2e2e;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.button i,
+.buttons > * i {
+  margin-right: calc(4px + 0.2vw);
+}
+/*# sourceMappingURL=actions.css.map */

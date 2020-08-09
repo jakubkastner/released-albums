@@ -1,3 +1,5 @@
+// HLAVNÍ
+
 * {
     margin: 0;
     text-decoration: none;
@@ -19,73 +21,62 @@ p {
     font-size: calc(12px + 0.3vw);
 }
 
+/* skryté */
 .hidden {
     /*display: none;*/
 }
 
+
 // HORNÍ MENU
-
-.in-header {
-    // děti headeru
-    display: flex;
-
-    // text názvů
-    & * {
-        font-size: calc(13px + 0.8vw);
-        font-weight: 700;
-        color: #1ab26b;
-    }
-}
-
-.buttons {
-    padding-bottom: 0;
-
-    &>* {
-        padding: calc(2px + 0.5vw);
-        margin: auto 0 0 0;
-    }
-}
-
-
-.button,
-.buttons>* {
-    cursor: pointer;
-    font-size: calc(12px + 0.4vw);
-
-    &:hover,
-    &:hover * {
-        color: #1ab26b;
-        background-color: rgb(46, 46, 46);
-        transition: 0.5s;
-    }
-
-    i {
-        margin-right: calc(4px + 0.2vw);
-    }
-}
-
-
 
 header {
     display: flex;
     text-align: right;
 
-    .page-name,
-    .s {
-        margin: auto 0;
-    }
-
+    // v menu
     &>.in-header {
         padding: calc(10px + 0.5vw);
+        // děti headeru
+        display: flex;
+
+        // text názvů
+        & * {
+            font-weight: 700;
+            color: #1ab26b;
+        }
     }
 
-    .div-login {
+    // nadpis stránky
+    &>.page-name {
+        cursor: context-menu;
+        margin: auto 0;
+
+        // ikona
+        &>.favicon {
+            background: transparent;
+            height: calc(22px + 1vw);
+            font-size: calc(20px + 0.8vw);
+            margin-left: 5px;
+        }
+
+        &:hover>.favicon {
+            animation: spin 2s linear infinite;
+        }
+
+        // název
+        &>h1 {
+            font-size: calc(13px + 0.8vw);
+        }
+    }
+
+    // uživatel (nastavení, přihlášení)
+    .div-user {
         margin-left: auto;
         position: relative;
         padding: 0;
         display: inline;
 
-        .menu-user {
+        &>.menu-hover {
             /*display: block;*/
             display: none;
             position: absolute;
@@ -99,7 +90,7 @@ header {
                     background-color: rgb(46, 46, 46);
 
                     &~.div-login {
-                        background-color: yellow!important;
+                        background-color: yellow !important;
                     }
                 }
             }
@@ -119,32 +110,19 @@ header {
         }
 
         &:hover {
-            .menu-user {
+            .menu-hover {
                 display: block;
+            }
+
+            .menu-hover.hidden {
+                display: none;
             }
         }
     }
-
-
-
-    .page-name {
-        cursor: context-menu;
-
-        .favicon {
-            background: transparent;
-            height: calc(22px + 1vw);
-            font-size: calc(20px + 0.8vw);
-        }
-
-        &:hover .favicon {
-            animation: spin 2s linear infinite;
-        }
-    }
 }
 
-.page-name img:hover ~ .page-name h1 {
-    background-color: yellow;
-}
+
+// ANIMACE
 
 @keyframes spin {
     0% {
@@ -156,19 +134,8 @@ header {
     }
 }
 
-/*.in-header>div i,
-.in-header>.login img {
-    line-height: normal;
-    margin-right: calc(5px + 0.5vw);
-    font-size: calc(20px + 1vw);
-}
 
-.in-header>.login {
-    margin-left: auto;
-}*/
-
-
-
+// RESPONZIVNÍ WEB
 
 @media screen and (max-width: 1000px) {
     header {
@@ -181,3 +148,10 @@ header {
         }
     }
 }
+
+
+// TESTUJI
+
+/*.page-name img:hover~.page-name h1 {
+    background-color: yellow;
+}*/

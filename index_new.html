@@ -10,6 +10,7 @@
     <title>Releases on Spotify</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="styles/layout.css" />
+    <link rel="stylesheet" type="text/css" href="styles/actions.css" />
     <link rel="icon" type="image/ico" href="images/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Pontano+Sans" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -18,21 +19,28 @@
 <body>
     <header>
         <div class="page-name in-header">
+            <h1>New Music</h1>
             <img class="favicon" src="images/favicon.png" alt="R">
-            <h1>eleases on Spotify</h1>
+            <h1>eleases</h1>
         </div>
         <nav class="menu-releases buttons in-header hidden">
             <a class="b-albums" title="View released albums">Albums</a>
+            <a class="b-eps" title="View released EPs">EPs</a>
             <a class="b-tracks" title="View released tracks">Tracks</a>
             <a class="b-appears" title="View released appears">Appears</a>
             <a class="b-compilations" title="View released compilations">Compilations</a>
         </nav>
-        <div class="div-login in-header">
-            <a class="b-login button" id="user" title="Click to login">
-                <i class="fab fa-spotify"></i>
-                <p>Login via Spotify</p>
+        <div class="div-user in-header">
+            <a class="b-login button" id="user" title="Login via">
+                <i class="fas fa-user-plus"></i>
+                <p>Login</p>
             </a>
-            <nav class="menu-user buttons in-header hidden">
+            <nav class="menu-login menu-hover buttons in-header">
+                <a class="b-login-spotify" title="Login via Spotify"><i class="fab fa-spotify"></i>Spotify</a>
+                <a class="b-login-deezer" title="Login via Deezer"><i class="fab fa-deezer"></i>Deezer</a>
+                <a class="b-login-apple" title="Login via Apple Music"><i class="fab fa-apple"></i>Apple Music</a>
+            </nav>
+            <nav class="menu-user menu-hover buttons in-header hidden">
                 <a class="b-settings">Settings</a>
                 <a class="b-logout">Logout</a>
             </nav>
@@ -46,8 +54,8 @@
         <div class="in-body">
             <div class="in-main">
                 <h2 class="title"></h2>
-                <h2 class="message">View all albums by years and months of your followed artists on Spotify</h2>
-                <p class="error">To see all albums releases, you must login with your Spotify account.</p>
+                <h2 class="message">View all albums by years and months of your followed artists</h2>
+                <p class="error">To see all albums releases, you must login with your music account.</p>
                 <a class="button login login-button" id="login-button"><i class="fab fa-spotify"></i>Login via Spotify</a>
                 <div class="albums" style="display: none;"></div>
                 <div class="tracks" style="display: none;"></div>

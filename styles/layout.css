@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
   margin: 0;
   text-decoration: none;
@@ -21,50 +22,9 @@ p {
   font-size: calc(12px + 0.3vw);
 }
 
+/* skryté */
 .hidden {
   /*display: none;*/
-}
-
-.in-header {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.in-header * {
-  font-size: calc(13px + 0.8vw);
-  font-weight: 700;
-  color: #1ab26b;
-}
-
-.buttons {
-  padding-bottom: 0;
-}
-
-.buttons > * {
-  padding: calc(2px + 0.5vw);
-  margin: auto 0 0 0;
-}
-
-.button,
-.buttons > * {
-  cursor: pointer;
-  font-size: calc(12px + 0.4vw);
-}
-
-.button:hover,
-.button:hover *,
-.buttons > *:hover,
-.buttons > *:hover * {
-  color: #1ab26b;
-  background-color: #2e2e2e;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
-}
-
-.button i,
-.buttons > * i {
-  margin-right: calc(4px + 0.2vw);
 }
 
 header {
@@ -74,78 +34,87 @@ header {
   text-align: right;
 }
 
-header .page-name,
-header .s {
+header > .in-header {
+  padding: calc(10px + 0.5vw);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+header > .in-header * {
+  font-weight: 700;
+  color: #1ab26b;
+}
+
+header > .page-name {
+  cursor: context-menu;
   margin: auto 0;
 }
 
-header > .in-header {
-  padding: calc(10px + 0.5vw);
+header > .page-name > .favicon {
+  background: transparent;
+  height: calc(22px + 1vw);
+  font-size: calc(20px + 0.8vw);
+  margin-left: 5px;
 }
 
-header .div-login {
+header > .page-name:hover > .favicon {
+  -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
+}
+
+header > .page-name > h1 {
+  font-size: calc(13px + 0.8vw);
+}
+
+header .div-user {
   margin-left: auto;
   position: relative;
   padding: 0;
   display: inline;
 }
 
-header .div-login .menu-user {
+header .div-user > .menu-hover {
   /*display: block;*/
   display: none;
   position: absolute;
   width: 100%;
 }
 
-header .div-login .menu-user > * {
+header .div-user > .menu-hover > * {
   display: block;
   background-color: #1e1e1e;
 }
 
-header .div-login .menu-user > *:hover {
+header .div-user > .menu-hover > *:hover {
   background-color: #2e2e2e;
 }
 
-header .div-login .menu-user > *:hover ~ .div-login {
+header .div-user > .menu-hover > *:hover ~ .div-login {
   background-color: yellow !important;
 }
 
-header .div-login .b-login {
+header .div-user .b-login {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
   padding: calc(10px + 0.5vw);
 }
 
-header .div-login .b-login:hover {
+header .div-user .b-login:hover {
   background-color: #1e1e1e;
 }
 
-header .div-login .b-login:hover * {
+header .div-user .b-login:hover * {
   background-color: #1e1e1e;
 }
 
-header .div-login:hover .menu-user {
+header .div-user:hover .menu-hover {
   display: block;
 }
 
-header .page-name {
-  cursor: context-menu;
-}
-
-header .page-name .favicon {
-  background: transparent;
-  height: calc(22px + 1vw);
-  font-size: calc(20px + 0.8vw);
-}
-
-header .page-name:hover .favicon {
-  -webkit-animation: spin 2s linear infinite;
-          animation: spin 2s linear infinite;
-}
-
-.page-name img:hover ~ .page-name h1 {
-  background-color: yellow;
+header .div-user:hover .menu-hover.hidden {
+  display: none;
 }
 
 @-webkit-keyframes spin {
@@ -170,16 +139,6 @@ header .page-name:hover .favicon {
   }
 }
 
-/*.in-header>div i,
-.in-header>.login img {
-    line-height: normal;
-    margin-right: calc(5px + 0.5vw);
-    font-size: calc(20px + 1vw);
-}
-
-.in-header>.login {
-    margin-left: auto;
-}*/
 @media screen and (max-width: 1000px) {
   header .page-name h1 {
     display: none;
@@ -188,4 +147,8 @@ header .page-name:hover .favicon {
     display: none;
   }
 }
+
+/*.page-name img:hover~.page-name h1 {
+    background-color: yellow;
+}*/
 /*# sourceMappingURL=layout.css.map */
