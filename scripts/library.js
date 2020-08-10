@@ -36,7 +36,7 @@ async function libraryGetArtists() {
  * Získá ze Spotify api seznam interpretů, které uživatel sleduje.
  * @param {*} url url adresa api požadavku
  */
-async function libraryGetArtistsApi(url) {
+async function libraryGetArtistsApi(url, index = 0) {
     // získá json z api
     var json = await fetchJson(url, 'Failed to get list of your followed artists:');
 
@@ -61,6 +61,7 @@ async function libraryGetArtistsApi(url) {
         if (!artist.fetch_url) {
             artist.fetch_url = {};
         }
+        elementMessage.text('Please wait: Getting list of your followed artists... (' + ++index + ')');
         var fetchUrl = API_URL + '/artists/' + artist.id + '/albums?offset=0&limit=50&include_groups=';
         artist.fetch_url.album = fetchUrl + 'album&market=' + userCountry;
         artist.fetch_url.track = fetchUrl + 'single&market=' + userCountry;
@@ -74,7 +75,7 @@ async function libraryGetArtistsApi(url) {
     if (json.artists.next) {
         // existuje další stránka seznamu umělců
         // -> odešle se další dotaz
-        await libraryGetArtistsApi(json.artists.next);
+        await libraryGetArtistsApi(json.artists.next, index);
     }
 }
 
@@ -958,7 +959,7 @@ async function libraryGetPlaylistsApi(url, index = 0) {
         return;
     }
     // získá seznam tracků pro playlisty uživatele
-    await asyncForEach(playlists, async playlist => {        
+    await asyncForEach(playlists, async playlist => {
         elementMessage.text('Please wait: Getting your playlists... (' + ++index + ')');
         if (playlist.tracks.total < 1) {
             return;
