@@ -23,6 +23,9 @@ async function addMenuYears(releaseType) {
     else if (releaseType == 'c') {
         releaseList = libraryCompilations;
     }
+    else if (releaseType == 'd') {
+        releaseList = libraryPodcastsAll;
+    }
 
     var years = [];
     var undefinedYear = false; // rok není ve spotify vyplněn
@@ -82,6 +85,9 @@ async function addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft
     }
     else if (releaseType == 'c') {
         releaseName = 'compilations';
+    }
+    else if (releaseType == 'd') {
+        releaseName = 'podcasts';
     }
     // přidá rok do menu (ostatní)
     var elementMenuYear = $('<ul class="nav-' + releaseType + '" id="' + releaseType + '-y-' + year + '"></ul>');
@@ -189,6 +195,10 @@ async function viewReleases(releaseType, year = 0, month = 0) {
         releaseName = 'compilations';
         releaseList = libraryCompilations;
     }
+    else if (releaseType == 'd') {
+        releaseName = 'podcasts';
+        releaseList = libraryPodcastsAll;
+    }
 
     // změna url parametrů
     var params = getHashParams();
@@ -279,15 +289,21 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 if (defaultDevice) {
                     playRelease = `<i class="fas fa-play release-play" title="Play release" id="` + release.id + `_play"></i>`;
                 }
+                var aristsHref = '';
+                var artistsYt = '';
+                if (releaseType != 'd') {
+                    aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
+                    artistsYt = `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
+                }
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
                             <div class="album-flex">
                                 <div class="album-img">
                                     <img src="` + release.cover + `"</img>
                                 </div>
                                 <div class="album-info">
-                                    <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><h2>` + release.name + `</h2></a>
-                                    <a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>
-                                    <p>` + release.release_date + `</p>
+                                    <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><h2>` + release.name + `</h2></a>`;
+                elementReleaseDiv += aristsHref;
+                elementReleaseDiv += `<p>` + release.release_date + `</p>
                                     <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"><span>` + release.total_tracks + `</span></i>`;
                 elementReleaseDiv += playRelease;
                 elementReleaseDiv += releaseLibrary;
@@ -295,7 +311,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 elementReleaseDiv += defaultPlaylistButton;
                 elementReleaseDiv += `<i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_` + release.id + `"></i>`;
                 elementReleaseDiv += `<a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>`;
-                elementReleaseDiv += `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
+                elementReleaseDiv += artistsYt;
                 elementReleaseDiv += `</div>
                             </div>
                           </div>`;

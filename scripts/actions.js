@@ -100,6 +100,9 @@ $(document).on('click', '.year', function (e) {
     else if (params.show == 'compilations') {
         releaseType = 'c';
     }
+    else if (params.show == 'podcasts') {
+        releaseType = 'd';
+    }
     else {
         return;
     }
@@ -137,6 +140,9 @@ $(document).on('click', '.month', function (e) {
     }
     else if (params.show == 'compilations') {
         releaseType = 'c';
+    }
+    else if (params.show == 'podcasts') {
+        releaseType = 'd';
     }
     else {
         return;
@@ -203,7 +209,7 @@ $(document).on('click', '.playlist-add', async function (e) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryEPs.find(x => x.id === releaseId);
+        release = libraryPodcasts.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -216,6 +222,10 @@ $(document).on('click', '.playlist-add', async function (e) {
     else if (params.show == 'compilations') {
         // zobrazím albumy
         release = libraryCompilations.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'podcasts') {
+        // zobrazím albumy
+        release = libraryPodcasts.find(x => x.id === releaseId);
     }
 
     if (playlistIcon.hasClass('fa-plus')) {
@@ -349,7 +359,7 @@ async function showPlaylist(releaseId) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryEPs.find(x => x.id === releaseId);
+        release = libraryPodcasts.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -362,6 +372,10 @@ async function showPlaylist(releaseId) {
     else if (params.show == 'compilations') {
         // zobrazím albumy
         release = libraryCompilations.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'podcasts') {
+        // zobrazím albumy
+        release = libraryPodcasts.find(x => x.id === releaseId);
     }
 
     // projde playlisty uživatele
@@ -467,7 +481,7 @@ $(document).on('click', '.release-play', async function (e) {
         }
         else if (params.show == 'eps') {
             // zobrazím albumy
-            release = libraryEPs.find(x => x.id === releaseId);
+            release = libraryPodcasts.find(x => x.id === releaseId);
         }
         else if (params.show == 'tracks') {
             // zobrazím albumy
@@ -480,6 +494,10 @@ $(document).on('click', '.release-play', async function (e) {
         else if (params.show == 'compilations') {
             // zobrazím albumy
             release = libraryCompilations.find(x => x.id === releaseId);
+        }
+        else if (params.show == 'podcasts') {
+            // zobrazím albumy
+            release = libraryPodcastsAll.find(x => x.id === releaseId);
         }
 
         var json = `{

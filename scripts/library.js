@@ -101,6 +101,94 @@ elementEPsButton.click(function () {
 /**
  * Zobrazení tracků
  */
+async function showPodcasts() {
+    elementHiddenMenu.hide();
+    elementTitle.hide();
+
+    elementActions.html(``);
+    elementActions.hide();
+
+    elementAlbums.hide();
+    elementEPs.hide();
+    elementTracks.hide();
+    elementAppears.hide();
+    elementCompilations.hide();
+    //elementPodcasts.hide();
+    elementSettings.hide();
+
+    elementMenuDate.show();
+    $('.nav-a').hide();
+    $('.nav-e').hide();
+    $('.nav-t').hide();
+    $('.nav-p').hide();
+    $('.nav-c').hide();
+    $('.nav-d').hide();
+    //$('.nav-s').hide();
+
+    var params = getHashParams();
+    if (params.show != 'podcasts') {
+        // nebyla nastavena url
+        window.location.replace("#show=podcasts");
+    }
+
+    if (!libraryPodcastsAll) {
+        // albumy dosud nebyly načteny
+        // -> získá albumy a zobrazí je
+        //await libraryGetReleases('d');
+        await libraryGetPodcasts();
+    }
+
+    if (!libraryPodcastsAll) {
+        // albumy byly načteny, ale žádné se nenašly
+        showError('No Podcasts', 'Cannot show any podcasts, because you are following only artists without podcasts.');
+    }
+    else if (libraryPodcastsAll.length < 1) {
+        // albumy byly načteny, ale žádné se nenašly
+        showError('No Podcasts', 'Cannot show any podcasts, because you are following only artists without podcasts.');
+    }
+    else {
+        // byly načteny albumy
+
+        // TODO : dodělat přepínání
+        /*if (elementAlbums.is(':hidden')) {
+            // albumy jsou již zobrazeny
+            return;
+        }*/
+
+        // albumy nejsou zobrazeny
+        // -> zobrazím albumy
+
+        // TODO : zobrazit albumy (podle roku z url) a menu
+        var year = '0';
+        var month = '0';
+        if (params.year) {
+            year = params.year;
+        }
+        if (params.month) {
+            month = params.month;
+        }
+        await viewReleases('d', year, month);
+        elementMessage.hide();
+    }
+
+    // TODO : přesunout zobrazování jinam
+    elementAlbumsButton.removeClass('current-year');
+    elementEPsButton.removeClass('current-year');
+    elementTracksButton.removeClass('current-year');
+    elementAppearsButton.removeClass('current-year');
+    elementCompilationsButton.removeClass('current-year');
+    elementPodcastsButton.addClass('current-year');
+    elementSettingsButton.removeClass('current-year');
+
+    elementPodcasts.show();
+    $('.nav-d').show();
+    elementHiddenMenu.show();
+    elementTitle.show();
+}
+// TODO !!!
+/**
+ * Zobrazení tracků
+ */
 async function showEPs() {
     elementHiddenMenu.hide();
     elementTitle.hide();
@@ -113,6 +201,7 @@ async function showEPs() {
     elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
+    elementPodcasts.hide();
     elementSettings.hide();
 
     elementMenuDate.show();
@@ -121,6 +210,8 @@ async function showEPs() {
     $('.nav-t').hide();
     $('.nav-p').hide();
     $('.nav-c').hide();
+    $('.nav-d').hide();
+    $('.nav-s').hide();
 
     var params = getHashParams();
     if (params.show != 'eps') {
@@ -173,6 +264,7 @@ async function showEPs() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementPodcastsButton.removeClass('current-year');
     elementSettingsButton.removeClass('current-year');
 
     elementEPs.show();
@@ -197,6 +289,7 @@ async function showAlbums() {
     elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
+    elementPodcasts.hide();
     elementSettings.hide();
 
     elementMenuDate.show();
@@ -205,6 +298,8 @@ async function showAlbums() {
     $('.nav-t').hide();
     $('.nav-p').hide();
     $('.nav-c').hide();
+    $('.nav-d').hide();
+    $('.nav-s').hide();
 
     var params = getHashParams();
     if (params.show != 'albums') {
@@ -256,12 +351,112 @@ async function showAlbums() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementPodcastsButton.removeClass('current-year');
     elementSettingsButton.removeClass('current-year');
 
     elementAlbums.show();
     $('.nav-a').show();
     elementHiddenMenu.show();
     elementTitle.show();
+}
+
+async function getPodcastsEpisodes(podcast) {
+    // /shows/{id}/episodes
+    await getPodcastsEpisodesApi(API_URL + '/shows/' + podcast.show.id + '/episodes?offset=0&limit=50', podcast);
+}
+
+
+async function getPodcastsEpisodesApi(url, podcast) {
+    var json = await fetchJson(url);
+    if (json === null) return false;
+    if (!podcast.episodes) {
+        podcast.episodes = [];
+    }
+    libraryPodcastsAll = libraryPodcastsAll.concat(json.items);
+    podcast.episodes = podcast.episodes.concat(json.items);     
+    podcast.artistsString = podcast.name;
+    if (json.next)
+    {
+        await getPodcastsEpisodesApi(json.next, podcast);
+    }
+    return true;
+}
+
+async function getPodcastsApi(url) {
+    var json = await fetchJson(url);
+    if (json === null) return false;
+    libraryPodcasts = libraryPodcasts.concat(json.items);
+    if (json.next)
+    {
+        await getPodcastsApi(json.next);
+    }
+    return true;
+}
+
+async function libraryGetPodcasts() {
+    elementMenuMobile.addClass('hidden');
+    // získání názvu typu a seznamů releasů
+    var releaseName = 'podcasts';
+    if (!libraryPodcasts) {
+        libraryPodcasts = [];
+    }
+    if (!libraryPodcastsAll) {
+        libraryPodcastsAll = [];
+    }
+
+    // zobrazení načítání
+    showLoading('Getting ' + releaseName);
+
+    // získám uložené podcasty
+    await getPodcastsApi(API_URL + '/me/shows?offset=0&limit=50');
+
+    // projde sledované interprety
+    await asyncForEach(libraryPodcasts, async podcast => {
+        if (podcast === undefined) return;
+        // získá ze spotify api jejich albumy
+        await getPodcastsEpisodes(podcast);
+    });
+    console.log(libraryPodcastsAll);
+
+    if (libraryPodcastsAll.length < 1) {
+        // nebyly získány žádné releasy
+        // TODO nice2have: zobrazit tlačítko - načíst znovu
+        return;
+    }
+
+    // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
+    libraryPodcastsAll.sort(function (a, b) {
+        var keyA = new Date(a.release_date);
+        var keyB = new Date(b.release_date);
+        if (keyA < keyB) return 1;
+        if (keyA > keyB) return -1;
+        return 0;
+    });
+    await asyncForEach(libraryPodcastsAll, async podcast => {
+        // získá cover
+        var coverUrl = '';
+        if (podcast.images.length > 0) {
+            coverUrl = podcast.images[0].url;
+        }
+        else if (podcast.images.length > 1) {
+            coverUrl = podcast.images[1].url;
+        }
+        else if (podcast.images.length > 3) {
+            coverUrl = podcast.images[3].url;
+        }
+        else {
+            coverUrl = 'images/no-cover.png';
+        }
+
+        // přidá potřebné věci k releasu
+        podcast.cover = coverUrl;
+    });
+    
+    // zobrazí/skryje příslušné prvky a zobrazí zprávu
+    hideLoading('Select which year of albums releases you want to display.');
+
+    // přidá do menu roky a měsíce releasů
+    await addMenuYears('d');
 }
 
 /**
@@ -307,6 +502,12 @@ async function libraryGetReleases(releaseType) {
             libraryCompilations = [];
         }
     }
+    else if (releaseType == 'd') {
+        releaseName = 'podcasts';
+        if (!libraryPodcasts) {
+            libraryPodcasts = [];
+        }
+    }
 
     // zobrazení načítání
     showLoading('Getting ' + releaseName + ' from artists');
@@ -338,6 +539,9 @@ async function libraryGetReleases(releaseType) {
     }
     else if (releaseType == 'c') {
         releaseList = libraryCompilations;
+    }
+    else if (releaseType == 'd') {
+        releaseList = libraryPodcasts;
     }
 
     if (releaseList.length < 1) {
@@ -397,6 +601,9 @@ async function libraryGetReleases(releaseType) {
     else if (releaseType == 'c') {
         libraryCompilations = releaseList;
     }
+    else if (releaseType == 'd') {
+        releaseList = libraryPodcasts;
+    }
 
     // přidá do menu roky a měsíce releasů
     await addMenuYears(releaseType);
@@ -433,6 +640,10 @@ async function libraryGetReleasesApi(releaseType, artist, index, artistsLength, 
     else if (releaseType == 'c') {
         releaseName = 'compilations';
         releaseFetch = 'compilation';
+    }
+    else if (releaseType == 'd') {
+        releaseName = 'podcasts';
+        releaseFetch = 'podcasts';
     }
 
     // získá url pro fetch
@@ -581,6 +792,14 @@ async function libraryAddRelease(releaseType, artist, releases) {
         artist.compilations = artist.compilations.concat(rel);
         libraryCompilations = libraryCompilations.concat(rel);
     }
+    else if (releaseType == 'd') {
+        /*if (!artist.podcasts) {
+            artist.podcasts = [];
+        }
+        artist.podcasts = artist.podcasts.concat(rel);*/
+        libraryPodcasts = libraryPodcasts.concat(rel);
+        releaseList = libraryPodcasts;
+    }
 
 }
 
@@ -668,6 +887,7 @@ async function showTracks() {
     //elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
+    elementPodcasts.hide();
     elementSettings.hide();
 
     elementMenuDate.show();
@@ -676,6 +896,8 @@ async function showTracks() {
     //$('.nav-t').hide();
     $('.nav-p').hide();
     $('.nav-c').hide();
+    $('.nav-d').hide();
+    $('.nav-s').hide();
 
     var params = getHashParams();
     if (params.show != 'tracks') {
@@ -728,6 +950,7 @@ async function showTracks() {
     elementTracksButton.addClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementPodcastsButton.removeClass('current-year');
     elementSettingsButton.removeClass('current-year');
 
     elementTracks.show();
@@ -760,6 +983,7 @@ async function showAppears() {
     elementTracks.hide();
     //elementAppears.hide();
     elementCompilations.hide();
+    elementPodcasts.hide();
     elementSettings.hide();
 
     elementMenuDate.show();
@@ -768,6 +992,8 @@ async function showAppears() {
     $('.nav-t').hide();
     //$('.nav-p').hide();
     $('.nav-c').hide();
+    $('.nav-d').hide();
+    $('.nav-s').hide();
 
     var params = getHashParams();
     if (params.show != 'appears') {
@@ -819,6 +1045,7 @@ async function showAppears() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.addClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementPodcastsButton.removeClass('current-year');
     elementSettingsButton.removeClass('current-year');
 
     elementAppears.show();
@@ -832,6 +1059,10 @@ async function showAppears() {
 elementCompilationsButton.click(function () {
     showCompilations();
 });
+elementPodcastsButton.click(function () {
+    showPodcasts();
+});
+
 
 
 // TODO !!!
@@ -850,6 +1081,7 @@ async function showCompilations() {
     elementTracks.hide();
     elementAppears.hide();
     //elementCompilations.hide();
+    elementPodcasts.hide();
     elementSettings.hide();
 
     elementMenuDate.show();
@@ -858,6 +1090,8 @@ async function showCompilations() {
     $('.nav-t').hide();
     $('.nav-p').hide();
     //$('.nav-c').hide();
+    $('.nav-d').hide();
+    $('.nav-s').hide();
 
     var params = getHashParams();
     if (params.show != 'compilations') {
@@ -910,6 +1144,7 @@ async function showCompilations() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.addClass('current-year');
+    elementPodcastsButton.removeClass('current-year');
     elementSettingsButton.removeClass('current-year');
 
     elementCompilations.show();
@@ -1022,7 +1257,7 @@ async function libraryGetReleaseTracks(releaseId) {
     }
     if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryEPs.find(x => x.id === releaseId);
+        release = libraryPodcasts.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -1035,6 +1270,10 @@ async function libraryGetReleaseTracks(releaseId) {
     else if (params.show == 'compilations') {
         // zobrazím albumy
         release = libraryCompilations.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'podcasts') {
+        // zobrazím albumy
+        release = libraryPodcasts.find(x => x.id === releaseId);
     }
     else {
         return;

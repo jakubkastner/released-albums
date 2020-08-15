@@ -57,6 +57,8 @@ var libraryEPs = null;
 var libraryTracks = null;
 var libraryAppears = null;
 var libraryCompilations = null;
+var libraryPodcasts = null;
+var libraryPodcastsAll = null;
 var libraryPlaylists = null;
 
 var defaultPlaylist = null;
@@ -84,6 +86,7 @@ var elementEPs = $('.eps');
 var elementTracks = $('.tracks');
 var elementAppears = $('.appears');
 var elementCompilations = $('.compilations');
+var elementPodcasts = $('.podcasts');
 var elementSettings = $('.settings');
 
 var elementTop = $('#top');
@@ -97,6 +100,7 @@ var elementEPsButton = $('.eps-button');
 var elementTracksButton = $('.tracks-button');
 var elementAppearsButton = $('.appears-button');
 var elementCompilationsButton = $('.compilations-button');
+var elementPodcastsButton = $('.podcasts-button');
 var elementSettingsButton;
 
 var elementHiddenMenu = $('.hidden-menu');
@@ -340,6 +344,10 @@ $(document).ready(async function () {
             // zobrazím albumy
             showCompilations();
         }
+        else if (params.show == 'podcasts') {
+            // zobrazím albumy
+            showPodcasts();
+        }
         else if (params.settings == '') {
             // zobrazím albumy
             showSettings();
@@ -424,6 +432,7 @@ async function showSettings() {
     elementTracks.hide();
     elementAppears.hide();
     elementCompilations.hide();
+    elementPodcasts.hide();
     elementSettings.show();
     elementMenuDate.hide();
 
@@ -432,6 +441,7 @@ async function showSettings() {
     elementTracksButton.removeClass('current-year');
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
+    elementPodcastsButton.removeClass('current-year');
     elementSettingsButton.addClass('current-year');
 
     // todo - přidává donekonečna seznam playlistů !!!!
@@ -675,6 +685,10 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
         // zobrazím albumy
         release = libraryCompilations.find(x => x.id === releaseId);
     }
+    else if (params.show == 'podcasts') {
+        // zobrazím albumy
+        release = libraryPodcasts.find(x => x.id === releaseId);
+    }
     var playlist = libraryPlaylists.find(x => x.id === playlistId);
 
     var inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, release.tracks);
@@ -749,6 +763,10 @@ $(document).on('click', '.album-playlist-add-new', async function (e) {
     else if (params.show == 'compilations') {
         // zobrazím albumy
         release = libraryCompilations.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'podcasts') {
+        // zobrazím albumy
+        release = libraryPodcasts.find(x => x.id === releaseId);
     }
     // vytvoreni playlistu
     var newPlaylist = await createPlaylist(release.artistsString + ' - ' + release.name);
