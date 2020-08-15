@@ -212,6 +212,10 @@ function showLoading(message) {
  * @param {*} message zpráva k zobrazení
  */
 function hideLoading(message) {
+    document.title = 'Releases on Spotify';
+    elementLoader.hide();
+    elementMessage.text(message);
+    elementHiddenMenu.show();
     // show notification
     if (notifications === true) {
         var notify = new Notification('Releases on Spotify', {
@@ -219,11 +223,6 @@ function hideLoading(message) {
             icon: '/images/favicon.png',
         });
     }
-
-    document.title = 'Releases on Spotify';
-    elementLoader.hide();
-    elementMessage.text(message);
-    elementHiddenMenu.show();
 }
 
 /**

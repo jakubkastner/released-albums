@@ -18,6 +18,7 @@ async function libraryGetArtists() {
     if (libraryArtists.length < 1) {
         // nebyli získáni žádní interpreti
         // TODO nice2have: zobrazit tlačítko - načíst znovu
+        hideLoading('0 artists');
         return;
     }
 
