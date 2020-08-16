@@ -687,19 +687,32 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
     }
     else if (params.show == 'podcasts') {
         // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        release = libraryPodcastsAll.find(x => x.id === releaseId);
     }
     var playlist = libraryPlaylists.find(x => x.id === playlistId);
 
-    var inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, release.tracks);
+    var inPlaylist;
+    if (params.show == 'podcasts') {
+        var tracks = [];
+        tracks.push(release);
+        inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, tracks);
+    }
+    else {
+        inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, release.tracks);
+    }
     // přidat
     if (playlistIcon.hasClass('fa-plus-circle')) {
         // pridani do playlistu
         if (!inPlaylist) {
-            await asyncForEach(release.tracks, async releaseTrack => {
-                // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
-                await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
-            });
+            if (params.show == 'podcasts') {
+                await libraryAddToPlaylistApi(release, playlistId, releaseId);
+            }
+            else {
+                await asyncForEach(release.tracks, async releaseTrack => {
+                    // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
+                    await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
+                });
+            }
         }
         /*playlistIcon.removeClass('fa-plus-circle');
         playlistIcon.addClass('fa-minus-circle');
@@ -707,10 +720,15 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
     }
     else {
         if (inPlaylist) {
-            // odebrani z playlistu
-            await asyncForEach(release.tracks, async albumTrack => {
-                await libraryRemoveFromPlaylistApi(albumTrack, playlistId, releaseId);
-            });
+            if (params.show == 'podcasts') {
+                await libraryRemoveFromPlaylistApi(release, playlistId, releaseId);
+            }
+            else {
+                // odebrani z playlistu
+                await asyncForEach(release.tracks, async albumTrack => {
+                    await libraryRemoveFromPlaylistApi(albumTrack, playlistId, releaseId);
+                });
+            }
         }
         /*playlistIcon.removeClass('fa-minus-circle');
         playlistIcon.addClass('fa-plus-circle');
@@ -766,7 +784,7 @@ $(document).on('click', '.album-playlist-add-new', async function (e) {
     }
     else if (params.show == 'podcasts') {
         // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        release = libraryPodcastsAll.find(x => x.id === releaseId);
     }
     // vytvoreni playlistu
     var newPlaylist = await createPlaylist(release.artistsString + ' - ' + release.name);
@@ -774,10 +792,15 @@ $(document).on('click', '.album-playlist-add-new', async function (e) {
         return;
     }
     // pridani do playlistu
-    await asyncForEach(release.tracks, async releaseTrack => {
-        // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
-        await libraryAddToPlaylistApi(releaseTrack, newPlaylist.id, releaseId);
-    });
+    if (params.show == 'podcasts') {
+        await libraryAddToPlaylistApi(release, newPlaylist.id, releaseId);
+    }
+    else {
+        await asyncForEach(release.tracks, async releaseTrack => {
+            // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
+            await libraryAddToPlaylistApi(releaseTrack, newPlaylist.id, releaseId);
+        });
+    }
     playlistIcon.addClass('current-month');
 });
 

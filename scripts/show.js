@@ -274,11 +274,14 @@ async function viewReleases(releaseType, year = 0, month = 0) {
 
                 // získám div a zobrazím ho
                 var releaseLibrary = '';
-                if (release.library === true) {
-                    releaseLibrary = `<i class="fas fa-heart album-like" title="Remove album from library" id="` + release.id + `_l"></i>`;
-                }
-                else {
-                    releaseLibrary = `<i class="far fa-heart album-like" title="Add album to library" id="` + release.id + `_l"></i>`;
+                if (releaseType != 'd') {
+                    // ne podcasty
+                    if (release.library === true) {
+                        releaseLibrary = `<i class="fas fa-heart album-like" title="Remove album from library" id="` + release.id + `_l"></i>`;
+                    }
+                    else {
+                        releaseLibrary = `<i class="far fa-heart album-like" title="Add album to library" id="` + release.id + `_l"></i>`;
+                    }
                 }
                 var defaultPlaylistButton = '';
                 if (defaultPlaylist) {
@@ -291,10 +294,19 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 }
                 var aristsHref = '';
                 var artistsYt = '';
+                var tracklistIcon = ``;
                 if (releaseType != 'd') {
+                    // ne podcasty
                     aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
                     artistsYt = `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
+                    tracklistIcon = `<i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"><span>` + release.total_tracks + `</span></i>`;
                 }
+                else {
+                    // podcasty
+                    aristsHref = `<a href="" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
+                    tracklistIcon = `<i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_td"><span>1</span></i>`;
+                }
+                console.log(release);
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
                             <div class="album-flex">
                                 <div class="album-img">
@@ -303,8 +315,8 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                                 <div class="album-info">
                                     <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><h2>` + release.name + `</h2></a>`;
                 elementReleaseDiv += aristsHref;
-                elementReleaseDiv += `<p>` + release.release_date + `</p>
-                                    <i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"><span>` + release.total_tracks + `</span></i>`;
+                elementReleaseDiv += `<p>` + release.release_date + `</p>`;
+                elementReleaseDiv += tracklistIcon;
                 elementReleaseDiv += playRelease;
                 elementReleaseDiv += releaseLibrary;
                 elementReleaseDiv += `<i class="fas fa-plus album-playlist" title="Add to playlist" id="` + release.id + `_p"></i>`;
@@ -455,13 +467,14 @@ $(document).on('click', '#playlist-play-month', async function (e) {
         // prida do fronty
         if (!firstSong) {
             // prehrani (api pozadavek)
-            var json = `{
-                "context_uri": "` + releaseAlbum.uri + `",
-                "offset": {
-                    "position": 0
+
+            var json = JSON.stringify({
+                context_uri: releaseAlbum.uri,
+                offset: {
+                    position: 0
                 },
-                "position_ms": 0
-                }`;
+                position_ms: 0
+            });
             var response = await putFetchJson(API_URL + '/me/player/play', json);
 
             if (response.status == 200) {

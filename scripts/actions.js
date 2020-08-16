@@ -3,11 +3,19 @@
 /* kliknutí na zobrazení seznamu skladeb albumu - zobrazení přehrávače alba */
 $(document).on('click', '.album-tracklist', function (e) {
     var albumTracklist = e.currentTarget.id;
-    var albumId = albumTracklist.replace("_t", "");
-    viewTracklist(albumId);
+    var podcast = false;
+    var albumId = '';
+    if (albumTracklist.includes('_td')) {
+        podcast = true;
+        albumId = albumTracklist.replace("_td", "");
+    }
+    else {
+        albumId = albumTracklist.replace("_t", "");
+    }
+    viewTracklist(albumId, podcast);
 });
 
-function viewTracklist(albumId) {
+function viewTracklist(albumId, podcast) {
     var albumDiv = $('#' + albumId);
     var albumTracklistIcon = $('#' + albumId + '_t');
     albumDiv.children('.playlists').remove();
@@ -24,7 +32,14 @@ function viewTracklist(albumId) {
     }
     else {
         // zobrazím přehrávač alba
-        var player = '<iframe class="album-player" src="https://open.spotify.com/embed/album/' + albumId + '" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>';
+        var player = '';
+        if (podcast) {
+            // /embed-podcast/episode/
+            player = '<iframe class="album-player" src="https://open.spotify.com/embed-podcast/episode/' + albumId + '" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>';
+        }
+        else {
+            player = '<iframe class="album-player" src="https://open.spotify.com/embed/album/' + albumId + '" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>';
+        }
         albumDiv.append(player);
         albumTracklistIcon.prop('title', 'Close tracklist');
         albumTracklistIcon.addClass("album-tracklist-visible");
@@ -225,20 +240,30 @@ $(document).on('click', '.playlist-add', async function (e) {
     }
     else if (params.show == 'podcasts') {
         // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        release = libraryPodcastsAll.find(x => x.id === releaseId);
     }
 
     if (playlistIcon.hasClass('fa-plus')) {
         // pridani do playlistu
-        await asyncForEach(release.tracks, async releaseTrack => {
-            await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
-        });
+        if (params.show == 'podcasts') {
+            await libraryAddToPlaylistApi(release, playlistId, releaseId);
+        }
+        else {
+            await asyncForEach(release.tracks, async releaseTrack => {
+                await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
+            });
+        }
     }
     else {
-        // odebrani z playlistu
-        await asyncForEach(release.tracks, async albumTrack => {
-            await libraryRemoveFromPlaylistApi(albumTrack, playlistId, releaseId);
-        });
+        if (params.show == 'podcasts') {
+            await libraryRemoveFromPlaylistApi(release, playlistId, releaseId);
+        }
+        else {
+            // odebrani z playlistu
+            await asyncForEach(release.tracks, async albumTrack => {
+                await libraryRemoveFromPlaylistApi(albumTrack, playlistId, releaseId);
+            });
+        }
 
     }
 });
@@ -267,10 +292,12 @@ async function libraryAddToPlaylistApi(track, playlistId, albumId) {
         playlist.tracks.list.push(inPlaylistObject);
 
         if (defaultPlaylist) {
-            var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
-            defaultPlaylistIcon.removeClass('fa-plus-circle');
-            defaultPlaylistIcon.addClass('fa-minus-circle');
-            defaultPlaylistIcon.title = `Remove from default playlist '` + defaultPlaylist.name + `'`;
+            if (defaultPlaylist.id == playlistId) {
+                var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
+                defaultPlaylistIcon.removeClass('fa-plus-circle');
+                defaultPlaylistIcon.addClass('fa-minus-circle');
+                defaultPlaylistIcon.title = `Remove from default playlist '` + defaultPlaylist.name + `'`;
+            }
         }
     }
     else {
@@ -307,10 +334,12 @@ async function libraryRemoveFromPlaylistApi(track, playlistId, albumId) {
         });
 
         if (defaultPlaylist) {
-            var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
-            defaultPlaylistIcon.removeClass('fa-minus-circle');
-            defaultPlaylistIcon.addClass('fa-plus-circle');
-            defaultPlaylistIcon.title = `Add to default playlist '` + defaultPlaylist.name + `'`;
+            if (defaultPlaylist.id == playlistId) {
+                var defaultPlaylistIcon = $('#pd_' + defaultPlaylist.id + `_` + albumId);
+                defaultPlaylistIcon.removeClass('fa-minus-circle');
+                defaultPlaylistIcon.addClass('fa-plus-circle');
+                defaultPlaylistIcon.title = `Add to default playlist '` + defaultPlaylist.name + `'`;
+            }
         }
 
         /*console.log(track);
@@ -375,14 +404,22 @@ async function showPlaylist(releaseId) {
     }
     else if (params.show == 'podcasts') {
         // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        release = libraryPodcastsAll.find(x => x.id === releaseId);
     }
 
     // projde playlisty uživatele
     await asyncForEach(libraryPlaylists, async playlist => {
         // pouze pokud se jedná o playlist do kterého lze přidat album
         if (playlist.collaborative || playlist.owner.id == userId) {
-            var inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, release.tracks);
+            var inPlaylist;
+            if (params.show == 'podcasts') {
+                var tracks = [];
+                tracks.push(release);
+                inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, tracks);
+            }
+            else {
+                inPlaylist = await libraryIsSongInPlaylist(playlist.tracks.list, release.tracks);
+            }
             var icon;
             var title;
             var classEl = '';
@@ -414,6 +451,7 @@ async function showPlaylist(releaseId) {
 async function libraryIsSongInPlaylist(playlistTracks, releaseTracks) {
     var inPlaylist = false;
     // projde tracky playlistu
+    console.log(releaseTracks);
     if (!playlistTracks) {
         return inPlaylist;
     }
@@ -498,17 +536,25 @@ $(document).on('click', '.release-play', async function (e) {
         else if (params.show == 'podcasts') {
             // zobrazím albumy
             release = libraryPodcastsAll.find(x => x.id === releaseId);
+            // pridani do fronty (api)
+            var url = API_URL + '/me/player/queue';
+            var response = await sendFetchQueue(url, release.uri);
+            if (response.status == 201) {
+            }
+            else {
+                console.log(response);
+            }
+            return;
         }
-
-        var json = `{
-            "context_uri": "` + release.uri + `",
-            "offset": {
-              "position": 0
+        var json = JSON.stringify({
+            context_uri: release.uri,
+            offset: {
+                position: 0
             },
-            "position_ms": 0
-          }`;
+            position_ms: 0
+        });
         var response = await putFetchJson(API_URL + '/me/player/play', json);
-
+        //
         if (response.status == 200) {
             releasePlayIcon.removeClass("far");
             releasePlayIcon.addClass("fas");

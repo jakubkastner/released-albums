@@ -372,9 +372,32 @@ async function getPodcastsEpisodesApi(url, podcast) {
     if (!podcast.episodes) {
         podcast.episodes = [];
     }
+    var name = podcast.show.name;
+    console.log(podcast);
+    await asyncForEach(json.items, async podcast2 => {
+        // získá cover
+        var coverUrl = '';
+        if (podcast2.images.length > 0) {
+            coverUrl = podcast2.images[0].url;
+        }
+        else if (podcast2.images.length > 1) {
+            coverUrl = podcast2.images[1].url;
+        }
+        else if (podcast2.images.length > 3) {
+            coverUrl = podcast2.images[3].url;
+        }
+        else {
+            coverUrl = 'images/no-cover.png';
+        }
+        podcast2.url = podcast2.external_urls.spotify;
+
+        // přidá potřebné věci k releasu
+        podcast2.cover = coverUrl;  
+        podcast2.artistsString = name;
+    });
     libraryPodcastsAll = libraryPodcastsAll.concat(json.items);
     podcast.episodes = podcast.episodes.concat(json.items);     
-    podcast.artistsString = podcast.name;
+    podcast.artistsString = name;
     if (json.next)
     {
         await getPodcastsEpisodesApi(json.next, podcast);
@@ -416,7 +439,6 @@ async function libraryGetPodcasts() {
         // získá ze spotify api jejich albumy
         await getPodcastsEpisodes(podcast);
     });
-    console.log(libraryPodcastsAll);
 
     if (libraryPodcastsAll.length < 1) {
         // nebyly získány žádné releasy
@@ -431,25 +453,6 @@ async function libraryGetPodcasts() {
         if (keyA < keyB) return 1;
         if (keyA > keyB) return -1;
         return 0;
-    });
-    await asyncForEach(libraryPodcastsAll, async podcast => {
-        // získá cover
-        var coverUrl = '';
-        if (podcast.images.length > 0) {
-            coverUrl = podcast.images[0].url;
-        }
-        else if (podcast.images.length > 1) {
-            coverUrl = podcast.images[1].url;
-        }
-        else if (podcast.images.length > 3) {
-            coverUrl = podcast.images[3].url;
-        }
-        else {
-            coverUrl = 'images/no-cover.png';
-        }
-
-        // přidá potřebné věci k releasu
-        podcast.cover = coverUrl;
     });
     
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
@@ -1272,8 +1275,7 @@ async function libraryGetReleaseTracks(releaseId) {
         release = libraryCompilations.find(x => x.id === releaseId);
     }
     else if (params.show == 'podcasts') {
-        // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        return;
     }
     else {
         return;
@@ -1288,7 +1290,6 @@ async function libraryGetReleaseTracks(releaseId) {
     release.tracks = [];
     var url = 'https://api.spotify.com/v1/albums/' + releaseId + '/tracks?market=' + userCountry + '&limit=50';
     await libraryGetReleaseTracksApi(url, release);
-    console.log(release.tracks);
 }
 
 async function libraryGetReleaseTracksApi(url, release) {
