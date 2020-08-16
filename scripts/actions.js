@@ -519,7 +519,7 @@ $(document).on('click', '.release-play', async function (e) {
         }
         else if (params.show == 'eps') {
             // zobrazím albumy
-            release = libraryPodcasts.find(x => x.id === releaseId);
+            release = libraryEPs.find(x => x.id === releaseId);
         }
         else if (params.show == 'tracks') {
             // zobrazím albumy
