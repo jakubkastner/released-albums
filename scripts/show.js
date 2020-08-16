@@ -292,21 +292,18 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 if (defaultDevice) {
                     playRelease = `<i class="fas fa-play release-play" title="Play release" id="` + release.id + `_play"></i>`;
                 }
-                var aristsHref = '';
+                var aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
                 var artistsYt = '';
                 var tracklistIcon = ``;
                 if (releaseType != 'd') {
-                    // ne podcasty
-                    aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
+                    // ne podcasty                    
                     artistsYt = `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
                     tracklistIcon = `<i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"><span>` + release.total_tracks + `</span></i>`;
                 }
                 else {
                     // podcasty
-                    aristsHref = `<a href="" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
                     tracklistIcon = `<i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_td"><span>1</span></i>`;
                 }
-                console.log(release);
                 elementReleaseDiv += `<div class="album" id="` + release.id + `">
                             <div class="album-flex">
                                 <div class="album-img">

@@ -373,7 +373,6 @@ async function getPodcastsEpisodesApi(url, podcast) {
         podcast.episodes = [];
     }
     var name = podcast.show.name;
-    console.log(podcast);
     await asyncForEach(json.items, async podcast2 => {
         // získá cover
         var coverUrl = '';
@@ -390,6 +389,7 @@ async function getPodcastsEpisodesApi(url, podcast) {
             coverUrl = 'images/no-cover.png';
         }
         podcast2.url = podcast2.external_urls.spotify;
+        podcast2.artist = podcast.show;
 
         // přidá potřebné věci k releasu
         podcast2.cover = coverUrl;  
