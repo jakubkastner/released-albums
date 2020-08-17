@@ -1258,9 +1258,9 @@ async function libraryGetReleaseTracks(releaseId) {
         // zobrazím albumy
         release = libraryAlbums.find(x => x.id === releaseId);
     }
-    if (params.show == 'eps') {
+    else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
