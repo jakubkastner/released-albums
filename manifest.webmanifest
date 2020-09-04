@@ -1,7 +1,7 @@
 {
     "name": "Releases on Spotify",
     "short_name": "Releases",
-    "start_url": "/",
+    "start_url": "/released-albums/",
     "display": "standalone",
     "background_color": "#1e1e1e",
     "theme_color": "#121212",
