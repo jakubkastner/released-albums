@@ -113,7 +113,7 @@ elementHiddenMenu.hide();
 // pwa aplikace
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
-        .register('/sw.js');
+        .register('sw.js');
 }
 
 if (Notification.permission === 'granted') {
