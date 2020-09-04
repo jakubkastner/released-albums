@@ -171,6 +171,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
 
     elementActions.html(``);
     elementActions.hide();
+    elementError.text('');
 
     var releaseName;
     var releaseList;
@@ -210,7 +211,6 @@ async function viewReleases(releaseType, year = 0, month = 0) {
         if (month < 10) {
             month = '0' + month;
         }
-        console.log(month);
     }
     // změna url parametrů
     var params = getHashParams();
@@ -341,7 +341,11 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     });
     $('.' + releaseName).append(elementReleaseDiv);
     // zobrazí tlačítko pro přidání všech songů do playlistu
-    if (releaseType == 't') {
+    if (elementReleaseDiv === '')
+    {
+        elementError.text('Not found any ' + releaseName + ' in ' + year + '-' + month);
+    }
+    else if (releaseType == 't') {
         if (year != 0) {
             var text = ` "` + year;
             if (month != 0) {
