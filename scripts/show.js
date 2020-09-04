@@ -37,7 +37,6 @@ async function addMenuYears(releaseType) {
         var year = date[0];
         if (!years.includes(year)) {
             // měsíc nebyl ještě přidán
-            console.log(year);
             if (!year || year == 0000) {
                 undefinedYear = true;
             }
@@ -200,6 +199,19 @@ async function viewReleases(releaseType, year = 0, month = 0) {
         releaseList = libraryPodcastsAll;
     }
 
+    // DOČASNÉ
+    // prozatím načítám aktuální měsíc
+    if (year == 0 && month == 0) {
+        // zobrazuji všechny alba -> změna na aktuální datum
+
+        var currentDate = new Date();
+        month = currentDate.getMonth() + 1;
+        year = currentDate.getFullYear();
+        if (month < 10) {
+            month = '0' + month;
+        }
+        console.log(month);
+    }
     // změna url parametrů
     var params = getHashParams();
     window.location.replace('#show=' + params.show + '&year=' + year + '&month=' + month);
@@ -348,7 +360,6 @@ async function viewReleases(releaseType, year = 0, month = 0) {
 /* vybere rok a datum v menu */
 // releaseType (a = album / t = track)
 async function selectInMenu(year, month, releaseType) {
-    console.log(year + "-" + month);
     // odstraní třídy vybraného a aktuálního roku
     $('.year').removeClass('selected-year current-year');
     $('#' + releaseType + '-' + year).addClass('current-year');
