@@ -2,7 +2,7 @@
     "name": "Releases on Spotify",
     "short_name": "Releases",
     "start_url": ".",
-    "display": "standalone",
+    "display": "minimal-ui",
     "background_color": "#1e1e1e",
     "theme_color": "#121212",
     "description": "View all releases by years and months of your followed artists on Spotify.",
