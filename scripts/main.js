@@ -110,6 +110,12 @@ var lastYear = 0;
 
 elementHiddenMenu.hide();
 
+// pwa aplikace
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+        .register('/sw.js');
+}
+
 if (Notification.permission === 'granted') {
     notifications = true;
 }
