@@ -1,3 +1,7 @@
+.skrejto {
+    //display: none;
+}
+
 // HLAVNÍ
 
 * {
@@ -13,8 +17,8 @@ main {
 }
 
 body {
-	margin: 0 calc(10px + 0.4vw);
-	overflow: hidden;
+    margin: 0 calc(10px + 0.4vw);
+    overflow: hidden;
 }
 
 /* text */
@@ -132,15 +136,41 @@ header {
 // LEVÉ MENU
 
 main {
-	& > .menu-date {
-		overflow: hidden;
-		& > nav {
-			display: inline-block;
-		}
-	}
-	& >.c-releases {
-		overflow: auto;
-	}
+    &>.menu-date {
+        overflow: hidden;
+        width: 150px;
+        height: 80vh;
+
+        // ??
+        //resize: horizontal;
+        &:hover {
+            overflow: auto;
+        }
+
+        &>nav {
+            display: inline-block;
+
+            &>a {
+                width: 70%;
+            }
+        }
+        &>.menu-years>a {
+            text-align: left;
+            padding-left: calc(8px + 2vw);
+        }
+    }
+
+    &>.content {
+        height: 80vh;
+        width: 100%;
+
+        &>.c-releases {
+            width: calc(100% - 150px);
+            overflow: auto;
+            height: 70vh;
+            width: 100%;
+        }
+    }
 }
 
 
@@ -175,3 +205,23 @@ main {
 /*.page-name img:hover~.page-name h1 {
     background-color: yellow;
 }*/
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: rgb(36, 36, 36);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: rgb(86, 86, 86);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(106, 106, 106);
+}

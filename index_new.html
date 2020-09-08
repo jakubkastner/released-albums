@@ -2,149 +2,195 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="View all releases by years and months of your followed artists on Spotify.">
-    <meta name="keywords" content="spotify, spotify releases, album, albums, spotify albums, tracks, tracks, spotify tracks, spotify appears, appear, appears, spotify compilations, album, release, compilation, compilations, releases, music, stream music">
-    <meta name="author" content="Jakub Kastner">
-    <title>Releases on Spotify</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="styles/layout.css" />
-    <link rel="stylesheet" type="text/css" href="styles/actions.css" />
-    <link rel="icon" type="image/ico" href="images/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=Pontano+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="description" content="View all releases by years and months of your followed artists on Spotify." />
+	<meta name="keywords" content="spotify, spotify releases, album, albums, spotify albums, tracks, tracks, spotify tracks, spotify appears, appear, appears, spotify compilations, album, release, compilation, compilations, releases, music, stream music" />
+	<meta name="author" content="Jakub Kastner" />
+	<title>Releases on Spotify</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" type="text/css" href="styles/layout.css" />
+	<link rel="stylesheet" type="text/css" href="styles/actions.css" />
+	<link rel="icon" type="image/ico" href="images/favicon.png" />
+	<link href="https://fonts.googleapis.com/css?family=Pontano+Sans" rel="stylesheet" />
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous" />
+	<script src="https://kit.fontawesome.com/ebe995aabe.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <header>
-        <div>
-            <div class="page-name in-header">
-                <h1>New Music</h1>
-                <img class="favicon" src="images/favicon.png" alt="R">
-                <h1>eleases</h1>
-            </div>
-            <nav class="menu-releases buttons in-header hidden">
-                <a class="b-albums" title="View released albums">Albums</a>
-                <a class="b-eps" title="View released EPs">EPs</a>
-                <a class="b-tracks" title="View released tracks">Tracks</a>
-                <a class="b-appears" title="View released appears">Appears</a>
-                <a class="b-compilations" title="View released compilations">Compilations</a>
-            </nav>
-            <div class="div-user in-header">
-                <a class="b-login button" id="user">
-                    <i class="fas fa-user-plus"></i>
-                    <p>Login via music account</p>
-                </a>
-                <nav class="menu-login menu-hover buttons in-header">
-                    <a class="b-login-spotify" title="Login via Spotify"><i class="fab fa-spotify"></i>Spotify</a>
-                    <a class="b-login-deezer" title="Login via Deezer"><i class="fab fa-deezer"></i>Deezer</a>
-                    <a class="b-login-apple" title="Login via Apple Music"><i class="fab fa-apple"></i>Apple Music</a>
-                </nav>
-                <nav class="menu-user menu-hover buttons in-header hidden">
-                    <a class="b-settings">Settings</a>
-                    <a class="b-logout">Logout</a>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <div class="menu-date">
-            <div class="menu-date-mobile hidden"><i class="fas fa-bars"></i></div>
-            <nav class="menu-years">
-                <ul class="buttons">
-                    <li>2020</li><li>2020</li><li>2020</li>
-                </ul>
-            </nav>
-            <nav class="menu-months">
-                <ul class="buttons">
-                    <li>2020</li><li>2020</li><li>2020</li>
-                </ul>
-            </nav>
-        </div>
-        <div class="c-releases">
-            <div class="in-main">
-                <h2 class="title"></h2>
-                <h2 class="message">View all albums by years and months of your followed artists</h2>
-                <p class="error">To see all albums releases, you must login with your music account.</p>
-                <p><a class="b-login-spotify button"><i class="fab fa-spotify"></i>Login via Spotify</a></p>
-                <p><a class="b-login-deezer button"><i class="fab fa-deezer"></i>Login via Deezer</a></p>
-                <p><a class="b-login-apple button"><i class="fab fa-apple"></i>Login via Apple Music</a></p>
-                <div class="albums">
-                    <div class="album" id="2qaaaIfB5TuEAh5cqI1ksz">
-                        <div class="album-flex">
-                            <div class="album-img">
-                                <img src="/images/no-cover.png">
-                            </div>
-                            <div class="album-info">
-                                <a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer">
-                                    <h2>1984</h2>
-                                </a>
-                                <a href="https://open.spotify.com/artist/0JOxt5QOwq0czoJxvSc5hS" target="_blank" rel="noopener noreferrer">
-                                    <h3>GASHI</h3>
-                                </a>
-                                <p>2020-08-07</p>
-                                <i class="fas fa-bars album-tracklist" title="View tracklist" id="2qaaaIfB5TuEAh5cqI1ksz_t"><span>16</span></i><i class="far fa-heart album-like" title="Add album to library" id="2qaaaIfB5TuEAh5cqI1ksz_l"></i><i class="fas fa-plus album-playlist" title="Add to playlist" id="2qaaaIfB5TuEAh5cqI1ksz_p"></i><i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_2qaaaIfB5TuEAh5cqI1ksz"></i><a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a><a href="https://music.youtube.com/search?q=GASHI 1984" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="album" id="2qaaaIfB5TuEAh5cqI1ksz">
-                        <div class="album-flex">
-                            <div class="album-img">
-                                <img src="/images/no-cover.png">
-                            </div>
-                            <div class="album-info">
-                                <a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer">
-                                    <h2>1984</h2>
-                                </a>
-                                <a href="https://open.spotify.com/artist/0JOxt5QOwq0czoJxvSc5hS" target="_blank" rel="noopener noreferrer">
-                                    <h3>GASHI</h3>
-                                </a>
-                                <p>2020-08-07</p>
-                                <i class="fas fa-bars album-tracklist" title="View tracklist" id="2qaaaIfB5TuEAh5cqI1ksz_t"><span>16</span></i><i class="far fa-heart album-like" title="Add album to library" id="2qaaaIfB5TuEAh5cqI1ksz_l"></i><i class="fas fa-plus album-playlist" title="Add to playlist" id="2qaaaIfB5TuEAh5cqI1ksz_p"></i><i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_2qaaaIfB5TuEAh5cqI1ksz"></i><a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a><a href="https://music.youtube.com/search?q=GASHI 1984" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="album" id="2qaaaIfB5TuEAh5cqI1ksz">
-                        <div class="album-flex">
-                            <div class="album-img">
-                                <img src="/images/no-cover.png">
-                            </div>
-                            <div class="album-info">
-                                <a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer">
-                                    <h2>1984</h2>
-                                </a>
-                                <a href="https://open.spotify.com/artist/0JOxt5QOwq0czoJxvSc5hS" target="_blank" rel="noopener noreferrer">
-                                    <h3>GASHI</h3>
-                                </a>
-                                <p>2020-08-07</p>
-                                <i class="fas fa-bars album-tracklist" title="View tracklist" id="2qaaaIfB5TuEAh5cqI1ksz_t"><span>16</span></i><i class="far fa-heart album-like" title="Add album to library" id="2qaaaIfB5TuEAh5cqI1ksz_l"></i><i class="fas fa-plus album-playlist" title="Add to playlist" id="2qaaaIfB5TuEAh5cqI1ksz_p"></i><i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_2qaaaIfB5TuEAh5cqI1ksz"></i><a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a><a href="https://music.youtube.com/search?q=GASHI 1984" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tracks hidden"></div>
-                <div class="appears hidden"></div>
-                <div class="compilations hidden"></div>
-                <div class="settings hidden"></div>
-            </div>
-            <div class="loader"></div>
-        </div>
-
-        <button class="top" id="top" title="Top"><i class="fas fa-angle-double-up"></i></button>
-    </main>
-    <footer>
-        <div class="in-body">
-            <p>&copy; 2018 - 2020 Jakub Kastner</p>
-        </div>
-    </footer>
-    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="scripts/main.js"></script>
-    <script src="scripts/login.js"></script>
-    <script src="scripts/library.js"></script>
-    <script src="scripts/show.js"></script>
-    <script src="scripts/actions.js"></script>
+	<header>
+		<div class="loader hidden skrejto"></div>
+		<div>
+			<div class="page-name in-header">
+				<h1>New Music</h1>
+				<img class="favicon" src="images/favicon.png" alt="R" />
+				<h1>eleases</h1>
+			</div>
+			<nav class="menu-releases buttons in-header hidden">
+				<a class="b-albums" title="View released albums">Albums</a>
+				<a class="b-eps" title="View released EPs">EPs</a>
+				<a class="b-tracks" title="View released tracks">Tracks</a>
+				<a class="b-appears" title="View released appears">Appears</a>
+				<a class="b-compilations" title="View released compilations">Compilations</a>
+				<a class="b-podcasts" title="View newest podcasts">Podcasts</a>
+			</nav>
+			<div class="div-user in-header">
+				<a class="b-login button" id="user">
+					<i class="fas fa-user-plus"></i>
+					<p>Login via music account</p>
+				</a>
+				<nav class="menu-login menu-hover buttons in-header">
+					<a class="b-login-spotify" title="Login via Spotify"><i class="fab fa-spotify"></i>Spotify</a>
+					<a class="b-login-deezer" title="Login via Deezer"><i class="fab fa-deezer"></i>Deezer</a>
+					<a class="b-login-apple" title="Login via Apple Music"><i class="fab fa-apple"></i>Apple Music</a>
+				</nav>
+				<nav class="menu-user menu-hover buttons in-header hidden">
+					<a class="b-settings">Settings</a>
+					<a class="b-logout">Logout</a>
+				</nav>
+			</div>
+		</div>
+	</header>
+	<main>
+		<div class="menu-date">
+			<div class="menu-date-mobile hidden"><i class="fas fa-bars"></i></div>
+			<nav class="menu-years buttons">
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+			</nav>
+			<nav class="menu-months buttons">
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				<a>2020</a>
+				</ul>
+			</nav>
+		</div>
+		<div class="content">
+			<div class="c-head">
+				<h2 class="title">Title</h2>
+				<h2 class="message">View all albums by years and months of your followed artists</h2>
+				<p class="error">To see all albums releases, you must login with your music account.</p>
+			</div>
+			<div class="c-releases">
+				<p>
+					<a class="b-login-spotify button"><i class="fab fa-spotify"></i>Login via Spotify</a>
+				</p>
+				<p>
+					<a class="b-login-deezer button"><i class="fab fa-deezer"></i>Login via Deezer</a>
+				</p>
+				<p>
+					<a class="b-login-apple button"><i class="fab fa-apple"></i>Login via Apple Music</a>
+				</p>
+				<div class="albums">
+					<div class="album" id="2qaaaIfB5TuEAh5cqI1ksz">
+						<div class="album-flex">
+							<div class="album-img">
+								<img src="images/no-cover.png" />
+							</div>
+							<div class="album-info">
+								<a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer">
+									<h2>1984</h2>
+								</a>
+								<a href="https://open.spotify.com/artist/0JOxt5QOwq0czoJxvSc5hS" target="_blank" rel="noopener noreferrer">
+									<h3>GASHI</h3>
+								</a>
+								<p>2020-08-07</p>
+								<i class="fas fa-bars album-tracklist" title="View tracklist" id="2qaaaIfB5TuEAh5cqI1ksz_t"><span>16</span></i><i class="far fa-heart album-like" title="Add album to library" id="2qaaaIfB5TuEAh5cqI1ksz_l"></i><i class="fas fa-plus album-playlist" title="Add to playlist" id="2qaaaIfB5TuEAh5cqI1ksz_p"></i><i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_2qaaaIfB5TuEAh5cqI1ksz"></i><a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a><a href="https://music.youtube.com/search?q=GASHI 1984" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>
+							</div>
+						</div>
+						<ul class="playlists">
+							<li class="playlist-add" id="p_2UKqPRsvnx7sQjt5EmHxpm_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist 'Kewu/Addict'">
+								<span><i class="fas fa-plus"></i></span>Kewu/Addict
+							</li>
+							<li class="playlist-add" id="p_5H2MrosNRCVB8iJ6s4R10w_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist 'Trance'">
+								<span><i class="fas fa-plus"></i></span>Trance
+							</li>
+							<li class="playlist-add" id="p_48Vty4cAB0edfGm9ohVDH1_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist 'Ambirap'">
+								<span><i class="fas fa-plus"></i></span>Ambirap
+							</li>
+							<li class="playlist-add" id="p_1FXGtB1FRuEQ8qhB1EmT7n_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist 'Underrated.1'">
+								<span><i class="fas fa-plus"></i></span>Underrated.1
+							</li>
+							<li class="playlist-add" id="p_75lG1ujOorZwweiCQVoHA6_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist '90s?'">
+								<span><i class="fas fa-plus"></i></span>90s?
+							</li>
+							<li class="playlist-add" id="p_72g3Ti1hox3lOFy7rhKeHM_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist 'PROUD'">
+								<span><i class="fas fa-plus"></i></span>PROUD
+							</li>
+							<li class="playlist-add" id="p_5V2ZawTFMIaTofTzdu90pR_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist 'DREAM'">
+								<span><i class="fas fa-plus"></i></span>DREAM
+							</li>
+							<li class="playlist-add" id="p_77vYWfoObKlQEcEBHhwy9j_2Kjyuu269jWMmxoBHyKkbf" title="Add release to playlist 'AFTER DREAM'">
+								<span><i class="fas fa-plus"></i></span>AFTER DREAM
+							</li>
+						</ul>
+					</div>
+					<div class="album" id="2qaaaIfB5TuEAh5cqI1ksz">
+						<div class="album-flex">
+							<div class="album-img">
+								<img src="images/no-cover.png" />
+							</div>
+							<div class="album-info">
+								<a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer">
+									<h2>1984</h2>
+								</a>
+								<a href="https://open.spotify.com/artist/0JOxt5QOwq0czoJxvSc5hS" target="_blank" rel="noopener noreferrer">
+									<h3>GASHI</h3>
+								</a>
+								<p>2020-08-07</p>
+								<i class="fas fa-bars album-tracklist" title="View tracklist" id="2qaaaIfB5TuEAh5cqI1ksz_t"><span>16</span></i><i class="far fa-heart album-like" title="Add album to library" id="2qaaaIfB5TuEAh5cqI1ksz_l"></i><i class="fas fa-plus album-playlist" title="Add to playlist" id="2qaaaIfB5TuEAh5cqI1ksz_p"></i><i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_2qaaaIfB5TuEAh5cqI1ksz"></i><a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a><a href="https://music.youtube.com/search?q=GASHI 1984" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="album" id="2qaaaIfB5TuEAh5cqI1ksz">
+						<div class="album-flex">
+							<div class="album-img">
+								<img src="images/no-cover.png" />
+							</div>
+							<div class="album-info">
+								<a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer">
+									<h2>1984</h2>
+								</a>
+								<a href="https://open.spotify.com/artist/0JOxt5QOwq0czoJxvSc5hS" target="_blank" rel="noopener noreferrer">
+									<h3>GASHI</h3>
+								</a>
+								<p>2020-08-07</p>
+								<i class="fas fa-bars album-tracklist" title="View tracklist" id="2qaaaIfB5TuEAh5cqI1ksz_t"><span>16</span></i><i class="far fa-heart album-like" title="Add album to library" id="2qaaaIfB5TuEAh5cqI1ksz_l"></i><i class="fas fa-plus album-playlist" title="Add to playlist" id="2qaaaIfB5TuEAh5cqI1ksz_p"></i><i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist" id="pd_2qaaaIfB5TuEAh5cqI1ksz"></i><a href="https://open.spotify.com/album/2qaaaIfB5TuEAh5cqI1ksz" target="_blank" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a><a href="https://music.youtube.com/search?q=GASHI 1984" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tracks hidden"></div>
+				<div class="appears hidden"></div>
+				<div class="compilations hidden"></div>
+				<div class="settings hidden"></div>
+			</div>
+		</div>
+	</main>
+	<footer>
+		<div class="in-body">
+			<button class="top" id="top" title="Top"><i class="fas fa-angle-double-up"></i></button>
+			<p>&copy; 2018 - 2020 Jakub Kastner</p>
+		</div>
+	</footer>
+	<!--<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script src="scripts/main.js"></script>
+		<script src="scripts/login.js"></script>
+		<script src="scripts/library.js"></script>
+		<script src="scripts/show.js"></script>
+		<script src="scripts/actions.js"></script>-->
 </body>
 
 </html>
