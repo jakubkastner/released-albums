@@ -7,15 +7,14 @@
   background-color: #242424;
 }
 
+h1 {
+  font-family: "Kufam", sans-serif;
+}
+
 main {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-}
-
-body {
-  margin: 0 calc(10px + 0.4vw);
-  overflow: hidden;
 }
 
 /* text */
@@ -88,6 +87,10 @@ header div > .div-user > .menu-hover {
   margin: 0;
 }
 
+header div > .div-user > .menu-hover.show {
+  display: block;
+}
+
 header div > .div-user > .menu-hover > * {
   display: block;
   background-color: #1e1e1e;
@@ -105,13 +108,14 @@ header div > .div-user .b-login {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
+  min-width: 70px;
 }
 
-header div > .div-user .b-login:hover {
+header div > .div-user .b-login:hover, header div > .div-user .b-login.hover {
   background-color: #1e1e1e;
 }
 
-header div > .div-user .b-login:hover * {
+header div > .div-user .b-login:hover *, header div > .div-user .b-login.hover * {
   background-color: #1e1e1e;
 }
 
@@ -177,15 +181,6 @@ main > .content > .c-releases {
   100% {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg);
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  header .page-name h1 {
-    display: none;
-  }
-  header .b-login p {
-    display: none;
   }
 }
 

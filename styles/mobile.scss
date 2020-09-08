@@ -1,0 +1,13 @@
+// RESPONZIVNÍ WEB
+
+@media screen and (min-width: 1000px) {
+    .pc-hide {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .mobile-hide {
+        display: none;
+    }
+}
