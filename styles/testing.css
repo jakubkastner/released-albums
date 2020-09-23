@@ -1,4 +1,27 @@
 .skrejto {
   display: none;
 }
+
+/*.page-name img:hover~.page-name h1 {
+    background-color: yellow;
+}*/
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background-color: #242424;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: #565656;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #6a6a6a;
+}
 /*# sourceMappingURL=testing.css.map */

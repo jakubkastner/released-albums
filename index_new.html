@@ -9,6 +9,7 @@
     <meta name="author" content="Jakub Kastner" />
     <title>Releases on Spotify</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="styles/init.css" />
     <link rel="stylesheet" type="text/css" href="styles/layout.css" />
     <link rel="stylesheet" type="text/css" href="styles/actions.css" />
     <link rel="stylesheet" type="text/css" href="styles/mobile.css" />
@@ -21,14 +22,14 @@
 
 <body>
     <header>
-        <div class="loader hidden skrejto"></div>
+        <div class="loader"></div>
         <div>
             <div class="page-name in-header">
                 <h1 class="mobile-hide">New Music</h1>
                 <img class="favicon" src="images/favicon.png" alt="R" />
                 <h1 class="mobile-hide">eleases</h1>
             </div>
-            <nav class="menu-releases buttons in-header hidden">
+            <nav class="m-releases buttons in-header hidden">
                 <a class="b-albums" title="View released albums">Albums</a>
                 <a class="b-eps" title="View released EPs">EPs</a>
                 <a class="b-tracks" title="View released tracks">Tracks</a>
@@ -41,12 +42,12 @@
                     <i class="fas fa-user-plus"></i>
                     <p>Login<span class="mobile-hide"> via music account<span></p>
                 </a>
-                <nav class="menu-login menu-hover buttons in-header">
+                <nav class="m-login m-hover buttons in-header">
                     <a class="b-login-spotify" title="Login via Spotify"><i class="fab fa-spotify"></i>Spotify</a>
                     <a class="b-login-deezer" title="Login via Deezer"><i class="fab fa-deezer"></i>Deezer</a>
                     <a class="b-login-apple" title="Login via Apple Music"><i class="fab fa-apple"></i>Apple Music</a>
                 </nav>
-                <nav class="menu-user menu-hover buttons in-header hidden">
+                <nav class="m-user m-hover buttons in-header hidden">
                     <a class="b-settings">Settings</a>
                     <a class="b-logout">Logout</a>
                 </nav>
@@ -54,31 +55,29 @@
         </div>
     </header>
     <main>
-        <div class="menu-date">
-            <div class="menu-date-mobile hidden"><i class="fas fa-bars"></i></div>
-            <nav class="menu-years buttons">
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-            </nav>
-            <nav class="menu-months buttons">
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                <a>2020</a>
-                </ul>
-            </nav>
-        </div>
+        <nav class="m-date">
+            <a class="m-date-mobile hidden button"><i class="fas fa-bars"></i></a>
+            <a class="m-year button" id="m-year-2020">2020</a>
+            <span class="m-months buttons" id="m-months-2020">
+                <a class="m-month" id="m-month-2020-12">12</a>
+                <a class="m-month" id="m-month-2020-11">11</a>
+                <a class="m-month" id="m-month-2020-10">10</a>
+                <a class="m-month" id="m-month-2020-09">09</a>
+                <a class="m-month" id="m-month-2020-08">08</a>
+                <a class="m-month" id="m-month-2020-07">07</a>
+                <a class="m-month" id="m-month-2020-06">06</a>
+                <a class="m-month" id="m-month-2020-05">05</a>
+                <a class="m-month" id="m-month-2020-04">04</a>
+                <a class="m-month" id="m-month-2020-03">03</a>
+                <a class="m-month" id="m-month-2020-02">02</a>
+                <a class="m-month" id="m-month-2020-01">01</a>
+            </span>
+            <a class="m-year button">2019</a>
+            <a class="m-year button">2018</a>
+            <a class="m-year button">2017</a>
+            <a class="m-year button">2016</a>
+            <a class="m-year button">2015</a>
+        </nav>
         <div class="content">
             <div class="c-head">
                 <h2 class="title">Title</h2>
@@ -188,9 +187,9 @@
         </div>
     </footer>
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="scripts/main_new.js"></script>
+    <script src="scripts/init.js"></script>
     <script src="scripts/style.js"></script>
-	<!--<script src="scripts/main.js"></script>
+    <!--<script src="scripts/main.js"></script>
 		<script src="scripts/login.js"></script>
 		<script src="scripts/library.js"></script>
 		<script src="scripts/show.js"></script>

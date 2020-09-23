@@ -8,7 +8,7 @@ elLoginMenu
         elLoginButton.addClass('hover');
     })
     .mouseout(function () {
-        if (!elLoginMenu.hasClass('hover')) {
+        if (!elLoginMenu.hasClass('show')) {
             elLoginButton.removeClass('hover');
         }
     });
@@ -19,7 +19,7 @@ elLoginMenu
 elLoginButton.click(function () {
     event.stopPropagation();
     elLoginMenu.toggleClass('show');
-    elLoginButton.addClass('hover');
+    elLoginButton.toggleClass('hover');
 });
 /**
  * Click everywhere. Hide login options.

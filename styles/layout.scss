@@ -1,13 +1,14 @@
-// HLAVNÍ
+@use 'init' as var;
 
+// HLAVNÍ
 * {
     margin: 0;
     text-decoration: none;
     font-family: "Pontano Sans", sans-serif;
-    color: white;
-    background-color: rgb(36, 36, 36);
+    color: var.$color_text;
 }
-h1 {    
+
+h1 {
     font-family: "Kufam", sans-serif;
 }
 
@@ -25,10 +26,12 @@ p {
     /*display: none;*/
 }
 
-// HORNÍ MENU
+// MAIN MENU
 
 header {
+    background-color: $color_dark_2;
 
+    // butons
     .button,
     .buttons>* {
         margin-top: 0;
@@ -38,23 +41,21 @@ header {
         display: flex;
         text-align: right;
 
-        // v menu
+        // div in menu
         &>.in-header {
             margin: calc(10px + 0.5vw);
-            // děti headeru
             display: flex;
 
-            // text názvů
+            // title text
             & * {
                 font-weight: 700;
-                color: #1ab26b;
+                color: $color_text_button;
             }
         }
 
-        // nadpis stránky
+        // page name
         &>.page-name {
             cursor: context-menu;
-            /*margin: auto 0;*/
 
             // ikona
             &>.favicon {
@@ -74,14 +75,13 @@ header {
             }
         }
 
-        // uživatel (nastavení, přihlášení)
+        // user menu
         &>.div-user {
             margin-left: auto;
             position: relative;
             display: inline;
 
-            &>.menu-hover {
-                /*display: block;*/
+            &>.m-hover {
                 display: none;
                 position: absolute;
                 width: 100%;
@@ -94,14 +94,11 @@ header {
 
                 &>* {
                     display: block;
-                    background-color: rgb(30, 30, 30);
 
-                    &:hover {
-                        background-color: rgb(46, 46, 46);
+                    background-color: $color_dark_3;
 
-                        &~.div-login {
-                            background-color: yellow !important;
-                        }
+                    _3 &:hover {
+                        background-color: $color_dark_4;
                     }
                 }
             }
@@ -112,20 +109,20 @@ header {
 
                 &:hover,
                 &.hover {
-                    background-color: rgb(30, 30, 30);
+                    background-color: $color_dark_3;
 
                     * {
-                        background-color: rgb(30, 30, 30);
+                        background-color: $color_dark_3;
                     }
                 }
             }
 
             &:hover {
-                .menu-hover {
+                .m-hover {
                     display: block;
                 }
 
-                .menu-hover.hidden {
+                .m-hover.hidden {
                     display: none;
                 }
             }
@@ -133,31 +130,31 @@ header {
     }
 }
 
-// LEVÉ MENU
+// LEFT MENU
 
 main {
-    &>.menu-date {
-        overflow: hidden;
-        width: 150px;
-        height: 80vh;
+    background-color: $color_dark_1;
 
-        // ??
-        //resize: horizontal;
+    &>.m-date {
+        overflow: hidden;
+        width: 120px;
+        height: 80vh;
+        display: inline-block;
+
         &:hover {
             overflow: auto;
         }
 
-        &>nav {
-            display: inline-block;
-
-            &>a {
-                width: 70%;
-            }
+        &>a {
+            width: calc(120px - 5px - 0.2vw);
         }
 
-        &>.menu-years>a {
-            text-align: left;
-            padding-left: calc(8px + 2vw);
+        &>.m-months {
+            &>a {
+                text-align: left;
+                padding-left: calc(50px);
+                width: calc(90% - 50px);
+            }
         }
     }
 
@@ -174,6 +171,10 @@ main {
     }
 }
 
+footer {
+    background-color: $color_dark_2;
+}
+
 // ANIMACE
 
 @keyframes spin {
@@ -184,30 +185,4 @@ main {
     100% {
         transform: rotate(360deg);
     }
-}
-
-// TESTUJI
-
-/*.page-name img:hover~.page-name h1 {
-    background-color: yellow;
-}*/
-
-/* width */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background-color: rgb(36, 36, 36);
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background-color: rgb(86, 86, 86);
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(106, 106, 106);
 }

@@ -1,4 +1,4 @@
-// TLAČÍTKA
+// BUTTONS
 .buttons {
 	padding-bottom: 0;
 
@@ -17,8 +17,8 @@
 
 	&:hover,
 	&:hover * {
-		color: #1ab26b;
-		background-color: rgb(46, 46, 46);
+		color: $color_text_button;
+		background-color: $color_dark_4;
 		transition: 0.5s;
 	}
 
@@ -45,5 +45,8 @@
 	background-size: 20%;
 	background-repeat: repeat-y;
 	background-position: -25% 0;
+}
+
+.loader.active {
 	animation: loader 3s ease-in-out infinite;
 }

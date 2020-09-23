@@ -4,7 +4,7 @@
   text-decoration: none;
   font-family: "Pontano Sans", sans-serif;
   color: white;
-  background-color: #242424;
+  background-color: #101010;
 }
 
 h1 {
@@ -53,7 +53,6 @@ header div > .in-header * {
 
 header div > .page-name {
   cursor: context-menu;
-  /*margin: auto 0;*/
 }
 
 header div > .page-name > .favicon {
@@ -78,8 +77,7 @@ header div > .div-user {
   display: inline;
 }
 
-header div > .div-user > .menu-hover {
-  /*display: block;*/
+header div > .div-user > .m-hover {
   display: none;
   position: absolute;
   width: 100%;
@@ -87,20 +85,20 @@ header div > .div-user > .menu-hover {
   margin: 0;
 }
 
-header div > .div-user > .menu-hover.show {
+header div > .div-user > .m-hover.show {
   display: block;
 }
 
-header div > .div-user > .menu-hover > * {
+header div > .div-user > .m-hover > * {
   display: block;
   background-color: #1e1e1e;
 }
 
-header div > .div-user > .menu-hover > *:hover {
+header div > .div-user > .m-hover > *:hover {
   background-color: #2e2e2e;
 }
 
-header div > .div-user > .menu-hover > *:hover ~ .div-login {
+header div > .div-user > .m-hover > *:hover ~ .div-login {
   background-color: yellow !important;
 }
 
@@ -119,35 +117,33 @@ header div > .div-user .b-login:hover *, header div > .div-user .b-login.hover *
   background-color: #1e1e1e;
 }
 
-header div > .div-user:hover .menu-hover {
+header div > .div-user:hover .m-hover {
   display: block;
 }
 
-header div > .div-user:hover .menu-hover.hidden {
+header div > .div-user:hover .m-hover.hidden {
   display: none;
 }
 
-main > .menu-date {
+main > .m-date {
   overflow: hidden;
-  width: 150px;
+  width: 120px;
   height: 80vh;
-}
-
-main > .menu-date:hover {
-  overflow: auto;
-}
-
-main > .menu-date > nav {
   display: inline-block;
 }
 
-main > .menu-date > nav > a {
-  width: 70%;
+main > .m-date:hover {
+  overflow: auto;
 }
 
-main > .menu-date > .menu-years > a {
+main > .m-date > a {
+  width: calc(120px - 5px - 0.2vw);
+}
+
+main > .m-date > .m-months > a {
   text-align: left;
-  padding-left: calc(8px + 2vw);
+  padding-left: calc(50px);
+  width: calc(90% - 50px);
 }
 
 main > .content {
@@ -182,28 +178,5 @@ main > .content > .c-releases {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg);
   }
-}
-
-/*.page-name img:hover~.page-name h1 {
-    background-color: yellow;
-}*/
-/* width */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background-color: #242424;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background-color: #565656;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background-color: #6a6a6a;
 }
 /*# sourceMappingURL=layout.css.map */

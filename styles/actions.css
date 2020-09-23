@@ -59,6 +59,9 @@
   background-size: 20%;
   background-repeat: repeat-y;
   background-position: -25% 0;
+}
+
+.loader.active {
   -webkit-animation: loader 3s ease-in-out infinite;
           animation: loader 3s ease-in-out infinite;
 }
