@@ -576,8 +576,9 @@ async function libraryGetReleases(releaseType) {
         // TODO nice2have: zobrazit tlačítko - načíst znovu
         return;
     }
-    console.log(releaseList);
+
     // seřadí seznam alb podle data vydání alba od nejnovějších po nejstarší
+
     releaseList.sort(function (a, b) {
         var keyA = new Date(a.release_date);
         var keyB = new Date(b.release_date);
@@ -706,7 +707,6 @@ async function libraryGetReleasesApi(releaseType, url = '', artist = null, index
     }
 
     if (releaseType == 'm') {
-        console.log(json.items);
         // projde release
         await asyncForEach(json.items, async releaseAlbum => {
             await libraryAddRelease(releaseType, releaseAlbum.album.artists[0], releaseAlbum.album);
@@ -748,8 +748,10 @@ async function libraryAddReleases(releaseType, artist, releases) {
 
     // projde nově získané releasy
     await asyncForEach(releases, async release => {
-        await libraryAddRelease(releaseType, artist, release);
-        rel.push(release);
+        var releaseNew = await libraryAddRelease(releaseType, artist, release);
+        console.log(releaseNew);
+        if (releaseNew == null) { return; }
+        rel.push(releaseNew);
     });
 
     if (releaseType == 'a') {
@@ -845,7 +847,7 @@ async function libraryAddRelease(releaseType, artist, release) {
                 libraryEPs = [];
             }
             libraryEPs.push(release);
-            return;
+            return null;
         }
     }
     else if (releaseType == 'e') {
@@ -858,13 +860,14 @@ async function libraryAddRelease(releaseType, artist, release) {
                 libraryTracks = [];
             }
             libraryTracks.push(release);
-            return;
+            return null;
         }
     }
     if (releaseType == 'm') {
         // přidá nový release do seznamu
         libraryMyAlbums.push(release);
     }
+    return release;
 }
 
 // PODROBNÉ INFORMACE O ALBU //

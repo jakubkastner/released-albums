@@ -465,7 +465,6 @@ async function showPlaylist(releaseId) {
 async function libraryIsSongInPlaylist(playlistTracks, releaseTracks) {
     var inPlaylist = false;
     // projde tracky playlistu
-    console.log(releaseTracks);
     if (!playlistTracks) {
         return inPlaylist;
     }
