@@ -248,6 +248,10 @@ $(document).on('click', '.playlist-add', async function (e) {
         // zobrazím albumy
         release = libraryPodcastsAll.find(x => x.id === releaseId);
     }
+    else if (params.show == 'my-albums') {
+        // zobrazím albumy
+        release = libraryMyAlbums.find(x => x.id === releaseId);
+    }
 
     if (playlistIcon.hasClass('fa-plus')) {
         // pridani do playlistu
@@ -412,6 +416,10 @@ async function showPlaylist(releaseId) {
         // zobrazím albumy
         release = libraryPodcastsAll.find(x => x.id === releaseId);
     }
+    else if (params.show == 'my-albums') {
+        // zobrazím albumy
+        release = libraryMyAlbums.find(x => x.id === releaseId);
+    }
 
     // projde playlisty uživatele
     await asyncForEach(libraryPlaylists, async playlist => {
@@ -551,6 +559,10 @@ $(document).on('click', '.release-play', async function (e) {
                 console.log(response);
             }
             return;
+        }
+        else if (params.show == 'my-albums') {
+            // zobrazím albumy
+            release = libraryMyAlbums.find(x => x.id === releaseId);
         }
         var json = JSON.stringify({
             context_uri: release.uri,

@@ -357,6 +357,10 @@ $(document).ready(async function () {
             // zobrazím albumy
             showPodcasts();
         }
+        else if (params.show == 'my-albums') {
+            // zobrazím albumy
+            showMyAlbums();
+        }
         else if (params.settings == '') {
             // zobrazím albumy
             showSettings();
@@ -700,6 +704,10 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
         // zobrazím albumy
         release = libraryPodcastsAll.find(x => x.id === releaseId);
     }
+    else if (params.show == 'my-albums') {
+        // zobrazím albumy
+        release = libraryMyAlbums.find(x => x.id === releaseId);
+    }
     var playlist = libraryPlaylists.find(x => x.id === playlistId);
 
     var inPlaylist;
@@ -796,6 +804,10 @@ $(document).on('click', '.album-playlist-add-new', async function (e) {
     else if (params.show == 'podcasts') {
         // zobrazím albumy
         release = libraryPodcastsAll.find(x => x.id === releaseId);
+    }
+    else if (params.show == 'my-albums') {
+        // zobrazím albumy
+        release = libraryMyAlbums.find(x => x.id === releaseId);
     }
     // vytvoreni playlistu
     var newPlaylist = await createPlaylist(release.artistsString + ' - ' + release.name);

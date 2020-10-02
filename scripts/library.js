@@ -1437,6 +1437,10 @@ async function libraryGetReleaseTracks(releaseId) {
     else if (params.show == 'podcasts') {
         return;
     }
+    else if (params.show == 'my-albums') {
+        // zobrazím albumy
+        release = libraryMyAlbums.find(x => x.id === releaseId);
+    }
     else {
         return;
     }
