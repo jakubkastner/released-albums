@@ -60,6 +60,7 @@ var libraryCompilations = null;
 var libraryPodcasts = null;
 var libraryPodcastsAll = null;
 var libraryPlaylists = null;
+var libraryMyAlbums = null;
 
 var defaultPlaylist = null;
 var defaultDevice = null;
@@ -88,6 +89,7 @@ var elementAppears = $('.appears');
 var elementCompilations = $('.compilations');
 var elementPodcasts = $('.podcasts');
 var elementSettings = $('.settings');
+var elementMyAlbums = $('.my-albums');
 
 var elementTop = $('#top');
 var elementBody = $('body, html'); // $(window) - změna scrolování - 17.3.2020
@@ -101,6 +103,7 @@ var elementTracksButton = $('.tracks-button');
 var elementAppearsButton = $('.appears-button');
 var elementCompilationsButton = $('.compilations-button');
 var elementPodcastsButton = $('.podcasts-button');
+var elementMyAlbumsButton = $('.my-albums-button');
 var elementSettingsButton;
 
 var elementHiddenMenu = $('.hidden-menu');
@@ -439,6 +442,7 @@ async function showSettings() {
     elementAppears.hide();
     elementCompilations.hide();
     elementPodcasts.hide();
+    elementMyAlbums.hide();
     elementSettings.show();
     elementMenuDate.hide();
 
@@ -448,6 +452,7 @@ async function showSettings() {
     elementAppearsButton.removeClass('current-year');
     elementCompilationsButton.removeClass('current-year');
     elementPodcastsButton.removeClass('current-year');
+    elementMyAlbumsButton.removeClass('current-year');
     elementSettingsButton.addClass('current-year');
 
     // todo - přidává donekonečna seznam playlistů !!!!

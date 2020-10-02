@@ -118,6 +118,9 @@ $(document).on('click', '.year', function (e) {
     else if (params.show == 'podcasts') {
         releaseType = 'd';
     }
+    else if (params.show == 'my-albums') {
+        releaseType = 'm';
+    }
     else {
         return;
     }
@@ -158,6 +161,9 @@ $(document).on('click', '.month', function (e) {
     }
     else if (params.show == 'podcasts') {
         releaseType = 'd';
+    }
+    else if (params.show == 'my-albums') {
+        releaseType = 'm';
     }
     else {
         return;

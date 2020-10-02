@@ -26,6 +26,9 @@ async function addMenuYears(releaseType) {
     else if (releaseType == 'd') {
         releaseList = libraryPodcastsAll;
     }
+    else if (releaseType == 'm') {
+        releaseList = libraryMyAlbums;
+    }
 
     var years = [];
     var undefinedYear = false; // rok není ve spotify vyplněn
@@ -87,6 +90,9 @@ async function addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft
     }
     else if (releaseType == 'd') {
         releaseName = 'podcasts';
+    }
+    else if (releaseType == 'm') {
+        releaseName = 'saved albums';
     }
     // přidá rok do menu (ostatní)
     var elementMenuYear = $('<ul class="nav-' + releaseType + '" id="' + releaseType + '-y-' + year + '"></ul>');
@@ -199,6 +205,10 @@ async function viewReleases(releaseType, year = 0, month = 0) {
         releaseName = 'podcasts';
         releaseList = libraryPodcastsAll;
     }
+    else if (releaseType == 'm') {
+        releaseName = 'my-albums';
+        releaseList = libraryMyAlbums;
+    }
 
     // DOČASNÉ
     // prozatím načítám aktuální měsíc
@@ -288,7 +298,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 var releaseLibrary = '';
                 if (releaseType != 'd') {
                     // ne podcasty
-                    if (release.library === true) {
+                    if (release.library === true || releaseType == 'm') {
                         releaseLibrary = `<i class="fas fa-heart album-like" title="Remove album from library" id="` + release.id + `_l"></i>`;
                     }
                     else {
