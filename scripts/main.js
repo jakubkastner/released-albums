@@ -562,6 +562,7 @@ async function showSettings() {
     });
     elementPlaylists += `</ul>`;
     elementSettingsPlaylist.append(elementPlaylists);
+    //elementSettings.append(`<div class="settings-section"><h3>back</h3><ul class="playlists settings-playlist"><li id="settings-background">background</ul></li></div>`);
 }
 
 $(document).on('click', '.notifications-enable', async function (e) {
