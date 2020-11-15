@@ -195,11 +195,11 @@ async function loginGetUserInfo() {
     user = json;
 
     // získá interprety z knihovny uživatele
-    await libraryGetArtists();
+    //await libraryGetArtists();
     // získá playlisty uživatele
-    await libraryGetPlaylists();
+    //await libraryGetPlaylists();
     // získá výstupní zařízení uživatele
-    await getDevices();
+    //await getDevices();
     hideLoading('Select which releases you want to display.');
 }
 

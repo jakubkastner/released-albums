@@ -461,13 +461,9 @@ async function showSettings() {
 
     // todo - přidává donekonečna seznam playlistů !!!!
     window.location.replace('#settings');
+    await getDevices();
     if (!libraryPlaylists) {
-        showError('zadny playlisty');
-        return;
-    }
-    if (libraryPlaylists.length < 1) {
-        showError('zadny playlisty');
-        return;
+        await libraryGetPlaylists();
     }
     elementSettings.html('');
     elementMessage.html('');
@@ -481,7 +477,6 @@ async function showSettings() {
     }
     elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable broser notifications</p><ul class="playlists settings-playlist"> ` + notificationsLi + `</ul></div>`);
 
-    await getDevices();
     elementSettings.append(`<div class="settings-section" id="settings-device"><h3>Default device</h3><p>Set your default device to play.</p></div>`);
     var elementSettingsDevice = $('#settings-device');
     if (user.product != 'premium') {
@@ -527,40 +522,46 @@ async function showSettings() {
     elementSettings.append(`<div class="settings-section" id="settings-playlist"><h3>Default playlist</h3><p>Set your default playlist to quickly add releases.</p></div>`);
     var elementSettingsPlaylist = $('#settings-playlist');
     elementTitle.text('Settings');
-    //elementMessage.text(''); // todo - při přepínání se zpráva nezobrazuje, takže zmizí (přidat nadpis přímo do nějakého divu spolu s obsahem)
-    var elementPlaylists = `<ul class="playlists settings-playlist">`;
+    var elementPlaylists = '';
     // projde playlisty uživatele
-    await asyncForEach(libraryPlaylists, async playlist => {
-        // pouze pokud se jedná o playlist do kterého lze přidat album
-        if (playlist.collaborative || playlist.owner.id == userId) {
-            var icon;
-            var title;
-            var classEl = '';
-            if (!defaultPlaylist) {
-                icon = `<i class="fas fa-plus"></i>`;
-                title = `Set playlist '` + playlist.name + `' as default`;
-                classEl = 'playlist-default-set';
+    if (libraryPlaylists.length < 1) {
+        elementPlaylists = `<p>0 playlists, try to create one</p>`;
+    }
+    else {
+        //elementMessage.text(''); // todo - při přepínání se zpráva nezobrazuje, takže zmizí (přidat nadpis přímo do nějakého divu spolu s obsahem)
+        elementPlaylists = `<ul class="playlists settings-playlist">`;
+        await asyncForEach(libraryPlaylists, async playlist => {
+            // pouze pokud se jedná o playlist do kterého lze přidat album
+            if (playlist.collaborative || playlist.owner.id == userId) {
+                var icon;
+                var title;
+                var classEl = '';
+                if (!defaultPlaylist) {
+                    icon = `<i class="fas fa-plus"></i>`;
+                    title = `Set playlist '` + playlist.name + `' as default`;
+                    classEl = 'playlist-default-set';
+                }
+                else if (defaultPlaylist.id != playlist.id) {
+                    icon = `<i class="fas fa-plus"></i>`;
+                    title = `Set playlist '` + playlist.name + `' as default`;
+                    classEl = 'playlist-default-set';
+                }
+                else {
+                    icon = `<i class="fas fa-check"></i>`;
+                    title = `Unset playlist '` + playlist.name + `'`;
+                    classEl = 'playlist-default-remove';
+                }
+                elementPlaylists += `<li class="playlist-default `;
+                elementPlaylists += classEl;
+                elementPlaylists += `" id="p_` + playlist.id + `" title="`
+                elementPlaylists += title;
+                elementPlaylists += `"><span>`;
+                elementPlaylists += icon;
+                elementPlaylists += `</span>` + playlist.name + `</li>`;
             }
-            else if (defaultPlaylist.id != playlist.id) {
-                icon = `<i class="fas fa-plus"></i>`;
-                title = `Set playlist '` + playlist.name + `' as default`;
-                classEl = 'playlist-default-set';
-            }
-            else {
-                icon = `<i class="fas fa-check"></i>`;
-                title = `Unset playlist '` + playlist.name + `'`;
-                classEl = 'playlist-default-remove';
-            }
-            elementPlaylists += `<li class="playlist-default `;
-            elementPlaylists += classEl;
-            elementPlaylists += `" id="p_` + playlist.id + `" title="`
-            elementPlaylists += title;
-            elementPlaylists += `"><span>`;
-            elementPlaylists += icon;
-            elementPlaylists += `</span>` + playlist.name + `</li>`;
-        }
-    });
-    elementPlaylists += `</ul>`;
+        });
+        elementPlaylists += `</ul>`;
+    }
     elementSettingsPlaylist.append(elementPlaylists);
     //elementSettings.append(`<div class="settings-section"><h3>back</h3><ul class="playlists settings-playlist"><li id="settings-background">background</ul></li></div>`);
 }

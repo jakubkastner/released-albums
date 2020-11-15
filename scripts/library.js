@@ -481,6 +481,10 @@ async function libraryGetReleases(releaseType) {
             await libraryGetArtists();
         }
     }
+    console.log(libraryPlaylists);
+    if (!libraryPlaylists) {
+        await libraryGetPlaylists();
+    }
 
     // získání názvu typu a seznamů releasů
     var releaseName;
@@ -1337,8 +1341,10 @@ async function libraryGetPlaylists() {
     if (libraryPlaylists.length < 1) {
         // nebyli získáni žádní interpreti
         // TODO nice2have: zobrazit tlačítko - načíst znovu
+        hideLoading('0 playlists');
         return;
     }
+    hideLoading('');
 }
 // získá playlisty uživatele z api
 async function libraryGetPlaylistsApi(url, index = 0) {
