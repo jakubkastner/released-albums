@@ -461,10 +461,10 @@ async function showSettings() {
 
     // todo - přidává donekonečna seznam playlistů !!!!
     window.location.replace('#settings');
-    await getDevices();
     if (!libraryPlaylists) {
         await libraryGetPlaylists();
     }
+    await getDevices();
     elementSettings.html('');
     elementMessage.html('');
     elementMessage.hide();

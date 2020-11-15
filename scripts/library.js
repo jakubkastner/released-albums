@@ -1341,10 +1341,10 @@ async function libraryGetPlaylists() {
     if (libraryPlaylists.length < 1) {
         // nebyli získáni žádní interpreti
         // TODO nice2have: zobrazit tlačítko - načíst znovu
-        hideLoading('0 playlists');
+        //hideLoading('0 playlists');
         return;
     }
-    hideLoading('');
+    //hideLoading('');
 }
 // získá playlisty uživatele z api
 async function libraryGetPlaylistsApi(url, index = 0) {

@@ -229,7 +229,7 @@ async function getDevices() {
     if (devices.length < 1) {
         // nebyli získáni žádní interpreti
         // TODO nice2have: zobrazit tlačítko - načíst znovu
-        hideLoading('');
+        hideLoading('0 devices');
         return;
     }
 
