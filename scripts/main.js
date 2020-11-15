@@ -167,7 +167,7 @@ async function fetchJson(url, errorText) {
 
     if (!json) {
         // nepodařilo se získat json
-        hideLoading(elementError.text() + '\n' + errorText + '\nCan not get JSON from Spotify API');
+        //hideLoading(elementError.text() + '\n' + errorText + '\nCan not get JSON from Spotify API');
         console.log('fetch error - from url: ' + url);
         return null;
     }
@@ -200,7 +200,7 @@ async function fetchJson(url, errorText) {
             // UPOZORNĚNÍ -> HROZÍ NEKONEČNÁ SMYČKA
         }
         // jiná chyba
-        hideLoading(elementError.text() + '\n' + errorText + '\n' + json.error.message);
+        //hideLoading(elementError.text() + '\n' + errorText + '\n' + json.error.message);
         console.log('fetch error - from spotify: ' + json.error.message);
         console.log(json.error);
         return null;

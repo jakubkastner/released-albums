@@ -132,6 +132,9 @@ async function showPodcasts() {
         // nebyla nastavena url
         window.location.replace("#show=podcasts");
     }
+    if (!libraryPlaylists) {
+        await libraryGetPlaylists();
+    }
 
     if (!libraryPodcastsAll) {
         // albumy dosud nebyly načteny
@@ -441,8 +444,10 @@ async function libraryGetPodcasts() {
     await getPodcastsApi(API_URL + '/me/shows?offset=0&limit=50');
 
     // projde sledované interprety
+    var index = 0;
     await asyncForEach(libraryPodcasts, async podcast => {
         if (podcast === undefined) return;
+        elementMessage.text('Please wait: Getting podcasts... (' + ++index + ')');
         // získá ze spotify api jejich albumy
         await getPodcastsEpisodes(podcast);
     });
@@ -694,15 +699,17 @@ async function libraryGetReleasesApi(releaseType, url = '', artist = null, index
         }
     }
 
-    // zobrazí zprávu
-    elementMessage.text('Please wait: Getting ' + releaseName + ' from artists... (' + index + ' / ' + artistsLength + ')');
 
     // získá json releasů ze spotify api
     var json;
     if (releaseType == 'm') {
+        // zobrazí zprávu
+        elementMessage.text('Please wait: Getting ' + releaseName);
         json = await fetchJson(url, 'Failed to get ' + releaseName);
     }
     else {
+        // zobrazí zprávu
+        elementMessage.text('Please wait: Getting ' + releaseName + ' from artists... (' + index + ' / ' + artistsLength + ')');
         json = await fetchJson(url, 'Failed to get ' + releaseName + ' from artist ' + artist.name);
     }
 
@@ -1403,11 +1410,11 @@ async function libraryGetPlaylistsTracksApi(url) {
     // získá umělce
     var tracks = json.items;
     if (!tracks) {
-        showError('No playlists can be obtained', 'no album songs'); // !!
+        //showError('No playlists can be obtained', 'no album songs'); // !!
         return null;
     }
     if (tracks.length < 1) {
-        showError('No playlists can be obtained', 'no album songs'); // !!
+        //showError('No playlists can be obtained', 'no album songs'); // !!
         return null;
     }
 
