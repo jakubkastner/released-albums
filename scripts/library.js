@@ -760,7 +760,7 @@ async function libraryAddReleases(releaseType, artist, releases) {
     // projde nově získané releasy
     await asyncForEach(releases, async release => {
         var releaseNew = await libraryAddRelease(releaseType, artist, release);
-        console.log(releaseNew);
+        
         if (releaseNew == null) { return; }
         rel.push(releaseNew);
     });

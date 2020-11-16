@@ -1,4 +1,4 @@
-/**
+osition of added release to the playlist/**
  * ZKRATKY *
  * 
  * a = albums
@@ -66,6 +66,7 @@ var defaultPlaylist = null;
 var defaultDevice = null;
 
 var notifications = false;
+var playlistPositionFirst = true;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
@@ -375,8 +376,12 @@ $(document).ready(async function () {
     }
 });
 
-async function sendFetch(url, trackUri, errorText = "") {
-    url = url + '?uris=' + trackUri;
+async function sendFetch(url, trackUri, errorText = "", position = false) {
+    url += '?';
+    if (position === true) {
+        url += 'position=0&';
+    }
+    url = url + 'uris=' + trackUri;
     var opt = {
         method: 'POST',
         headers: {
@@ -518,6 +523,16 @@ async function showSettings() {
         elementSettingsDevice.append(elementDevices);
     }
 
+    var plPositionLi;
+    if (playlistPositionFirst === true) {
+        plPositionLi = `<li class="playlist-default playlist-position-last" title="Click to set last position"><i class="fas fa-angle-up"></i>First position</li>`;
+    }
+    else {
+        plPositionLi = `<li class="playlist-default playlist-position-first" title="Click to set first position"><i class="fas fa-angle-down"></i>Last position</li>`;
+    }
+    elementSettings.append(`<div class="settings-section" id="settings-playlist-position"><h3>Position of added release to the playlist</h3><p>Set the position (first or last) of added releases to the playlist.</p><ul class="playlists settings-playlist-position"> ` + plPositionLi + `</ul></div>`);
+
+
 
     elementSettings.append(`<div class="settings-section" id="settings-playlist"><h3>Default playlist</h3><p>Set your default playlist to quickly add releases.</p></div>`);
     var elementSettingsPlaylist = $('#settings-playlist');
@@ -580,7 +595,7 @@ $(document).on('click', '.notifications-enable', async function (e) {
             // show notification here
             elementNotifications.removeClass('notifications-enable');
             elementNotifications.addClass('notifications-disable');
-            elementNotifications.title('Click to disable browser notifications');
+            elementNotifications.prop('title', 'Click to disable browser notifications');
             elementNotifications.html(`<i class="fas fa-check"></i>Notifications enabled`);
             notifications = true;
         }
@@ -591,7 +606,7 @@ $(document).on('click', '.notifications-enable', async function (e) {
                     // show notification here
                     elementNotifications.removeClass('notifications-enable');
                     elementNotifications.addClass('notifications-disable');
-                    elementNotifications.title('Click to disable browser notifications');
+                    elementNotifications.prop('title', 'Click to disable browser notifications');
                     elementNotifications.html(`<i class="fas fa-check"></i>Notifications enabled`);
                     notifications = true;
                 }
@@ -926,4 +941,28 @@ $(document).on('click', '.device-default-remove', async function (e) {
     deviceDiv.prop('title', `Set device '` + deviceDiv.text() + `' as default`);
     // nastavení výchozího deviceu
     defaultDevice = null;
+});
+
+
+
+
+$(document).on('click', '.playlist-position-last', async function (e) {
+    // nastavení notifikací
+    var elementPlaylistSettings = $('.playlist-position-last');
+    elementPlaylistSettings.removeClass('playlist-position-last');
+    elementPlaylistSettings.addClass('playlist-position-first');
+    elementPlaylistSettings.prop('title', 'Click to set first position');
+    elementPlaylistSettings.html(`<i class="fas fa-angle-down"></i></i>Last position`);
+
+    playlistPositionFirst = false;
+});
+$(document).on('click', '.playlist-position-first', async function (e) {
+    // nastavení notifikací
+    var elementPlaylistSettings = $('.playlist-position-first');
+    elementPlaylistSettings.removeClass('playlist-position-first');
+    elementPlaylistSettings.addClass('playlist-position-last');
+    elementPlaylistSettings.prop('title', 'Click to set last position');
+    elementPlaylistSettings.html(`<i class="fas fa-angle-up"></i>First position`);
+
+    playlistPositionFirst = true;
 });

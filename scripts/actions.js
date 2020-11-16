@@ -230,7 +230,7 @@ $(document).on('click', '.playlist-add', async function (e) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
@@ -281,7 +281,7 @@ $(document).on('click', '.playlist-add', async function (e) {
 
 async function libraryAddToPlaylistApi(track, playlistId, albumId) {
     var url = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks';
-    var response = await sendFetch(url, track.uri);
+    var response = await sendFetch(url, track.uri, "", playlistPositionFirst);
     if (response.status == 201) {
         // přidáno
         if (albumId === null) {
@@ -398,7 +398,7 @@ async function showPlaylist(releaseId) {
     }
     else if (params.show == 'eps') {
         // zobrazím albumy
-        release = libraryPodcasts.find(x => x.id === releaseId);
+        release = libraryEPs.find(x => x.id === releaseId);
     }
     else if (params.show == 'tracks') {
         // zobrazím albumy
