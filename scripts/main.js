@@ -1,4 +1,4 @@
-osition of added release to the playlist/**
+/**
  * ZKRATKY *
  * 
  * a = albums
