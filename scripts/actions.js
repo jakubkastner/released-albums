@@ -259,7 +259,11 @@ $(document).on('click', '.playlist-add', async function (e) {
             await libraryAddToPlaylistApi(release, playlistId, releaseId);
         }
         else {
-            await asyncForEach(release.tracks, async releaseTrack => {
+            var tracks = release.tracks;
+            if (playlistPositionFirst === true) {
+                tracks = tracks.reverse();
+            }
+            await asyncForEach(tracks, async releaseTrack => {
                 await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
             });
         }

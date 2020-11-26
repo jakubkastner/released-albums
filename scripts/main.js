@@ -744,7 +744,11 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
                 await libraryAddToPlaylistApi(release, playlistId, releaseId);
             }
             else {
-                await asyncForEach(release.tracks, async releaseTrack => {
+                var tracks = release.tracks;
+                if (playlistPositionFirst === true) {
+                    tracks = tracks.reverse();
+                }
+                await asyncForEach(tracks, async releaseTrack => {
                     // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
                     await libraryAddToPlaylistApi(releaseTrack, playlistId, releaseId);
                 });
@@ -836,8 +840,13 @@ $(document).on('click', '.album-playlist-add-new', async function (e) {
         await libraryAddToPlaylistApi(release, newPlaylist.id, releaseId);
     }
     else {
-        await asyncForEach(release.tracks, async releaseTrack => {
+        var tracks = release.tracks;
+        if (playlistPositionFirst === true) {
+            tracks = tracks.reverse();
+        }
+        await asyncForEach(tracks, async releaseTrack => {
             // todo - vybírání a odebírání ve funkci ponechat (pokud mám zobrazený seznam z playlistu, automaticky to v něm odškrtne/zaškrtne)
+            console.log(releaseTrack);
             await libraryAddToPlaylistApi(releaseTrack, newPlaylist.id, releaseId);
         });
     }
