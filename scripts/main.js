@@ -455,6 +455,8 @@ async function showSettings() {
     elementSettings.show();
     elementMenuDate.hide();
 
+    elementActions.hide();
+
     elementAlbumsButton.removeClass('current-year');
     elementEPsButton.removeClass('current-year');
     elementTracksButton.removeClass('current-year');
@@ -482,13 +484,13 @@ async function showSettings() {
     }
     elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable broser notifications</p><ul class="playlists settings-playlist"> ` + notificationsLi + `</ul></div>`);
 
-    elementSettings.append(`<div class="settings-section" id="settings-device"><h3>Default device</h3><p>Set your default device to play.</p></div>`);
+    elementSettings.append(`<div class="settings-section" id="settings-device"><h3>Default device</h3><p>Set your default device to play releases.</p></div>`);
     var elementSettingsDevice = $('#settings-device');
     if (user.product != 'premium') {
-        elementSettings.append(`<p>This feature is available only for Spotify Premium users.</p>`);
+        elementSettingsDevice.append(`<p><i class="fas fa-times"></i> This feature is available only for Spotify Premium users.</p>`);
     }
     else if (devices.length < 1) {
-        elementSettings.append(`<p>No device found</p>`);
+        elementSettingsDevice.append(`<p><i class="fas fa-times"></i> No device found</p>`);
     }
     else {
         var elementDevices = `<ul class="devices settings-devices">`;
@@ -540,7 +542,7 @@ async function showSettings() {
     var elementPlaylists = '';
     // projde playlisty uživatele
     if (libraryPlaylists.length < 1) {
-        elementPlaylists = `<p>0 playlists, try to create one</p>`;
+        elementPlaylists = `<p><i class="fas fa-times"></i> 0 playlists, try to create one.</p>`;
     }
     else {
         //elementMessage.text(''); // todo - při přepínání se zpráva nezobrazuje, takže zmizí (přidat nadpis přímo do nějakého divu spolu s obsahem)
