@@ -456,6 +456,7 @@ async function showSettings() {
     elementMenuDate.hide();
 
     elementActions.hide();
+    elementError.hide();
 
     elementAlbumsButton.removeClass('current-year');
     elementEPsButton.removeClass('current-year');
