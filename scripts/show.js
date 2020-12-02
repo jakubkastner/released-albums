@@ -100,7 +100,7 @@ async function addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft
 
     // přidá rok (all) do menu
     if (year == 0) {
-        elementMenuYear.append('<li><a class="year" id="' + releaseType + '-' + year + '" title="Click to view all releases">all</a></li>');
+        elementMenuYear.append('<li><a class="year" id="' + releaseType + '-' + year + '" title="Click to view latest releases">latest</a></li>');
         return;
     }
     else if (year == 100) {
