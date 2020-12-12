@@ -1,8 +1,8 @@
 // RELEASY //
 
 /**
- * 
- * @param {*} realeseList 
+ *
+ * @param {*} realeseList
  * @param {*} releaseType a = albums / t = tracks / p = appears / c = compilations
  */
 async function addMenuYears(releaseType) {
@@ -150,7 +150,7 @@ async function addMenuMonths(year, releaseList, releaseType, elementMenuDateLeft
         return 0;
     });
 
-    // přidá měsíce vybraného roku do menu    
+    // přidá měsíce vybraného roku do menu
     var elementMenuMonths = '';
     await asyncForEach(months, async month => {
         elementMenuMonths += `<li><a class="month ` + releaseType + `-` + year + `" id="` + releaseType + `-` + year + `-` + month + `" title="Click to view `;
@@ -318,7 +318,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 var artistsYt = '';
                 var tracklistIcon = ``;
                 if (releaseType != 'd') {
-                    // ne podcasty                    
+                    // ne podcasty
                     artistsYt = `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
                     tracklistIcon = `<i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"><span>` + release.total_tracks + `</span></i>`;
                 }
@@ -341,7 +341,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 elementReleaseDiv += `<i class="fas fa-plus album-playlist" title="Add to playlist" id="` + release.id + `_p"></i>`;
                 elementReleaseDiv += defaultPlaylistButton;
                 elementReleaseDiv += `<i class="fas fa-plus-square album-playlist-add-new" title="Add to new playlist '` + release.artistsString + ` - ` + release.name + `'" id="pd_` + release.id + `"></i>`;
-                elementReleaseDiv += `<a href="` + release.uri + ` rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>`;
+                elementReleaseDiv += `<a href="` + release.uri + `" rel="noopener noreferrer"><i class="fab fa-spotify" title="Open in Spotify"></i></a>`;
                 elementReleaseDiv += artistsYt;
                 elementReleaseDiv += `</div>
                             </div>
