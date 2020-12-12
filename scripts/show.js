@@ -59,7 +59,7 @@ async function addMenuYears(releaseType) {
         if (a > b) return -1;
         return 0;
     });
-    years.unshift(0);
+    // years.unshift(0);
     elementMenuMobile.removeClass('hidden');
     var elementMenuDateLeft = $('<div class="nav-left"></div>');
     elementMenuDate.append(elementMenuDateLeft);
@@ -351,8 +351,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     });
     $('.' + releaseName).append(elementReleaseDiv);
     // zobrazí tlačítko pro přidání všech songů do playlistu
-    if (elementReleaseDiv === '')
-    {
+    if (elementReleaseDiv === '') {
         elementError.text('Not found any ' + releaseName + ' in ' + year + '-' + month);
     }
     else if (releaseType == 't') {
