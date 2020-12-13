@@ -335,6 +335,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                                     <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><h2>` + release.name + `</h2></a>`;
                 elementReleaseDiv += aristsHref;
                 elementReleaseDiv += `<p>` + release.release_date + `</p>`;
+                elementReleaseDiv += `<p>` + release.duration + `</p>`;
                 elementReleaseDiv += tracklistIcon;
                 elementReleaseDiv += playRelease;
                 elementReleaseDiv += releaseLibrary;
@@ -352,7 +353,19 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     $('.' + releaseName).append(elementReleaseDiv);
     // zobrazí tlačítko pro přidání všech songů do playlistu
     if (elementReleaseDiv === '') {
-        elementError.text('Not found any ' + releaseName + ' in ' + year + '-' + month);
+        if (month == 0) {
+            elementError.text('Not found any ' + releaseName + ' in ' + year);
+
+        }
+        else if (month == 100) {
+            elementError.text('Not found any ' + releaseName + ' in ' + year + ' with undefined month');
+        }/*
+        else if (month == 100) {
+            elementError.text('Not found any ' + releaseName + ' in ' + year + ' with undefined month');
+        }*/
+        else {
+            elementError.text('Not found any ' + releaseName + ' in ' + year + '-' + month);
+        }
     }
     else if (releaseType == 't') {
         if (year != 0) {

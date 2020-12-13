@@ -486,7 +486,6 @@ async function libraryGetReleases(releaseType) {
             await libraryGetArtists();
         }
     }
-    console.log(libraryPlaylists);
     if (!libraryPlaylists) {
         await libraryGetPlaylists();
     }
@@ -542,7 +541,6 @@ async function libraryGetReleases(releaseType) {
     // uloží hodnoty
     var index = 0;
 
-    console.log("A");
     if (releaseType == 'm') {
         await libraryGetReleasesApi(releaseType);
     }
@@ -760,7 +758,7 @@ async function libraryAddReleases(releaseType, artist, releases) {
     // projde nově získané releasy
     await asyncForEach(releases, async release => {
         var releaseNew = await libraryAddRelease(releaseType, artist, release);
-        
+
         if (releaseNew == null) { return; }
         rel.push(releaseNew);
     });

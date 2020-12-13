@@ -1,38 +1,38 @@
 /**
  * ZKRATKY *
- * 
+ *
  * a = albums
  * t = tracks
  * p = appears
  * c = compilations
- * 
- * 
+ *
+ *
  * TODO *
- *  
+ *
  * zobrazení všech albumů ze všech roků, to samé u měsíců
  * - jako eshopy
  * - nekonečné scrollování
  * - ale načítat pouze část albumů postupně
  * -> není hotovo
- * 
+ *
  * NICE 2 HAVE *
- * 
+ *
  * nějaké lepší tlačítko na odhlašování
- * 
- * další tlačítka albumů 
- * 
- * 
- * HOTOVO * 
- * 
+ *
+ * další tlačítka albumů
+ *
+ *
+ * HOTOVO *
+ *
  * kontrola při načítání albumů, zdali už nejsou v knihovně
  * - podle toho zobrazit ikonku
- * 
+ *
  * odstraňování albumů z knihovny
- * 
+ *
  * přidávání albumů do knihovny
  * - funguje
  * - akorát se přidají navíc všechny skladby albumu do knihovny, což nechci
- * 
+ *
  */
 
 var API_ID = 'd1c9a91ea65443af90946fde02fdda64';
@@ -281,7 +281,7 @@ elementTop.click(function () {
     if (!elementTop.is(':hidden')) {
         // skryje posuvník nahoru
         elementTop.animate({ "bottom": "0px" },);
-        elementTop.promise().done(function(){               
+        elementTop.promise().done(function(){
             elementTop.hide();
         });
     }
@@ -323,7 +323,7 @@ window.onscroll = function () {
  */
 $(document).ready(async function () {
     var storedState = localStorage.getItem(STATE_KEY);
-    console.log(storedState);
+
     // získám z úložiště prohlížeče userAccess
     userAccess = localStorage.getItem(USER_ACCESS);
     if (userAccess) {
@@ -456,7 +456,6 @@ async function showSettings() {
     elementMenuDate.hide();
 
     elementActions.hide();
-    elementError.hide();
 
     elementAlbumsButton.removeClass('current-year');
     elementEPsButton.removeClass('current-year');
@@ -476,6 +475,7 @@ async function showSettings() {
     elementSettings.html('');
     elementMessage.html('');
     elementMessage.hide();
+    elementError.html('');
     var notificationsLi;
     if (notifications === true) {
         notificationsLi = `<li class="playlist-default notifications-disable" title="Click to disable browser notifications"><i class="fas fa-check"></i>Notifications enabled</li>`;
