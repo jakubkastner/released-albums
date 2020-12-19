@@ -335,7 +335,7 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                                     <a href="` + release.url + `" target="_blank" rel="noopener noreferrer"><h2>` + release.name + `</h2></a>`;
                 elementReleaseDiv += aristsHref;
                 elementReleaseDiv += `<p>` + release.release_date + `</p>`;
-                elementReleaseDiv += `<p>` + release.duration + `</p>`;
+                //elementReleaseDiv += `<p>` + release.duration + `</p>`;
                 elementReleaseDiv += tracklistIcon;
                 elementReleaseDiv += playRelease;
                 elementReleaseDiv += releaseLibrary;
