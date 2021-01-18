@@ -66,6 +66,7 @@ var defaultPlaylist = null;
 var defaultDevice = null;
 
 var notifications = false;
+var youtubeMusic = false;
 var playlistPositionFirst = true;
 
 var lastAlbumsCount = 0;
@@ -579,6 +580,15 @@ async function showSettings() {
             }
         });
         elementPlaylists += `</ul>`;
+
+        var youtubeLi;
+        if (youtubeMusic === true) {
+            youtubeLi = `<li class="youtubemusic youtubemusic-disable" title="Click to hide YouTube Music icon"><i class="fas fa-check"></i>YouTube Music search enabled</li>`;
+        }
+        else {
+            youtubeLi = `<li class="youtubemusic youtubemusic-enable" title="Click to show YouTube Music icon"><i class="fas fa-times"></i>YouTube Music search disabled</li>`;
+        }
+        elementSettings.append(`<div class="settings-section" id="settings-youtubemusic"><h3>YouTube Music Search</h3><p>Show or hide YouTube Music search icon.</p><ul class="playlists settings-youtubemusic"> ` + youtubeLi + `</ul></div>`);
     }
     elementSettingsPlaylist.append(elementPlaylists);
     //elementSettings.append(`<div class="settings-section"><h3>back</h3><ul class="playlists settings-playlist"><li id="settings-background">background</ul></li></div>`);
@@ -780,6 +790,27 @@ $(document).on('click', '.album-playlist-add-default', async function (e) {
 });
 
 
+
+$(document).on('click', '.settings .youtubemusic', async function (e) {
+    // nastavení ikony youtube music
+    var elementYtMusic = $('.youtubemusic');
+    if (youtubeMusic === true) {
+        // disable
+        elementYtMusic.removeClass('youtubemusic-enable');
+        elementYtMusic.addClass('youtubemusic-disable');
+        elementYtMusic.prop('title', 'Click to show YouTube Music icon');
+        elementYtMusic.html(`<i class="fas fa-times"></i>YouTube Music search disabled`);
+        youtubeMusic = false;
+    }
+    else {
+        // enable
+        elementYtMusic.removeClass('youtubemusic-disable');
+        elementYtMusic.addClass('youtubemusic-enable');
+        elementYtMusic.prop('title', 'Click to hide YouTube Music icon');
+        elementYtMusic.html(`<i class="fas fa-check"></i>YouTube Music search enabled`);
+        youtubeMusic = true;
+    }
+});
 
 
 // todo při přepínání albumy - tracky - apperas - nastavení neskrávat obsah, nýbrž obsah odstraňovat (což se aktuálně děje při přidávání, takže tam zůstává zbytečně)

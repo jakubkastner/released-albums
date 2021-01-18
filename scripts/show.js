@@ -328,9 +328,15 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 }
                 var artistsYt = '';
                 var tracklistIcon = ``;
+                if (youtubeMusic === true) {
+                    if (releaseType != 'd') {
+                        // ne podcasty
+                        artistsYt = `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
+                    }
+
+                }
                 if (releaseType != 'd') {
                     // ne podcasty
-                    artistsYt = `<a href="https://music.youtube.com/search?q=` + release.artistsString.replace(`&`, ``) + ` ` + release.name + `" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube" title="Search on Youtube Music"></i></a>`;
                     tracklistIcon = `<i class="fas fa-bars album-tracklist" title="View tracklist" id="` + release.id + `_t"><span>` + release.total_tracks + `</span></i>`;
                 }
                 else {
