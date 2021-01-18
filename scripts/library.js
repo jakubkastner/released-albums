@@ -470,8 +470,6 @@ async function libraryGetPodcasts() {
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
     hideLoading('Select which year of albums releases you want to display.');
 
-    localStorage.setItem('podcasts', JSON.stringify(libraryPodcasts));
-
     // přidá do menu roky a měsíce releasů
     await addMenuYears('d');
 }
@@ -1354,7 +1352,6 @@ async function libraryGetPlaylists() {
         //hideLoading('0 playlists');
         return;
     }
-    localStorage.setItem('playlists', JSON.stringify(libraryPlaylists));
 
     //hideLoading('');
 }
