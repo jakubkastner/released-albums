@@ -314,7 +314,14 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                 if (defaultDevice) {
                     playRelease = `<i class="fas fa-play release-play" title="Play release" id="` + release.id + `_play"></i>`;
                 }
-                var aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
+
+                var aristsHref = '';
+                if (releaseType == 'a' || releaseType == 'c') {
+                    aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + ' & ' + release.artist.name + `</h3></a>`;
+                }
+                else {
+                    aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
+                }
                 var artistsYt = '';
                 var tracklistIcon = ``;
                 if (releaseType != 'd') {
@@ -547,3 +554,17 @@ $(document).on('click', '#playlist-play-month', async function (e) {
         }
     });
 });
+
+/*
+elementTitle.click(function () {
+    //Checking for IndexedDB support
+    if (!window.indexedDB) {
+        console.log("Your browser does not support IndexedDB");
+        return;
+    }
+    console.log("Your browser supports IndexedDB");
+    databaseOpen();
+    //var json = JSON.parse(jsonParse(localStorage.getItem('albums')));
+    /*var json = jsonParse(localStorage.getItem('albums'));
+    console.log(json);*//*
+});*/

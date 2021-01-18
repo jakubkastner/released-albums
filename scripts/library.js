@@ -470,6 +470,8 @@ async function libraryGetPodcasts() {
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
     hideLoading('Select which year of albums releases you want to display.');
 
+    localStorage.setItem('podcasts', JSON.stringify(libraryPodcasts));
+
     // přidá do menu roky a měsíce releasů
     await addMenuYears('d');
 }
@@ -617,30 +619,40 @@ async function libraryGetReleases(releaseType) {
     hideLoading('Select which year of albums releases you want to display.');
 
     // uloží do proměnných získaný seznam releasů
+
     if (releaseType == 'a') {
         libraryAlbums = releaseList;
+        localStorage.setItem('albums', jsonStringify(libraryAlbums));
     }
     else if (releaseType == 'e') {
         libraryEPs = releaseList;
         await addMenuYears('t');
         $('.nav-t').hide();
+        localStorage.setItem('eps', JSON.stringify(libraryEPs));
     }
     else if (releaseType == 't') {
         libraryTracks = releaseList;
         await addMenuYears('e');
         $('.nav-e').hide();
+        localStorage.setItem('tracks', JSON.stringify(libraryTracks));
     }
     else if (releaseType == 'p') {
         libraryAppears = releaseList;
+        localStorage.setItem('appears', JSON.stringify(libraryAppears));
     }
     else if (releaseType == 'c') {
         libraryCompilations = releaseList;
+        localStorage.setItem('compilations', JSON.stringify(libraryCompilations));
     }
     else if (releaseType == 'd') {
-        releaseList = libraryPodcasts;
+        //releaseList = libraryPodcasts;
+        libraryPodcasts = releaseList;
+        localStorage.setItem('podcasts', JSON.stringify(libraryPodcasts));
     }
     else if (releaseType == 'm') {
-        releaseList = libraryMyAlbums;
+        //releaseList = libraryMyAlbums;
+        libraryMyAlbums = releaseList;
+        localStorage.setItem('myalbums', JSON.stringify(libraryMyAlbums));
     }
 
     // přidá do menu roky a měsíce releasů
@@ -1349,6 +1361,8 @@ async function libraryGetPlaylists() {
         //hideLoading('0 playlists');
         return;
     }
+    localStorage.setItem('playlists', JSON.stringify(libraryPlaylists));
+
     //hideLoading('');
 }
 // získá playlisty uživatele z api
@@ -1495,3 +1509,74 @@ async function libraryGetReleaseTracksApi(url, release) {
         await libraryGetReleaseTracksApi(json.next, release);
     }
 }
+
+
+/*
+function jsonStringify(object) {
+    var seen = [];
+    var jsons = JSON.stringify(object, function (key, val) {
+        if (val != null && typeof val == "object") {
+            if (seen.indexOf(val) >= 0) {
+                return;
+            }
+            seen.push(val);
+        }
+        return val;
+    });
+    return jsons;
+}
+
+
+function jsonParse(obj) {
+    var decyc = jsonDecycle(obj);
+    var pars = JSON.parse(decyc);
+    return pars;
+}
+function jsonDecycle(obj, stack = []) {
+    if (!obj || typeof obj !== 'object')
+        return obj;
+
+    if (stack.includes(obj))
+        return null;
+
+    let s = stack.concat([obj]);
+
+    return Array.isArray(obj)
+        ? obj.map(x => jsonDecycle(x, s))
+        : Object.fromEntries(
+            Object.entries(obj)
+                .map(([k, v]) => [k, jsonDecycle(v, s)]));
+}
+*/
+
+//Opening a Database
+/*function databaseOpen() {
+    // Open the database
+    //parameters - database name and version number. - integer
+    var db;
+    var request = indexedDB.open("Database");
+    //Generating handlers
+    //Error handlers
+    request.onerror = function (event) {
+        console.error("Database error: " + event.target.errorCode);
+    };
+    //OnSuccess Handler
+    request.onsuccess = function (event) {
+        console.log("Success: ");
+        db = event.target.result;
+    };
+
+    //OnUpgradeNeeded Handler
+    request.onupgradeneeded = function (event) {
+        console.log("On Upgrade Needed");
+
+        db = event.target.result;
+        // Create an objectStore for this database
+        //Provide the ObjectStore name and provide the keyPath which acts as a primary key
+        var objectStore = db.createObjectStore("name", { keyPath: 'id', autoIncrement: true });
+    };
+}
+
+function databaseAdd () {
+
+}*/
