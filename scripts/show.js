@@ -317,7 +317,11 @@ async function viewReleases(releaseType, year = 0, month = 0) {
 
                 var aristsHref = '';
                 if (releaseType == 'a' || releaseType == 'c') {
-                    aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + ' & ' + release.artist.name + `</h3></a>`;
+                    var artName = release.artistsString;
+                    if (artName != release.artist.name) {
+                        artName += ' & ' + release.artist.name;
+                    }
+                    aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + artName + `</h3></a>`;
                 }
                 else {
                     aristsHref = `<a href="` + release.artist.external_urls.spotify + `" target="_blank" rel="noopener noreferrer"><h3>` + release.artistsString + `</h3></a>`;
