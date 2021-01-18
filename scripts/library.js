@@ -622,37 +622,30 @@ async function libraryGetReleases(releaseType) {
 
     if (releaseType == 'a') {
         libraryAlbums = releaseList;
-        localStorage.setItem('albums', jsonStringify(libraryAlbums));
     }
     else if (releaseType == 'e') {
         libraryEPs = releaseList;
         await addMenuYears('t');
         $('.nav-t').hide();
-        localStorage.setItem('eps', JSON.stringify(libraryEPs));
     }
     else if (releaseType == 't') {
         libraryTracks = releaseList;
         await addMenuYears('e');
         $('.nav-e').hide();
-        localStorage.setItem('tracks', JSON.stringify(libraryTracks));
     }
     else if (releaseType == 'p') {
         libraryAppears = releaseList;
-        localStorage.setItem('appears', JSON.stringify(libraryAppears));
     }
     else if (releaseType == 'c') {
         libraryCompilations = releaseList;
-        localStorage.setItem('compilations', JSON.stringify(libraryCompilations));
     }
     else if (releaseType == 'd') {
         //releaseList = libraryPodcasts;
         libraryPodcasts = releaseList;
-        localStorage.setItem('podcasts', JSON.stringify(libraryPodcasts));
     }
     else if (releaseType == 'm') {
         //releaseList = libraryMyAlbums;
         libraryMyAlbums = releaseList;
-        localStorage.setItem('myalbums', JSON.stringify(libraryMyAlbums));
     }
 
     // přidá do menu roky a měsíce releasů
