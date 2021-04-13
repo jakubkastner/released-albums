@@ -257,7 +257,7 @@ header .in-main .button {
     background-color: rgb(76, 76, 76);
     border: 0;
     position: fixed;
-    bottom: calc(10px + 2vw); /* změna scrolování - 17.3.2020 - odstranit*/;
+    bottom: calc(30px + 2vw); /* změna scrolování - 17.3.2020 - odstranit*/;
     /*bottom: -80px; změna scrolování - 17.3.2020 - přidat*/
     left: calc(60px + 4vw);
     display: none;
@@ -309,7 +309,7 @@ footer p {
     max-height: 400px;
     overflow: hidden;
 }
-.playlists:hover, .devices:hover {    
+.playlists:hover, .devices:hover {
     overflow: auto;
 }
 
@@ -388,6 +388,10 @@ footer p {
     .nav-date a, .nav-mobile {
         padding: 10px 15px;
     }
+    /*footer .in-body {
+        padding-bottom: calc(60px + 0.5vw);
+    }*/
+
 }
 
 @media screen and (max-width: 450px) {
@@ -406,7 +410,14 @@ footer p {
     .top {
         left: auto;
         right: 10px;
-        bottom: 10px;
+        bottom: 50px;
+    }
+    .page-name h1 {
+        display: none;
+        padding: calc(5px + 0.5vw) calc(10px + 1vw);
+    }
+    .in-header .login p {
+        display: none;
     }
 }
 
