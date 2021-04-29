@@ -526,7 +526,7 @@ $(document).on('click', '#playlist-play-month', async function (e) {
                 },
                 position_ms: 0
             });
-            var response = await putFetchJson(API_URL + '/me/player/play', json);
+            var response = await putFetchJson(API_URL + '/me/player/play?device_id=' + defaultDevice.id, json);
 
             if (response.status == 200) {
                 releasePlayIcon.removeClass("far");
