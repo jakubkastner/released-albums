@@ -1384,7 +1384,10 @@ async function libraryGetPlaylistsApi(url, index = 0) {
         if (!playlist.tracks.href) {
             return; //??
         }
-        playlist.tracks.list = await libraryGetPlaylistsTracksApi(playlist.tracks.href);
+        if (playlist.collaborative || playlist.owner.id == userId)
+        {
+            playlist.tracks.list = await libraryGetPlaylistsTracksApi(playlist.tracks.href);
+        }
     });
 
     // uložení do seznamu playlistů
