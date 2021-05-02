@@ -1469,8 +1469,11 @@ async function libraryGetReleaseTracks(releaseId) {
         console.log("tracks");
         return;
     }*/
-    if (release.tracks > 0) {
-        return;
+    if (release.tracks)
+    {
+        if (release.tracks.length > 0) {
+            return;
+        }
     }
     release.tracks = [];
     var url = 'https://api.spotify.com/v1/albums/' + releaseId + '/tracks?market=' + userCountry + '&limit=50';
