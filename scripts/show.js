@@ -290,6 +290,13 @@ async function viewReleases(releaseType, year = 0, month = 0) {
                     return;
                 }
                 // release není zobrazen
+                if (variousArtists === false) {
+                    // hide various artists
+                    if (release.artistsString.toLowerCase().includes('various artists'))
+                    {
+                        return;
+                    }
+                }
 
                 // přidá do seznamu zobrazených releasů
                 viewedReleases.push(release.id);

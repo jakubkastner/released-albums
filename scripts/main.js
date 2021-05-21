@@ -68,6 +68,7 @@ var defaultDevice = null;
 var notifications = false;
 var youtubeMusic = false;
 var playlistPositionFirst = true;
+var variousArtists = true;
 
 var lastAlbumsCount = 0;
 var lastAlbumsCurrent = 0;
@@ -527,6 +528,17 @@ async function showSettings() {
         elementSettingsDevice.append(elementDevices);
     }
 
+    var varArtLi;
+    if (playlistPositionFirst === true) {
+        varArtLi = `<li class="variousart settings-variousart-hide" title="Click to hide releases from Various artists"><i class="fas fa-check"></i>Releases from Various artists are displayed</li>`;
+    }
+    else {
+        varArtLi = `<li class="variousart settings-variousart-show" title="Click to show releases from Various artists"><i class="fas fa-times"></i>Releases from Various artists are hidden</li>`;
+    }
+    elementSettings.append(`<div class="settings-section" id="settings-variousart"><h3>Various artists</h3><p>Show or hide releases from Various artists.</p><ul class="playlists settings-variousart-showhide"> ` + varArtLi + `</ul></div>`);
+
+
+
     var plPositionLi;
     if (playlistPositionFirst === true) {
         plPositionLi = `<li class="playlist-default playlist-position-last" title="Click to set last position"><i class="fas fa-angle-up"></i>First position</li>`;
@@ -535,7 +547,6 @@ async function showSettings() {
         plPositionLi = `<li class="playlist-default playlist-position-first" title="Click to set first position"><i class="fas fa-angle-down"></i>Last position</li>`;
     }
     elementSettings.append(`<div class="settings-section" id="settings-playlist-position"><h3>Position of added release to the playlist</h3><p>Set the position (first or last) of added releases to the playlist.</p><ul class="playlists settings-playlist-position"> ` + plPositionLi + `</ul></div>`);
-
 
 
     elementSettings.append(`<div class="settings-section" id="settings-playlist"><h3>Default playlist</h3><p>Set your default playlist to quickly add releases.</p></div>`);
@@ -1008,4 +1019,46 @@ $(document).on('click', '.playlist-position-first', async function (e) {
     elementPlaylistSettings.html(`<i class="fas fa-angle-up"></i>First position`);
 
     playlistPositionFirst = true;
+});
+/*
+$(document).on('click', '.settings-varart-hide', async function (e) {
+    // various artists
+    var elementPlaylistSettings = $('.playlist-position-last');
+    elementPlaylistSettings.removeClass('playlist-position-last');
+    elementPlaylistSettings.addClass('playlist-position-first');
+    elementPlaylistSettings.prop('title', 'Click to set first position');
+    elementPlaylistSettings.html(`<i class="fas fa-angle-down"></i></i>Last position`);
+
+    variousArtists = false;
+});
+$(document).on('click', '.settings-varart-show', async function (e) {
+    // various artists
+    var elementPlaylistSettings = $('.playlist-position-first');
+    elementPlaylistSettings.removeClass('playlist-position-first');
+    elementPlaylistSettings.addClass('playlist-position-last');
+    elementPlaylistSettings.prop('title', 'Click to set last position');
+    elementPlaylistSettings.html(`<i class="fas fa-angle-up"></i>First position`);
+
+    variousArtists = true;
+});*/
+
+$(document).on('click', '.settings .variousart', async function (e) {
+    // nastavení ikony youtube music
+    var elementVarArt = $('.variousart');
+    if (variousArtists === true) {
+        // disable
+        elementVarArt.removeClass('settings-variousart-hide');
+        elementVarArt.addClass('settings-variousart-show');
+        elementVarArt.prop('title', 'Click to show releases from Various artists');
+        elementVarArt.html(`<i class="fas fa-times"></i>Releases from Various artists are hidden`);
+        variousArtists = false;
+    }
+    else {
+        // enable
+        elementVarArt.removeClass('settings-variousart-show');
+        elementVarArt.addClass('settings-variousart-hide');
+        elementVarArt.prop('title', 'Click to hide releases from Various artists');
+        elementVarArt.html(`<i class="fas fa-check"></i>Releases from Various artists are displayed`);
+        variousArtists = true;
+    }
 });
