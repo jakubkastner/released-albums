@@ -485,7 +485,7 @@ async function showSettings() {
     else {
         notificationsLi = `<li class="playlist-default notifications-enable" title="Click to enable browser notifications"><i class="fas fa-times"></i>Notifications disabled</li>`;
     }
-    elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable broser notifications</p><ul class="playlists settings-playlist"> ` + notificationsLi + `</ul></div>`);
+    elementSettings.append(`<div class="settings-section" id="settings-notifications"><h3>Notifications</h3><p>Enable or disable browser notifications</p><ul class="playlists settings-playlist"> ` + notificationsLi + `</ul></div>`);
 
     elementSettings.append(`<div class="settings-section" id="settings-device"><h3>Default device</h3><p>Set your default device to play releases.</p></div>`);
     var elementSettingsDevice = $('#settings-device');

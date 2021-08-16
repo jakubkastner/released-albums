@@ -42,7 +42,7 @@ async function loginGetUrl() {
     console.log("ukládám " + stateValue);
 
     // otevře přihlašovací okno do spotify a získá access token
-    var scope = 'user-follow-read user-read-private user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-read-playback-state user-modify-playback-state';
+    var scope = 'user-follow-read user-read-private user-library-read user-library-modify playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-read-playback-state user-modify-playback-state user-read-email streaming';
     var url = 'https://accounts.spotify.com/authorize';
     url += '?response_type=token';
     url += '&client_id=' + encodeURIComponent(API_ID);
