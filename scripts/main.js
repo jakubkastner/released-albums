@@ -109,6 +109,8 @@ var elementPodcastsButton = $('.podcasts-button');
 var elementMyAlbumsButton = $('.my-albums-button');
 var elementSettingsButton;
 
+var spotifyPlayer = null;
+
 var elementHiddenMenu = $('.hidden-menu');
 
 var viewAll = false;
@@ -333,7 +335,7 @@ $(document).ready(async function () {
         // -> získám informace o uživateli
         // PŘIHLÁŠENÍ -> krok 5
         await loginGetUserInfo();
-
+        initPlayer();
         // získám parametry
         var params = getHashParams();
         if (params.show == 'albums') {

@@ -26,7 +26,7 @@ $('.login').click(async function () {
  * Získá url pro zobrazení přihlašovací stránky Spotify.
  * @returns
  *  null = uživatel je již přihlášen /
- *  url = url přihlašovací stránky Spotify 
+ *  url = url přihlašovací stránky Spotify
  */
 async function loginGetUrl() {
     // PŘIHLÁŠENÍ -> krok 2
@@ -101,8 +101,6 @@ async function loginParseUrl() {
         var storedState = localStorage.getItem(STATE_KEY);
 
         if (userAccess) {
-            console.log(storedState);
-            console.log(params.state);
             // existuje userAccess
             if (params.state !== null && params.state === storedState) {
                 // získal jsem hodnotu ze spotify loginu
@@ -169,7 +167,7 @@ async function loginGetUserInfo() {
     }
     else {
         // <i class="fab fa-spotify"></i>
-        // <i class="fas fa-user"></i>    
+        // <i class="fas fa-user"></i>
         elementUserIcon.removeClass('fab');
         elementUserIcon.addClass('fas');
         elementUserIcon.removeClass('fa-spotify');

@@ -1,5 +1,13 @@
-window.onSpotifyWebPlaybackSDKReady = () => {
-    const token = userAccess;
+function initPlayer () {
+
+}
+window.onSpotifyWebPlaybackSDKReady = function () {
+    if (!userAccess) {
+        console.log('player - user is not logged in');
+        return;
+    }
+    var token = userAccess;
+
     const player = new Spotify.Player({
         name: 'Releases on Spotify',
         getOAuthToken: cb => { cb(token); }
@@ -31,4 +39,4 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
     // Connect to the player!
     player.connect();
-    };
+}
