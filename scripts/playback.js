@@ -1,5 +1,5 @@
 function initPlayer () {
-
+    window.onSpotifyWebPlaybackSDKReady();
 }
 window.onSpotifyWebPlaybackSDKReady = function () {
     if (!userAccess) {
