@@ -229,15 +229,15 @@ function showLoading(message) {
  * Skryje loader a zobrazí zprávu.
  * @param {*} message zpráva k zobrazení
  */
-function hideLoading(message) {
+function hideLoading(message, notifyMessage = '') {
     document.title = 'Releases on Spotify';
     elementLoader.hide();
     elementMessage.text(message);
     elementHiddenMenu.show();
     // show notification
-    if (notifications === true) {
+    if (notifications === true && notifyMessage !== '') {
         var notify = new Notification('Releases on Spotify', {
-            body: 'Releases was loaded',
+            body: notifyMessage,
             icon: '/images/favicon.png',
         });
     }

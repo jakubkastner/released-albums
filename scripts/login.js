@@ -198,7 +198,7 @@ async function loginGetUserInfo() {
     //await libraryGetPlaylists();
     // získá výstupní zařízení uživatele
     //await getDevices();
-    hideLoading('Select which releases you want to display.');
+    hideLoading('Select which releases you want to display.', 'Select releases to display');
 }
 
 /**
