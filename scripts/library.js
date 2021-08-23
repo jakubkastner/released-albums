@@ -468,7 +468,7 @@ async function libraryGetPodcasts() {
     });
 
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    hideLoading('Select which year of albums releases you want to display.');
+    hideLoading('Select which year and month of podcasts you want to display.', 'Podcasts loaded');
 
     // přidá do menu roky a měsíce releasů
     await addMenuYears('d');
@@ -614,7 +614,7 @@ async function libraryGetReleases(releaseType) {
     }
 
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
-    hideLoading('Select which year of albums releases you want to display.');
+    hideLoading('Select which year of albums releases you want to display.', releaseName + ' loaded');
 
     // uloží do proměnných získaný seznam releasů
 
