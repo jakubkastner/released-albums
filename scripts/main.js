@@ -109,6 +109,8 @@ var elementPodcastsButton = $('.podcasts-button');
 var elementMyAlbumsButton = $('.my-albums-button');
 var elementSettingsButton;
 
+var elementLoggedOut = $('.logged-out');
+
 var spotifyPlayer = null;
 
 var elementHiddenMenu = $('.hidden-menu');

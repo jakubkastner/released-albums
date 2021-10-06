@@ -68,7 +68,7 @@ main, .month:hover, .current-month, .current-year {
     margin-left: auto;
 }
 
-.in-header .page-name *, .in-header > div:hover *, .message, .title, .album-info a:hover *, .settings-section h3 {
+.in-header .page-name *, .in-header > div:hover *, .message, .title, .album-info a:hover *, .settings-section h3, .settings-section h3 * {
     color: #1ab26b;
 }
 
@@ -469,4 +469,8 @@ footer p {
 
 .rotate {
     animation: spin 1.3s linear infinite;
+}
+
+.logged-out {
+    margin-top: 25px;
 }

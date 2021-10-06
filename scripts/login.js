@@ -174,6 +174,9 @@ async function loginGetUserInfo() {
         elementUserIcon.addClass('fa-user');
     }
 
+    // hide loged out text
+    elementLoggedOut.remove();
+
     //var elementMenu = $('.menu-user'); nová verze
     var elementMenu = $('header .in-main');
     elementMenu.append(`<nav class="nav-user"><a class="button settings-button hidden-menu">Settings</a><a class="button" id="logout">Logout</a></nav>`);

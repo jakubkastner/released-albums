@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,7 +23,8 @@
         <div class="in-body">
             <div class="in-header">
                 <div class="page-name">
-                    <img src="images/favicon.png" alt="R"><h1>eleases on Spotify</h1>
+                    <img src="images/favicon.png" alt="R">
+                    <h1>eleases on Spotify</h1>
                 </div>
                 <div class="login" id="user" title="Click to login">
                     <i class="fab fa-spotify"></i>
@@ -55,6 +57,104 @@
                 <div class="compilations" style="display: none;"></div>
                 <div class="my-albums" style="display: none;"></div>
                 <div class="settings" style="display: none;"></div>
+                <div class="logged-out">
+                    <div class="settings-section">
+                        <h3><i class="fas fa-info"></i> How to use</h3>
+                        <ol>
+                            <li>Login via Spotify</li>
+                            <li>Select the release type to display</li>
+                            <li>View releases, filter them by years or months</li>
+                            <li>Add them to playlists, view a tracklist, play them or just open them in the Spotify application</li>
+                        </ol>
+                    </div>
+                    <div class="settings-section">
+                        <h3><i class="fas fa-search"></i> Functions</h3>
+                        <ul>
+                            <li>Display these types of releases from your followed artists:
+                                <ul>
+                                    <li>albums</li>
+                                    <li>eps</li>
+                                    <li>tracks</li>
+                                    <li>appears</li>
+                                    <li>compilations</li>
+                                    <li>podcasts</li>
+                                    <li>your saved albums (all saved, not just followed)</li>
+                                </ul>
+                            </li>
+                            <li>Actions with releases:
+                                <ul>
+                                    <li>View tracklist</li>
+                                    <li>Play the release in web browser or in another Spotify Connect device
+                                        <ul>
+                                            <li>in settings you can choose your device</li>
+                                            <li>only for Spotify Premium users</li>
+                                            <li>the browser must support DRM (most mobile browsers do not support it) and must be enabled for this application</li>
+                                            <li>currently in beta</li>
+                                        </ul>
+                                    </li>
+                                    <li>Add release to playlist
+                                        <ul>
+                                            <li>in settings you can set your favourite (default) playlist</li>
+                                            <li>and set the position (first or last) of added releases to the playlist</li>
+                                        </ul>
+                                    </li>
+                                    <li>Open release in the Spotify application</li>
+                                    <li>Search release on YouTube Music
+                                        <ul>
+                                            <li>disabled as default, you can enable it in the settings</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>Another functions:
+                                <ul>
+                                    <li>Notifications when releases are loaded
+                                        <ul>
+                                            <li>if you are following a lot of artists, you have a lot of playlists or you have a slow internet, the browser notifications may be useful</li>
+                                            <li>notification is displayed when releases are successfully loaded</li>
+                                            <li>the browser must support notifications and must be enabled for this application</li>
+                                        </ul>
+                                    </li>
+                                    <li>Hide releases from various artists</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="settings-section">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Known issues</h3>
+                        <p><em>Note: This application is still under development, some functions may not work well.</em></p>
+                        <ul>
+                            <li>If you leave the application running for a long time, all functions will stop working (add to playlist, play, load releases).
+                                <ul>
+                                    <li>If you reload the page, the problem will disappear.</li>
+                                </ul>
+                            </li>
+                            <li>Spotify player stops working when you open a release in the Spotify application.</li>
+                            <li>Sometimes the release loading information does not disappear or is not displayed.
+                                <ul>
+                                    <li>Does not have much effect on the functionality of the application</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="settings-section">
+                        <h3><i class="fas fa-lock"></i> Privacy</h3>
+                        <ul>
+                            <li>Data storage
+                                <ul>
+                                    <li>The application runs in the user's browser, no data is sent to the server.</li>
+                                    <li>The only data that can be stored is stored by Spotify.</li>
+                                </ul>
+                            </li>
+                            <li>Spotify scopes
+                                <ul>
+                                    <li>The application for its functionality must obtain your data from Spotify to retrieve information from the API.</li>
+                                    <li>You can revoke access for this application in the <a href="https://www.spotify.com/account/apps/" rel="nofollow">Spotify settings</a>.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="loader"></div>
         </div>
@@ -63,7 +163,7 @@
     </main>
     <footer>
         <div class="in-body">
-            <p><a href="https://github.com/jakubkastner/released-albums" target="_blank" rel="noreferrer noopener">&copy 2018-2021 Jakub Kastner<br><em>Note: This application is still under development, some functions may not work well.</em></a></p>
+            <p><a href="https://github.com/jakubkastner/released-albums" target="_blank" rel="noreferrer noopener"><i class="far fa-copyright"></i> 2018-2021 Jakub Kastner<br><em>Note: This application is still under development, some functions may not work well.</em></a></p>
         </div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
