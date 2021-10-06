@@ -31,7 +31,7 @@ https://jakubkastner.github.io/released-albums/
   * Open release in the Spotify application
   * Search release on YouTube Music
     *  disabled as default, you can enable it in the settings
-* Another settings:
+* Another functions:
   * Notifications when releases are loaded 
     * if you are following a lot of artists, you have a lot of playlists or you have a slow internet, the browser notifications may be useful
     * notification is displayed when releases are successfully loaded
