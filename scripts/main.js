@@ -118,7 +118,7 @@ var elementHiddenMenu = $('.hidden-menu');
 var viewAll = false;
 var lastYear = 0;
 
-elementHiddenMenu.hide();
+//elementHiddenMenu.hide();
 
 // pwa aplikace
 if ('serviceWorker' in navigator) {
@@ -221,7 +221,7 @@ async function fetchJson(url, errorText) {
  */
 function showLoading(message) {
     document.title = message;
-    elementHiddenMenu.hide();
+    //elementHiddenMenu.hide();
     elementLoader.show();
     elementMessage.show();
     elementMessage.text('Please wait: ' + message + '...');
@@ -235,7 +235,7 @@ function hideLoading(message, notifyMessage = '') {
     document.title = 'Releases on Spotify';
     elementLoader.hide();
     elementMessage.text(message);
-    elementHiddenMenu.show();
+    //elementHiddenMenu.show();
     // show notification
     if (notifications === true && notifyMessage !== '') {
         var notify = new Notification('Releases on Spotify', {

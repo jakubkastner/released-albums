@@ -1336,6 +1336,7 @@ async function showCompilations() {
 // získá playlisty uživatele
 async function libraryGetPlaylists() {
     // zobrazení načítání
+    elementHiddenMenu.hide();
     showLoading('Getting your playlists');
 
     // načtení seznamu playlistů
@@ -1353,7 +1354,7 @@ async function libraryGetPlaylists() {
         return;
     }
 
-    //hideLoading('');
+    hideLoading('');
 }
 // získá playlisty uživatele z api
 async function libraryGetPlaylistsApi(url, index = 0) {

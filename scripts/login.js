@@ -202,6 +202,7 @@ async function loginGetUserInfo() {
     // získá výstupní zařízení uživatele
     //await getDevices();
     hideLoading('Select which releases you want to display.', 'Select releases to display');
+    elementHiddenMenu.show();
 }
 
 /**
@@ -216,7 +217,13 @@ $(document).on('click', '#logout', function (e) {
 
 // získá zařízení na kterých se dá přehrávat
 async function getDevices() {
+    if (user.product != 'premium') {
+        // premium --
+        elementHiddenMenu.show();
+        return;
+    }
     // zobrazení načítání
+    elementHiddenMenu.hide();
     showLoading('Getting your devices');
 
     // načtení seznamu playlistů
@@ -231,11 +238,13 @@ async function getDevices() {
         // nebyli získáni žádní interpreti
         // TODO nice2have: zobrazit tlačítko - načíst znovu
         hideLoading('0 devices');
+        elementHiddenMenu.show();
         return;
     }
 
     // zobrazí/skryje příslušné prvky a zobrazí zprávu
     hideLoading('');
+    elementHiddenMenu.show();
 }
 
 // získá zařízení na kterých se dá přehrávat z api
