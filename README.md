@@ -1,7 +1,9 @@
 # Releases on Spotify
 
 View all releases by years and months of your followed artists on Spotify.  
-https://jakubkastner.github.io/released-albums/  
+https://jakubkastner.github.io/released-albums
+
+_I'm working on [a new version](https://github.com/jakubkastner/music-releases), where bugs will be fixed, faster loading will be ensured and new functionalities will be added. Stay tuned!_
 
 # ℹ How to use
 1. Login via Spotify
@@ -40,8 +42,10 @@ https://jakubkastner.github.io/released-albums/
 
 # ⚠ Known issues
 _Note: This application is still under development, some functions may not work well._  
+_I am currently working on [a new version](https://github.com/jakubkastner/music-releases) where all these bugs will be fixed._
 * If you leave the application running for a long time, all functions will stop working (add to playlist, play, load releases).
   * If you reload the page, the problem will disappear.
+* The application may not work well in all mobile browsers. 
 * Spotify player stops working when you open a release in the Spotify application.
 * Sometimes the release loading information does not disappear or is not displayed.
   * Does not have much effect on the functionality of the application 
