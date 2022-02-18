@@ -20,6 +20,8 @@ _I'm working on [a new version](https://github.com/jakubkastner/music-releases),
   * compilations
   * podcasts
   * your saved albums (all saved, not just followed)
+<img src="images/screenshots/releases.png" alt="releases">
+
 * Actions with releases:
   * View tracklist
   * Play the release in web browser or in another Spotify Connect device
@@ -33,6 +35,8 @@ _I'm working on [a new version](https://github.com/jakubkastner/music-releases),
   * Open release in the Spotify application
   * Search release on YouTube Music
     *  disabled as default, you can enable it in the settings
+<img src="images/screenshots/playlists.png" alt="playlists">
+
 * Another functions:
   * Notifications when releases are loaded 
     * if you are following a lot of artists, you have a lot of playlists or you have a slow internet, the browser notifications may be useful
