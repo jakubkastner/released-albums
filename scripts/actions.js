@@ -473,6 +473,9 @@ async function libraryIsSongInPlaylist(playlistTracks, releaseTracks) {
         return inPlaylist;
     }
     await asyncForEach(playlistTracks, async playlistTrack => {
+        if (playlistTrack == null) {
+            return;
+        }
         if (inPlaylist) {
             // track je v playlistu, ukončím foreach
             return;
