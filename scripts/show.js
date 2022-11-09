@@ -183,30 +183,37 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     var releaseList;
     if (releaseType == 'a') {
         releaseName = 'albums';
+        releaseNameDisplay = releaseName;
         releaseList = libraryAlbums;
     }
     else if (releaseType == 'e') {
         releaseName = 'eps';
+        releaseNameDisplay = releaseName;
         releaseList = libraryEPs;
     }
     else if (releaseType == 't') {
         releaseName = 'tracks';
+        releaseNameDisplay = releaseName;
         releaseList = libraryTracks;
     }
     else if (releaseType == 'p') {
         releaseName = 'appears';
+        releaseNameDisplay = releaseName;
         releaseList = libraryAppears;
     }
     else if (releaseType == 'c') {
         releaseName = 'compilations';
+        releaseNameDisplay = releaseName;
         releaseList = libraryCompilations;
     }
     else if (releaseType == 'd') {
         releaseName = 'podcasts';
+        releaseNameDisplay = releaseName;
         releaseList = libraryPodcastsAll;
     }
     else if (releaseType == 'm') {
         releaseName = 'my-albums';
+        releaseNameDisplay = 'saved albums';
         releaseList = libraryMyAlbums;
     }
 
@@ -233,31 +240,31 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     // zobrazení nadpisu
     if (year == 0 && month == 0) {
         // zobrazuji všechny alba
-        elementTitle.text('All ' + releaseName + ' releases');
+        elementTitle.text('All ' + releaseNameDisplay + ' releases');
     }
     else if (year == 100 && month == 0) {
         // zobrazuji alba ve vybraném roce
-        elementTitle.text('Released ' + releaseName + ' with undefined year');
+        elementTitle.text('Released ' + releaseNameDisplay + ' with undefined year');
     }
     else if (year == 100 && month == 100) {
         // zobrazuji alba ve vybraném měsíci a roce, který není ve spotify vyplněn
-        elementTitle.text('Released ' + releaseName + ' with undefined year and month');
+        elementTitle.text('Released ' + releaseNameDisplay + ' with undefined year and month');
     }
     else if (year == 100) {
         // zobrazuji alba ve vybraném měsíci, který není ve spotify vyplněn
-        elementTitle.text('Released ' + releaseName + ' with undefined year in ' + month);
+        elementTitle.text('Released ' + releaseNameDisplay + ' with undefined year in ' + month);
     }
     else if (month == 100) {
         // zobrazuji alba ve vybraném měsíci, který není ve spotify vyplněn
-        elementTitle.text('Released ' + releaseName + ' in ' + year + ' with undefined month');
+        elementTitle.text('Released ' + releaseNameDisplay + ' in ' + year + ' with undefined month');
     }
     else if (month == 0) {
         // zobrazuji alba ve vybraném roce
-        elementTitle.text('Released ' + releaseName + ' in ' + year);
+        elementTitle.text('Released ' + releaseNameDisplay + ' in ' + year);
     }
     else {
         // zobrazuji alba ve vybraném měsíci
-        elementTitle.text('Released ' + releaseName + ' in ' + year + '-' + month);
+        elementTitle.text('Released ' + releaseNameDisplay + ' in ' + year + '-' + month);
     }
 
     var elementReleaseDiv = '';
@@ -377,17 +384,17 @@ async function viewReleases(releaseType, year = 0, month = 0) {
     // zobrazí tlačítko pro přidání všech songů do playlistu
     if (elementReleaseDiv === '') {
         if (month == 0) {
-            elementError.text('Not found any ' + releaseName + ' in ' + year);
+            elementError.text('Not found any ' + releaseNameDisplay + ' in ' + year);
 
         }
         else if (month == 100) {
-            elementError.text('Not found any ' + releaseName + ' in ' + year + ' with undefined month');
+            elementError.text('Not found any ' + releaseNameDisplay + ' in ' + year + ' with undefined month');
         }/*
         else if (month == 100) {
-            elementError.text('Not found any ' + releaseName + ' in ' + year + ' with undefined month');
+            elementError.text('Not found any ' + releaseNameDisplay + ' in ' + year + ' with undefined month');
         }*/
         else {
-            elementError.text('Not found any ' + releaseName + ' in ' + year + '-' + month);
+            elementError.text('Not found any ' + releaseNameDisplay + ' in ' + year + '-' + month);
         }
     }
     else if (releaseType == 't') {

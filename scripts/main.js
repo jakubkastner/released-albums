@@ -252,9 +252,9 @@ function hideLoading(message, notifyMessage = '') {
  */
 function showError(title, message) {
     elementTitle.text(title);
-    if (elementError.text()) {
+    /*if (elementError.text()) {
         message = elementError.text() + '\n' + message;
-    }
+    }*/
     elementError.html(message);
     elementMessage.remove();
     elementLoader.hide();
@@ -493,14 +493,17 @@ async function showSettings() {
 
     elementSettings.append(`<div class="settings-section" id="settings-device"><h3>Default device</h3><p>Set your default device to play releases.</p></div>`);
     var elementSettingsDevice = $('#settings-device');
+    var elementDevices = `<ul class="devices settings-devices">`;
     if (user.product != 'premium') {
-        elementSettingsDevice.append(`<p><i class="fas fa-times"></i> This feature is available only for Spotify Premium users.</p>`);
+        elementDevices += `<li class="device-default"><i class="fas fa-times"></i>This feature is available only for Spotify Premium users.</li>`;
+        //elementSettingsDevice.append(`<p><i class="fas fa-times"></i> This feature is available only for Spotify Premium users.</p>`);
     }
     else if (devices.length < 1) {
-        elementSettingsDevice.append(`<p><i class="fas fa-times"></i> No device found</p>`);
+        elementDevices += `<li class="device-default"><i class="fas fa-times"></i>No device found</li   >`;
+        //elementSettingsDevice.append(`<p><i class="fas fa-times"></i> No device found</p>`);
     }
     else {
-        var elementDevices = `<ul class="devices settings-devices">`;
+        //var elementDevices = `<ul class="devices settings-devices">`;
         await asyncForEach(devices, async device => {
             var icon;
             var title;
@@ -528,9 +531,11 @@ async function showSettings() {
             elementDevices += icon;
             elementDevices += `</span>` + device.name + `</li>`;
         });
-        elementDevices += `</ul>`;
-        elementSettingsDevice.append(elementDevices);
+        //elementDevices += `</ul>`;
+        //elementSettingsDevice.append(elementDevices);
     }
+    elementDevices += `</ul>`;
+    elementSettingsDevice.append(elementDevices);
 
     var varArtLi;
     if (playlistPositionFirst === true) {
@@ -608,6 +613,16 @@ async function showSettings() {
     elementSettingsPlaylist.append(elementPlaylists);
     //elementSettings.append(`<div class="settings-section"><h3>back</h3><ul class="playlists settings-playlist"><li id="settings-background">background</ul></li></div>`);
 }
+
+$(document).on('click', '.notifications-disable', async function (e) {
+    var elementNotifications = $('.notifications-disable');
+    notifications = false;
+    elementNotifications.removeClass('notifications-disable');
+    elementNotifications.addClass('notifications-enable');
+    elementNotifications.prop('title', 'Click to enable browser notifications');
+    elementNotifications.html(`<i class="fas fa-times"></i>Notifications disabled`);
+    notifications = false;
+});
 
 $(document).on('click', '.notifications-enable', async function (e) {
     // nastavení notifikací

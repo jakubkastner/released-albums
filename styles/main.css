@@ -314,15 +314,15 @@ footer p {
 }
 
 
-.playlist-add, .playlist-default, .device-default {
+.playlist-add, .playlist-default, .device-default, .settings-playlist-position li, .variousart, .youtubemusic {
     padding: calc(5px + 0.5vw);
 }
 
-.playlist-add i, .playlist-default i, .device-default i {
+.playlist-add i, .playlist-default i, .device-default i, .variousart i, .youtubemusic i {
     margin-right: calc(5px + 0.5vw);
 }
 
-.playlist-add:hover, .playlist-remove, .playlist-default-set:hover, .notifications-set:hover, .playlist-default-remove, .device-default-set:hover {
+.playlist-add:hover, .playlist-remove, .playlist-default-set:hover, .notifications-set:hover, .playlist-default-remove, .device-default-set:hover, .youtubemusic:hover, .playlist-default:hover, .variousart:hover, .settings-devices li:hover {
     background-color: rgb(18, 18, 18);
 }
 
@@ -353,7 +353,7 @@ footer p {
     padding: calc(5px + 1vw);
 }
 
-.settings-playlist, .settings-devices {
+.settings-playlist, .settings-devices, .settings-variousart-showhide, .settings-youtubemusic, .settings-playlist-position {
     padding: 0 calc(2.5px + 0.5vw);
 }
 

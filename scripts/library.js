@@ -102,6 +102,8 @@ elementEPsButton.click(function () {
  * Zobrazení tracků
  */
 async function showPodcasts() {
+    elementError.html('');
+
     elementHiddenMenu.hide();
     elementTitle.hide();
 
@@ -196,6 +198,8 @@ async function showPodcasts() {
  * Zobrazení tracků
  */
 async function showEPs() {
+    elementError.html('');
+
     elementHiddenMenu.hide();
     elementTitle.hide();
 
@@ -287,6 +291,8 @@ async function showEPs() {
  * Zobrazení albumů
  */
 async function showAlbums() {
+    elementError.html('');
+
     elementHiddenMenu.hide();
     elementTitle.hide();
 
@@ -955,6 +961,8 @@ elementTracksButton.click(function () {
  * Zobrazení tracků
  */
 async function showTracks() {
+    elementError.html('');
+
     elementHiddenMenu.hide();
     elementTitle.hide();
 
@@ -1054,6 +1062,8 @@ elementAppearsButton.click(function () {
  * Zobrazení Appears
  */
 async function showAppears() {
+    elementError.html('');
+
     elementHiddenMenu.hide();
     elementTitle.hide();
 
@@ -1154,6 +1164,8 @@ elementMyAlbumsButton.click(function () {
 });
 
 async function showMyAlbums() {
+    elementError.html('');
+
     elementHiddenMenu.hide();
     elementTitle.hide();
 
@@ -1245,6 +1257,8 @@ async function showMyAlbums() {
  * Zobrazení Compilations
  */
 async function showCompilations() {
+    elementError.html('');
+
     elementHiddenMenu.hide();
     elementTitle.hide();
 
