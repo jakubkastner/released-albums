@@ -46,7 +46,7 @@ _I'm working on [a new version](https://github.com/MusicReleases/musicreleases.g
 
 # ⚠ Known issues
 _Note: This application is still under development, some functions may not work well._  
-_I am currently working on [a new version](https://github.com/jakubkastner/music-releases](https://github.com/MusicReleases/musicreleases.github.io) where all these bugs will be fixed._
+_I am currently working on [a new version](https://github.com/MusicReleases/musicreleases.github.io) where all these bugs will be fixed._
 * If you leave the application running for a long time, all functions will stop working (add to playlist, play, load releases).
   * If you reload the page, the problem will disappear.
 * The application may not work well in all mobile browsers. 
