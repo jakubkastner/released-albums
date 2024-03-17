@@ -386,12 +386,15 @@ async function getPodcastsEpisodes(podcast) {
 
 async function getPodcastsEpisodesApi(url, podcast) {
     var json = await fetchJson(url);
-    if (json === null) return false;
+    if (json?.items === null) return false;
     if (!podcast.episodes) {
         podcast.episodes = [];
     }
     var name = podcast.show.name;
     await asyncForEach(json.items, async podcast2 => {
+        if (!podcast2) {
+            return;
+        }
         // získá cover
         var coverUrl = '';
         if (podcast2.images.length > 0) {
