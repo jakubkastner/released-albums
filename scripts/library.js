@@ -387,14 +387,12 @@ async function getPodcastsEpisodes(podcast) {
 async function getPodcastsEpisodesApi(url, podcast) {
     var json = await fetchJson(url);
     if (json?.items === null) return false;
+    const jsonItems = json.items.filter(x => x !== null);
     if (!podcast.episodes) {
         podcast.episodes = [];
     }
     var name = podcast.show.name;
-    await asyncForEach(json.items, async podcast2 => {
-        if (!podcast2) {
-            return;
-        }
+    await asyncForEach(jsonItems, async podcast2 => {
         // získá cover
         var coverUrl = '';
         if (podcast2.images.length > 0) {
@@ -416,8 +414,8 @@ async function getPodcastsEpisodesApi(url, podcast) {
         podcast2.cover = coverUrl;
         podcast2.artistsString = name;
     });
-    libraryPodcastsAll = libraryPodcastsAll.concat(json.items);
-    podcast.episodes = podcast.episodes.concat(json.items);
+    libraryPodcastsAll = libraryPodcastsAll.concat(jsonItems);
+    podcast.episodes = podcast.episodes.concat(jsonItems);
     podcast.artistsString = name;
     if (json.next) {
         await getPodcastsEpisodesApi(json.next, podcast);
