@@ -259,8 +259,9 @@ $(document).on('click', '.playlist-add', async function (e) {
             await libraryAddToPlaylistApi(release, playlistId, releaseId);
         }
         else {
-            var tracks = release.tracks;
+            var tracks = JSON.parse(JSON.stringify(release.tracks));
             if (playlistPositionFirst === true) {
+                debugger;
                 tracks = tracks.reverse();
             }
             await asyncForEach(tracks, async releaseTrack => {
